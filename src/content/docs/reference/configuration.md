@@ -75,7 +75,7 @@ Thirst settings are only applied when a supported thirst mod is installed.
 | `enableGroundItemThirstSourcing`      | `true`  | `true`, `false` | Allows villagers to collect thirst-restoring items from ground items. |
 | `enableContainerThirstSourcing`       | `true`  | `true`, `false` | Allows villagers to pull thirst-restoring items from containers and item handlers. |
 | `enableCropThirstSourcing`            | `false` | `true`, `false` | Allows villagers to harvest mature crops for thirst-restoring food or drink as an emergency fallback. Disabled by default to save crops and help with performance. |
-| `thirstLethalFallback`                | `false` | `true`, `false` | Allows dehydration to kill villagers when hardcore status cannot be detected. (NOT CURRENTLY WORKING) |
+| `thirstLethalFallback`                | `false` | `true`, `false` | Allows dehydration to kill villagers. (NOT CURRENTLY WORKING) |
 | `enableCookWaterPurification`         | `true`  | `true`, `false` | Allows cook villagers to purify impure water bottles in available kitchen skillets. |
 | `preferKitchenStorageForEmptyBottles` | `true`  | `true`, `false` | When villagers drink from bottles, prefers depositing empty bottles into kitchen storage. |
 
