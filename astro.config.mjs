@@ -2,18 +2,9 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-const githubRepositoryName = process.env.GITHUB_REPOSITORY?.split('/')[1];
-const githubPagesBase =
-	process.env.GITHUB_PAGES === 'true' &&
-	githubRepositoryName &&
-	!githubRepositoryName.endsWith('.github.io')
-		? `/${githubRepositoryName}`
-		: undefined;
-
 // https://astro.build/config
 export default defineConfig({
-	site: process.env.SITE ?? 'https://aetherianartificer.github.io',
-	base: process.env.BASE_PATH ?? githubPagesBase,
+	site: process.env.SITE,
 	integrations: [
 		starlight({
 			title: 'Townstead',
