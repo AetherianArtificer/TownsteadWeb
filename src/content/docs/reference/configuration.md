@@ -1,6 +1,8 @@
 ---
 title: Configuration
 description: Reference for the Townstead config, both server and client.
+sidebar:
+  order: 1
 ---
 
 Townstead splits configuration between server-side behaviour and client-side preferences. Server settings control villager AI, needs, work, storage, calendar behaviour, and integrations. Client settings control local settings: audio, catalog UI, and accessibility options.
