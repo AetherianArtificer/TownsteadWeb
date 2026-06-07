@@ -45,7 +45,28 @@ data/example/calendar_profile/calendar.json
                   example:calendar
 ```
 
-Your `pack.mcmeta` uses the standard Minecraft data-pack structure. Set its `pack_format` to the value required by the Minecraft version running the server; this value is version-specific and is not defined by Townstead.
+### pack.mcmeta
+
+Create `pack.mcmeta` in the root of the data pack:
+
+```json
+{
+  "pack": {
+    "description": "Example Townstead Calendar",
+    "pack_format": 15,
+    "supported_formats": [15, 48]
+  }
+}
+```
+
+This example covers Townstead's supported Minecraft versions:
+
+| Minecraft version | Data-pack format |
+| --- | ---: |
+| 1.20.1 | `15` |
+| 1.21.1 | `48` |
+
+`pack_format` is Minecraft metadata, not a Townstead setting. The `supported_formats` range allows one calendar pack to be used across both versions. Minecraft may still warn that a pack was made for another version, but the Townstead calendar files use the same structure.
 
 ### Calendar Profile
 
