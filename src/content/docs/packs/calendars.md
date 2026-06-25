@@ -12,7 +12,7 @@ Townstead calendar profiles define how a year is divided and displayed. A profil
 - Custom long, medium, short, and weekday date formats
 - Leap years that add or subtract days, rename months, or insert extra months
 
-Calendar profiles define how Townstead divides and displays the passage of time. They control the length and names of months and weeks, date formatting, eras, and leap-year rules. They do not change Minecraft's day-night cycle or determine how quickly time passes.
+They do not change Minecraft's day-night cycle or determine how quickly time passes.
 
 ## Calendars and Villager Aging
 
@@ -74,6 +74,7 @@ Create `data/example/calendar_profile/calendar.json`:
 
 ```json
 {
+  "schema": "townstead:calendar/v1",
   "display_name": {
     "translate": "calendar_profile.example.calendar.name"
   },
@@ -120,6 +121,8 @@ Create `data/example/calendar_profile/calendar.json`:
   ]
 }
 ```
+
+The root `schema` identifies this as a Townstead calendar profile. Older profiles without it continue to load, but new profiles should include it.
 
 ### English Names
 
