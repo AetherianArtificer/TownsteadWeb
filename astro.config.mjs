@@ -34,7 +34,7 @@ export default defineConfig({
 						{ label: 'Barista', slug: 'guides/barista' },
 						{ label: 'Reactions', slug: 'guides/reactions' },
 						{ label: 'Community Spirit', slug: 'guides/community-spirit' },
-						{ label: 'Origins', slug: 'guides/origins' },
+						{ label: 'Roots', slug: 'guides/roots' },
 						{ label: 'Life Stages', slug: 'guides/life-stages' },
 						{ label: 'Calendars & Stamps', slug: 'guides/calendars-and-stamps' },
 					],
