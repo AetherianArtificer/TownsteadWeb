@@ -55,7 +55,7 @@ A reaction may still decline to play because of its cooldown, chance, or availab
 
 ## Query
 
-Query commands read Townstead snapshots without changing world state. The `<path>` argument selects a value inside the snapshot and is reported back in chat.
+Query commands are available in Townstead 0.7.5 and later. They read Townstead snapshots without changing world state. The `<path>` argument selects a value inside the snapshot and is reported back in chat.
 
 | Command | Access | Description |
 | --- | --- | --- |
