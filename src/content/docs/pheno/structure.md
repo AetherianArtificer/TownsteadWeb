@@ -16,6 +16,7 @@ Each node belongs to a domain. A field that expects an action cannot accept a co
 | Item action | Actions against an item stack. |
 | Value | Runtime numeric values. |
 | Capability | Effective flags and numeric modifiers resolved from registered sources. |
+| Gene | Pheno-backed gene nodes used inside Roots gene files. See [Gene Nodes](/pheno/gene-nodes/). |
 
 A condition is a filter: it does not choose a new target by itself, it decides whether the current context passes. A selector chooses one or more targets, blocks, item stacks, or places from the current context. An action can then run on the current context or on the selected results.
 

@@ -60,6 +60,7 @@ export default defineConfig({
 								{ label: 'Conditions', slug: 'pheno/conditions' },
 								{ label: 'Actions', slug: 'pheno/actions' },
 								{ label: 'Selectors & Values', slug: 'pheno/selectors-values' },
+								{ label: 'Gene Nodes', slug: 'pheno/gene-nodes' },
 							],
 						},
 						{

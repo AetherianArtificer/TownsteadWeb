@@ -13,6 +13,7 @@ Pheno is Townstead's shared behaviour language, a bit like the cause and effect 
 | [Actions](/pheno/actions/) | Do something in the world, to an entity, to an item, or at a block position. |
 | [Selectors](/pheno/selectors-values/#selectors--values) | Choose entities or blocks for actions and conditions. |
 | [Values](/pheno/selectors-values/#values) | Provide numbers from runtime context. |
+| [Gene Nodes](/pheno/gene-nodes/) | Pheno-backed gene nodes used inside Roots gene files. |
 | [Structure](/pheno/structure/) | How typed nodes, domains, context, wrappers, authoring rules, and validation fit together. |
 | [Context](/pheno/context/) | How Pheno decides the current actor, target, origin, block, item, holder, or cause. |
 | [Diagnostics](/pheno/diagnostics/) | Report unknown types, malformed fields, and generated reference data for pack authors. |

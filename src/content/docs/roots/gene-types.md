@@ -169,7 +169,7 @@ Traits are still under construction. See [Traits](/roots/traits/) for the curren
 
 ## Pheno-Backed Gene Types
 
-These gene types are registered as Roots gene types, but their detailed behaviour is defined by Pheno systems or runtime hooks. Keep the shared gene wrapper fields in [Gene Files](/roots/gene-files/), then use the Pheno pages for nested conditions, actions, selectors, values, and context.
+These gene types are registered as Roots gene types, but their detailed behaviour is defined by Pheno systems or runtime hooks. Keep the shared gene wrapper fields in [Gene Files](/roots/gene-files/), then use [Pheno Gene Nodes](/pheno/gene-nodes/) for the Pheno-backed fields.
 
 | Area | Gene Types |
 | --- | --- |
@@ -190,3 +190,4 @@ Resource genes can also be declared inside another gene's `resources` block as c
 | `action`, `do`, action hooks | [Pheno Actions](/pheno/actions/) |
 | `target`, selectors, affected entities or blocks | [Pheno Selectors & Values](/pheno/selectors-values/) |
 | Nested Pheno nodes and context rules | [Pheno Structure](/pheno/structure/) and [Pheno Context](/pheno/context/) |
+| Pheno-backed gene fields | [Pheno Gene Nodes](/pheno/gene-nodes/) |
