@@ -48,6 +48,72 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 				{
+					label: 'Pheno',
+					items: [
+						{ label: 'Overview', slug: 'pheno' },
+						{ label: 'Examples', slug: 'pheno/examples' },
+						{
+							label: 'Core Reference',
+							items: [
+								{ label: 'Structure', slug: 'pheno/structure' },
+								{ label: 'Context', slug: 'pheno/context' },
+								{ label: 'Conditions', slug: 'pheno/conditions' },
+								{ label: 'Actions', slug: 'pheno/actions' },
+								{ label: 'Selectors & Values', slug: 'pheno/selectors-values' },
+								{ label: 'Gene Nodes', slug: 'pheno/gene-nodes' },
+							],
+						},
+						{
+							label: 'Tools',
+							items: [
+								{ label: 'Commands', slug: 'pheno/commands' },
+								{ label: 'Diagnostics', slug: 'pheno/diagnostics' },
+							],
+						},
+					],
+				},
+				{
+					label: 'Roots',
+					items: [
+						{ label: 'How Roots Work', slug: 'roots' },
+						{
+							label: 'Data Files',
+							items: [
+								{ label: 'File Basics', slug: 'roots/file-basics' },
+								{ label: 'Root Profiles', slug: 'roots/root-profiles' },
+								{ label: 'Species', slug: 'roots/species' },
+								{ label: 'Ancestry & Lineage', slug: 'roots/ancestry-lineage' },
+								{ label: 'Heritage', slug: 'roots/heritage' },
+								{ label: 'Spawn Bias', slug: 'roots/spawn-bias' },
+								{ label: 'Personality Policy', slug: 'roots/personality-policy' },
+							],
+						},
+						{
+							label: 'Genes',
+							items: [
+								{ label: 'Gene Files', slug: 'roots/gene-files' },
+								{ label: 'Gene Type Reference', slug: 'roots/gene-types' },
+								{ label: 'Inheritance', slug: 'roots/inheritance' },
+							],
+						},
+						{
+							label: 'Life & Traits',
+							items: [
+								{ label: 'Life Cycles', slug: 'roots/life-cycles' },
+								{ label: 'Traits', slug: 'roots/traits' },
+							],
+						},
+						{
+							label: 'Rigs & Appearance',
+							items: [
+								{ label: 'Rigs', slug: 'roots/rigs' },
+								{ label: 'Appearance Assets', slug: 'roots/appearance-assets' },
+								{ label: 'Attachments', slug: 'roots/attachments' },
+							],
+						},
+					],
+				},
+				{
 					label: 'Data & Resource Packs',
 					items: [{ autogenerate: { directory: 'packs' } }],
 				},

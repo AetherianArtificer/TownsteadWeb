@@ -28,7 +28,7 @@ A reaction answers four questions:
 
 Pheno supplies conditions and follow-up actions. Reactions keeps its own responsibilities: event triggers, personality-weighted animation selection, movement locking, social mirroring, and relationship changes.
 
-Reactions are loaded on the server from data packs. The currently available animation backend is Emotecraft, so clients need the corresponding emotes to see authored animations. See the [Pheno reference](/packs/pheno/) for available `when` conditions and `do` actions.
+Reactions are loaded on the server from data packs. The currently available animation backend is Emotecraft, so clients need the corresponding emotes to see authored animations. See the [Pheno reference](/pheno/) for available `when` conditions and `do` actions.
 
 ## File Location
 
@@ -333,6 +333,8 @@ Context tags are resolved around each villager during periodic scans.
 | `near_grave` | An MCA tombstone is nearby. |
 | `in_dialogue_with_player` | The MCA dialogue screen is open for this villager. |
 | `dialogue_just_ended` | Dialogue with the villager ended roughly within the last three seconds. |
+| `heart_increased` | The villager's MCA relationship hearts with the interacting player went up recently. |
+| `heart_decreased` | The villager's MCA relationship hearts with the interacting player went down recently. |
 
 ### Nearby Reactions
 
