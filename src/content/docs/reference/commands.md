@@ -118,11 +118,11 @@ All Pheno commands are **Operator** commands intended for pack authoring and dia
 | `/pheno expand <gene>` | Prints the normalized form of a loaded gene. Long output is truncated in chat. |
 | `/pheno dump` | Writes generated Pheno reference files to the server's `pheno/` directory. |
 | `/pheno parity <target>` | Compares legacy gene outputs with capability-layer outputs for a living entity. |
-| `/pheno skills <target>` | Lists learned skills on a living entity. |
-| `/pheno learn <target> <skill>` | Teaches a skill using the normal skill rules. |
-| `/pheno learn <target> <skill> force` | Teaches a skill while bypassing normal skill rules. |
-| `/pheno forget <target> <skill>` | Removes a learned skill using the normal skill rules. |
-| `/pheno forget <target> <skill> force` | Removes a learned skill while bypassing normal skill rules. |
+| `/pheno skills <target>` | Under development. Lists learned profession skills on a living entity. |
+| `/pheno learn <target> <skill>` | Under development. Teaches a profession skill using the normal skill rules. |
+| `/pheno learn <target> <skill> force` | Under development. Teaches a profession skill while bypassing normal skill rules. |
+| `/pheno forget <target> <skill>` | Under development. Removes a learned profession skill using the normal skill rules. |
+| `/pheno forget <target> <skill> force` | Under development. Removes a learned profession skill while bypassing normal skill rules. |
 
 ## Memory Diagnostics
 
