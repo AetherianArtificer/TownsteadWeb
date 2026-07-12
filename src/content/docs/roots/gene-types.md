@@ -80,11 +80,12 @@ This example defines local chronotype variants inline:
 
 | Type | Main Fields | Effect |
 | --- | --- | --- |
-| `townstead_roots:attachment` | `attachment` | Adds a named render attachment. |
+| `townstead_roots:attachment` | `attachment`, `attachments`, `size`, `tint` | Grants render attachments, with heritable size channels, style variants, and coat colour. See [Attachments](/roots/attachments/genetics/). |
 | `townstead_roots:eye_color` | `tint` | Tints custom-rig eyes. Accepts `#RRGGBB`, `RRGGBB`, or `#RGB`. |
 | `townstead_roots:eyes` | `texture`, `glow` | Selects a custom face eye sprite strip, optionally emissive. |
 | `townstead_roots:mouth` | `texture` | Selects a custom face mouth sprite strip. |
 | `townstead_roots:skin_tone` | `tint`, `blend`, `strength` | Tints skin rendering. `blend` supports `multiply`, `screen`, `overlay`, and `color`. |
+| `townstead_roots:skin_overlay` | `texture`, `tint` | Paints a player-format (64x64) data-pack texture between MCA's skin and face layers: facial features, freckles, scars, war paint. `tint` accepts `#RRGGBB`, `skin`, or `hair`. Variants each carrying their own `texture` are a heritable style swap. |
 
 Appearance examples:
 

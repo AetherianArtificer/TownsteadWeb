@@ -27,3 +27,14 @@ Diagnostics include the resource id, JSON path, severity, message, and sometimes
 | `gene.schema.json` | Pragmatic JSON Schema for gene files. |
 
 The generated reference is useful for audits, but it is not the whole manual. Some registered types currently lack field schemas, and runtime behaviour needs hand-written explanation.
+
+## Live State
+
+Two operator commands inspect resolved behaviour on live entities instead of loaded data:
+
+| Command | Purpose |
+| --- | --- |
+| `/townstead debug powers` | Your own power-resolution chain: applied root, expressed genotype genes, the player-model expression gate, and every active power with its toggle state. |
+| `/townstead debug glide` | Flight report for nearby villagers: flight gene and lift ability, threat state, and why the current situation does or does not produce a launch. |
+
+See the [command reference](/reference/commands/) for the full catalogue.

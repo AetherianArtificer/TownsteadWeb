@@ -17,10 +17,10 @@ Some names also exist in other Pheno domains. For example, `pheno:resource` can 
 
 | Type | Fields | Behaviour |
 | --- | --- | --- |
-| `pheno:active_ability` | `action`, `condition`, `cooldown`, `slot`, `ai_trigger`, `resource_cost` | Adds an activated ability. The holder triggers `action` from a Root Ability key slot; villagers can use it when `ai_trigger` allows it. |
+| `pheno:active_ability` | `action`, `condition`, `cooldown`, `slot`, `ai_trigger`, `resource_cost` | Adds an activated ability. The holder triggers `action` from a Root Ability key slot; villagers can use it when `ai_trigger` allows it: `never` (default), `always`, `when_hurt`, `when_threatened`, `when_flying` (mid-glide, only while extra lift would help reach the travel target), or `when_hurt_nearby` (a hurt villager, player, or animal within a few blocks). |
 | `pheno:trigger` | `trigger`, `target`, `action`, `condition`, `damage_condition`, `key` | Runs `action` when a supported event fires. |
 | `pheno:action_over_time` | `action`, `interval`, `condition` | Runs `action` repeatedly while the gene is expressed and the condition passes. |
-| `pheno:aura` | radius, target, action, timing, condition fields | Runs an area effect around the holder. |
+| `pheno:aura` | `radius`, `interval`, `action`, `condition`, `include_self`, `target`, `resource_cost` | Runs `action` on every living entity in range each interval. `target` filters recipients: `all` (default), `hostile` (monsters only), or `non_hostile` (villagers, players, animals), so a healing aura never mends a raider. `resource_cost` makes each pulse that reaches someone spend a resource meter; an unaffordable pulse is skipped. |
 
 Action fields use [Pheno Actions](/pheno/actions/). Conditions use [Pheno Conditions](/pheno/conditions/).
 
@@ -31,7 +31,7 @@ Action fields use [Pheno Actions](/pheno/actions/). Conditions use [Pheno Condit
 | `pheno:resource` | `min`, `max`, `start`, `regen`, `regen_interval`, `color`, `on_reach` | Defines a meter such as mana, charge, or stamina. |
 | `pheno:collection` | collection config | Defines persistent collection state used by collection conditions and actions. |
 | `pheno:inventory` | inventory config | Adds inventory behaviour or storage hooks. |
-| `pheno:toggle` | toggle id/defaults | Adds a toggleable state used by other genes or conditions. |
+| `pheno:toggle` | `slot`, `ai_trigger` | Adds a toggleable state used by other genes or conditions, flipped from a Root Ability key. With an `ai_trigger` (same values as `active_ability`), villagers manage it themselves: held ON while the trigger is true, released when it stops. |
 | `pheno:modifier` | target, operation, value, condition fields | Modifies a Pheno capability or runtime value. |
 
 Resource genes can be standalone gene files or companion resources inside another gene's `resources` block. See [Gene Files](/roots/gene-files/#companion-resources).
@@ -41,7 +41,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 | Type | Fields | Behaviour |
 | --- | --- | --- |
 | `pheno:body_metric` | `target`, `min`, `max` | Rolls a normalized MCA body metric for founders. |
-| `pheno:proportions` | body metric ranges and numeric scale fields | Rolls several body metrics and free-form render proportions from one gene. |
+| `pheno:proportions` | body metric ranges and part scale fields | Rolls several body metrics and free-form render proportions from one gene. A part scale is a number for all axes, a `[x, y, z]` array to stylize per axis (thick arms that are not longer, a barrel torso that is deep but not tall), or `{"lean": ..., "stout": ...}` to spread the race between two builds: each individual's rolled width gene picks their spot, mapped through the gene's own width range, so bulk varies per villager and inherits through MCA's width blending. |
 | `pheno:scaled_part` | part id, scale fields | Scales a named render part. |
 | `pheno:hide_feature` | feature id | Hides a named render feature. |
 | `pheno:overlay` | texture/material fields | Adds a render overlay. |
@@ -67,7 +67,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 
 | Type | Behaviour |
 | --- | --- |
-| `pheno:ability` | Grants a passive or toggleable ability. |
+| `pheno:ability` | Grants a movement ability by id, such as `elytra_flight`, `creative_flight`, `slow_fall`, or `hover`. `mode` is `passive` (always on) or `toggle`; a toggle takes a Root Ability key `slot` the holder flips it with. |
 | `pheno:attribute` | Adds or multiplies a Minecraft attribute, optionally gated by a condition. |
 | `pheno:step_height` | Changes step height under configured gates. |
 | `pheno:buoyancy` | Changes how the holder floats or sinks. |
@@ -87,7 +87,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 | `pheno:prevent_sound` | Prevents configured sounds. |
 | `pheno:recipe` | Grants or gates recipe behaviour. |
 | `pheno:restrict_equipment` | Restricts equipment use. |
-| `pheno:scare_mob` | Causes configured mobs to avoid the holder. |
+| `pheno:scare_mob` | Causes configured mobs (`mobs` ids or `#` tags, within `radius`) to avoid the holder, optionally gated by a `condition`. |
 | `pheno:stacking_effect` | Applies stacking status-style behaviour. |
 | `pheno:starting_equipment` | Gives starting equipment. |
 

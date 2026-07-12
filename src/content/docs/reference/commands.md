@@ -124,6 +124,39 @@ All Pheno commands are **Operator** commands intended for pack authoring and dia
 | `/pheno forget <target> <skill>` | Under development. Removes a learned profession skill using the normal skill rules. |
 | `/pheno forget <target> <skill> force` | Under development. Removes a learned profession skill while bypassing normal skill rules. |
 
+## Attachments
+
+Attachment authoring commands are **Operator** commands. The full authoring workflow is described in [Tooling & Commands](/roots/attachments/tooling/).
+
+| Command | Description |
+| --- | --- |
+| `/townstead attachment doctor` | Runs every attachment health check and prints located problems: missing geometry bones, unknown states, unparseable conditions, texture and UV mismatches, unresolvable targets, and more. A shorter self-check also runs at every reload. |
+| `/townstead attachment adjust <id> offset <x> <y> <z>` | Live-edits the loaded definition's offset on every rendered bearer. Lasts until the next reload. |
+| `/townstead attachment adjust <id> rotation <x> <y> <z>` | Live-edits the base rotation. |
+| `/townstead attachment adjust <id> scale <s>` | Live-edits the render scale. |
+| `/townstead attachment adjust <id> bone <name>` | Live-edits the anchor bone. |
+| `/townstead attachment adjust <id> physics <chain\|all> <param> <value>` | Live-edits any physics spring parameter on one chain by index, or all chains. |
+| `/townstead attachment dump <id>` | Prints the definition as file-ready JSON with live adjustments folded in. Click the message to copy it. |
+| `/townstead attachment dump-geo <id>` | Writes the definition's live geometry blob to `townstead-dump/<id>.geo.json` on the server: the exact bytes clients render, including converted `.bbmodel` output. |
+
+## Genes
+
+Gene commands are **Operator** commands for fast iteration without root wiring.
+
+| Command | Description |
+| --- | --- |
+| `/townstead gene grant <villager> "<ns>:<gene>"` | Puts any registered gene on a live villager: homozygous, freshly rolled, expressed and rendering the same frame, inheriting like a natural roll. |
+| `/townstead gene revoke <villager> "<ns>:<gene>"` | Removes the gene again. |
+
+## Debug
+
+Debug commands live under `/townstead debug` and are **Operator** commands for inspecting live gene behaviour.
+
+| Command | Description |
+| --- | --- |
+| `/townstead debug powers` | Dumps your own power-resolution chain: the applied root, every expressed genotype gene, the player-model expression gate, and each active power with its toggle state. Separates a "gene does nothing" report into its causes. |
+| `/townstead debug glide` | Gate-by-gate flight report for villagers within 16 blocks: flight gene and lift ability, threat state, the current travel target's launch verdict (glide ready, line blocked, too close, beyond range, too far up), or for idle villagers a survey of how many joy-flight landing spots the terrain offers. |
+
 ## Memory Diagnostics
 
 All memory commands are **Operator** commands intended for server administration and troubleshooting.

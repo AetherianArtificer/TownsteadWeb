@@ -1,0 +1,60 @@
+---
+title: Surfaces & Colour
+description: Tint sources, blend modes, heritable colour, emissive glow, and translucency
+---
+
+How an attachment is painted, beyond its base texture. All of these live in the definition file.
+
+```json
+{
+  "tint": "hair",
+  "tint_blend": "overlay",
+  "tint_strength": 0.8,
+  "emissive": "horn_runes",
+  "render": "translucent"
+}
+```
+
+## Tint Sources
+
+`tint` accepts a flat colour or a bearer-resolved source:
+
+| Value | Colour used |
+| --- | --- |
+| `"#RRGGBB"` | The flat colour. |
+| `"skin"` | The skin colour the bearer's face actually rendered with (MCA's melanin gradient plus any origin tint), captured from the skin layer each frame. The older `"skin_tint": true` still works as an alias. |
+| `"hair"` | The bearer's rendered hair colour, greying included. Falls back to the flat tint until hair has rendered, or when the rig hides hair. |
+| `"eyes"` | The bearer's expressed eye colour, matching the face overlay. |
+| `"gene"` | The heritable colour rolled on the granting gene's tint channels. See below. |
+
+Author the texture in grayscale for bearer-resolved sources, the same as skin tinting: a tail that greys with its senior's hair, horns that match the eyes.
+
+## Blend Modes And Strength
+
+| Field | Values | Notes |
+| --- | --- | --- |
+| `tint_blend` | `multiply` (default), `screen`, `overlay`, `color` | The same four modes skin palettes use. Multiply darkens, screen lightens, overlay deepens contrast, and `color` keeps the texture's shading while taking the tint's hue. |
+| `tint_strength` | 0..1 | Fades the tint toward the untinted texture. Defaults to `1`. |
+
+Non-multiply modes bake a tinted copy of the texture on the client, cached and cheap. `color` is the mode to reach for when recolouring a painted (non-grayscale) texture, such as coat colours over detailed fur.
+
+## Heritable Colour
+
+`"tint": "gene"` reads the colour from the bearer's genetics. The granting gene declares the palette:
+
+```json
+"tint": {
+  "label": "Fur Colour",
+  "palette": ["#F1762B", "#EFE6D5", "#3B322D"]
+}
+```
+
+Newborns roll a palette colour, children mean-blend their parents' components, and the character editor offers the palette as swatches plus free colour bars. Pair it with `"tint_blend": "color"` to recolour a painted texture while keeping its shading. The genetics side is covered in [Genetics & Morphs](/roots/attachments/genetics/).
+
+## Emissive
+
+`emissive` names a second texture drawn full-bright over the same geometry, day or night. Transparent pixels do not glow, so a mostly transparent mask lights just the markings: glowing runes, foxfire tips, bioluminescent spots. The emissive layer follows every morph, pose, clip, and physics swing of the base pass, and it is untinted, so a glow stays constant across heritable coat colours.
+
+## Translucency
+
+`"render": "translucent"` renders the whole attachment with alpha, for wisps, membranes, and ghost tails. The default `cutout` treats alpha as on-or-off, which is right for almost everything else.

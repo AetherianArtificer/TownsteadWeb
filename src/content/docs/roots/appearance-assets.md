@@ -48,14 +48,14 @@ The generated tabs depend on the same compatibility rules as rendering:
 | Appearance genes | Inherited or selectable skin tone, eyes, eye colour, mouth, overlays, hidden features, scaled parts, body proportions, and attachment choices. |
 | Loaded assets | Texture choices, face sprite strips, overlays, compatible attachment assets, and other visual resources that match the current rig. |
 
-Do not assume one global list of eyes, mouths, bodies, or attachments. Treat these as species-compatible assets that the UI can discover and present when the current root/species can actually use them. The attachment system is large enough to have its own [Attachments](/roots/attachments/) page and is still under development.
+Do not assume one global list of eyes, mouths, bodies, or attachments. Treat these as species-compatible assets that the UI can discover and present when the current root/species can actually use them. The attachment system is large enough to have its own [Attachments](/roots/attachments/) section.
 
 ## Body Appearance Genes
 
 | Gene Type | Purpose |
 | --- | --- |
 | `townstead_roots:skin_tone` | Applies a skin tint with blend mode and strength. |
-| `townstead_roots:attachment` | Adds a named attachment. Attachment authoring is still under development; see [Attachments](/roots/attachments/). |
+| `townstead_roots:attachment` | Grants one or more render attachments, with heritable size and colour. See [Attachments](/roots/attachments/). |
 | `pheno:body_metric` | Rolls normalized MCA body metrics. |
 | `pheno:proportions` | Rolls multiple body metrics and free-form render scales. |
 | `pheno:scaled_part` | Scales a named part. |
