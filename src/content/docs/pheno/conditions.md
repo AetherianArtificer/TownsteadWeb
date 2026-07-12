@@ -15,9 +15,10 @@ Conditions test the current context and return true or false. Entity conditions 
 | Social interaction | `pheno:interaction` |
 | World, weather, and fluids | `pheno:biome`, `pheno:block`, `pheno:block_in_radius`, `pheno:building`, `pheno:dimension`, `pheno:distance_from_coordinates`, `pheno:environment`, `pheno:in_fluid`, `pheno:structure`, `pheno:submerged_in`, `pheno:time_of_day`, `pheno:village` |
 | Entity identity | `pheno:entity_type`, `pheno:in_tag`, `pheno:entity_group`, `pheno:root` |
+| Villager state | `pheno:mood` (`min`/`max` over -15..15, or `is` with band names `depressed`/`sad`/`unhappy`/`passive`/`fine`/`happy`/`overjoyed`), `pheno:gender` (`is`: `male`/`female`/`neutral`; `masculine`/`feminine` aliases). Both evaluate on server and client alike. Mood matches villagers only. Gender matches villagers and players with MCA data; entities without an MCA gender never match, so wrap in `pheno:not` when unknown bearers should pass. |
 | Player and inventory | `pheno:gamemode`, `pheno:inventory`, `pheno:equipped_item` |
 | Effects and cooldowns | `pheno:on_cooldown`, `pheno:since_spawn`, `pheno:status_effect`, `pheno:status_effect_tag` |
-| Pheno systems | `pheno:ability`, `pheno:compare_resource`, `pheno:resource`, `pheno:toggled`, `pheno:collection_size`, `pheno:collection_contains`, `pheno:collection_count` |
+| Pheno systems | `pheno:ability`, `pheno:compare_resource`, `pheno:resource`, `pheno:toggled`, `pheno:variant`, `pheno:collection_size`, `pheno:collection_contains`, `pheno:collection_count` |
 | Logic and selection | `pheno:and`, `pheno:or`, `pheno:not`, `pheno:any`, `pheno:none`, `pheno:constant`, `pheno:chance`, `pheno:entity_in_radius` |
 
 ## State Flags
@@ -53,6 +54,8 @@ State flag conditions take no fields beyond `type`. They read live entity state 
 | `climbing` | The entity is on a climbable block. |
 | `sleeping` | The entity is sleeping. |
 | `fall_flying` | The entity is fall flying. |
+| `ascending` | The entity is airborne and moving upward. |
+| `descending` | The entity is airborne and moving downward. |
 | `creative_flying` | The entity is a player currently flying in creative-style flight. |
 | `colliding_horizontally` | The entity has side collision. |
 | `colliding_vertically` | The entity has vertical collision. |
@@ -223,6 +226,7 @@ Nested `fluid_condition` objects support `"inverted": true`.
 | `pheno:root` | `root` | Tests the entity's current root id. |
 | `pheno:ability` | `ability` | True when an innate ability is currently active. |
 | `pheno:toggled` | `gene` | True while a toggle gene is switched on. |
+| `pheno:variant` | `gene`, `variant` or `is` list | True while the entity's expressed allele of a variant gene carries one of the named variants. Lets a heritable style drive powers: which aura a revealed form fires, or a bonus tied to one tusk style. |
 
 Known ability keys are `climbing`, `water_breathing`, `fire_immunity`, `night_vision`, `slow_fall`, `lava_vision`, `invisibility`, `swimming`, `walk_on_fluid`, `ignore_water`, `hover`, `sprinting`, `aerial_affinity`, `grounded`, `elytra_flight`, `creative_flight`, and `phasing`.
 

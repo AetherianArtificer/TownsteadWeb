@@ -3,7 +3,7 @@ title: Rigs
 description: Body rigs, model sources, bones, anchors, equipment, poses, and emote mapping
 ---
 
-A rig tells Townstead how a species or life stage should render. It connects a body model to textures, animation bones, face placement, held items, worn equipment, hitboxes, camera height, and optional emote remapping.
+A rig tells Townstead how a species or life stage should render. It connects a body model to textures, animation bones, face placement, held items, worn equipment, hitboxes, camera height, sleep orientation, and optional emote remapping.
 
 Species choose the default rig for a root. Life stages can override that rig for temporary forms such as eggs, cocoons, larvae, or other bodies that do not share the adult shape.
 
@@ -96,7 +96,7 @@ This kind of rig reuses a model layer that already behaves like a humanoid. It c
 
 ## Non-Humanoid Example
 
-Non-humanoid rigs usually need more placement data. This example shows a spider-like body with a face anchor, held-item grips, wearable anchors, boots, equipment restrictions, hitbox, camera bone, crouch pose, and emote mapping.
+Non-humanoid rigs usually need more placement data. This example shows a spider-like body with a face anchor, held-item grips, wearable anchors, boots, equipment restrictions, hitbox, camera bone, sleep orientation, crouch pose, and emote mapping.
 
 ```json
 {
@@ -137,6 +137,11 @@ Non-humanoid rigs usually need more placement data. This example shows a spider-
   "camera": {
     "bone": "head"
   },
+  "sleep": {
+    "yaw": 0,
+    "pitch": 0,
+    "roll": 0
+  },
   "hair": false
 }
 ```
@@ -158,6 +163,7 @@ Non-humanoid rigs usually need more placement data. This example shows a spider-
 | `hitbox` | object | no | Collision and interaction size in blocks. |
 | `equipment` | object | no | Equipment slots this rig refuses. |
 | `camera` | object | no | Bone used to derive first-person eye height. |
+| `sleep` | object | no | Whole-body orientation used while a non-humanoid rig sleeps. |
 | `emote` | object | no | Emotecraft-style humanoid emote remapping and policy. |
 
 ## Model
@@ -442,6 +448,28 @@ Omit `hitbox` to keep the normal MCA-style size. Use it for bodies that would fe
 ```
 
 This is especially useful for short, low, or non-humanoid bodies. If omitted, Townstead keeps the usual height-proportional camera behaviour.
+
+## Sleep Orientation
+
+`sleep` controls the whole-body orientation a non-humanoid rig uses while sleeping.
+
+```json
+"sleep": {
+  "yaw": 0,
+  "pitch": 0,
+  "roll": 0
+}
+```
+
+For generic non-humanoid rigs, Townstead replaces Minecraft's normal humanoid lay-down rotation with an upright bed-aligned rest. The `sleep` block then adds extra whole-body rotation in degrees.
+
+| Field | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `yaw` | number | `0` | Added to the bed-aligned facing direction. |
+| `pitch` | number | `0` | Leans the whole rig forward or backward around the X axis. |
+| `roll` | number | `0` | Leans the whole rig side to side around the Z axis. |
+
+Use `sleep` when the whole body needs to face or lean differently on the bed. Use `poses.sleep` for per-bone settling, such as lowering the body, folding legs, or tucking appendages.
 
 ## Poses
 

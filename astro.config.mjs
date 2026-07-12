@@ -108,7 +108,20 @@ export default defineConfig({
 							items: [
 								{ label: 'Rigs', slug: 'roots/rigs' },
 								{ label: 'Appearance Assets', slug: 'roots/appearance-assets' },
-								{ label: 'Attachments', slug: 'roots/attachments' },
+							],
+						},
+						{
+							label: 'Attachments',
+							items: [
+								{ label: 'Overview', slug: 'roots/attachments' },
+								{ label: 'Attachment Files', slug: 'roots/attachments/definition' },
+								{ label: 'Attachment Points', slug: 'roots/attachments/points' },
+								{ label: 'Genetics & Morphs', slug: 'roots/attachments/genetics' },
+								{ label: 'Poses & Equipment', slug: 'roots/attachments/poses' },
+								{ label: 'Bone Physics', slug: 'roots/attachments/physics' },
+								{ label: 'Keyframe Animations', slug: 'roots/attachments/animations' },
+								{ label: 'Surfaces & Colour', slug: 'roots/attachments/surfaces' },
+								{ label: 'Tooling & Commands', slug: 'roots/attachments/tooling' },
 							],
 						},
 					],
