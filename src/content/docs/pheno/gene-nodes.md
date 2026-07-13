@@ -47,6 +47,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 | `pheno:overlay` | texture/material fields | Adds a render overlay. |
 | `pheno:glow` | `condition` | Makes the holder glow, optionally only while a condition passes. |
 | `pheno:particle` | `particle`, `count`, `spread`, `speed`, `y_offset`, `condition` | Emits ambient simple particles around the holder. |
+| `pheno:opacity` | `alpha`, `condition` | Sets the body render opacity while the condition holds. `1` is solid, `0` is unseen. |
 
 `pheno:particle` uses simple particle ids such as `minecraft:flame` or `minecraft:end_rod`. It is an ambient gene effect, not the same as the one-shot [Pheno action](/pheno/actions/) `pheno:spawn_particles`.
 
@@ -60,6 +61,18 @@ Resource genes can be standalone gene files or companion resources inside anothe
   "spread": 0.4,
   "speed": 0,
   "y_offset": 0.6
+}
+```
+
+`pheno:opacity` overrides the default body render opacity, which is `0` while the holder's invisible flag is set and `1` otherwise. Gate it on `pheno:invisible` for imperfect invisibility that leaves a faint shimmer an observant player can spot, or leave it unconditioned for a permanently translucent body. It is pure rendering: mob sight and nameplate hiding are unchanged. Opacity changes ease over a few ticks instead of cutting hard, and the condition is evaluated on each viewing client, so stick to entity-state conditions such as `pheno:invisible` or `pheno:brightness`.
+
+```json
+{
+  "schema": "townstead:gene/v2",
+  "type": "pheno:opacity",
+  "display_name": "Veil Shimmer",
+  "alpha": 0.15,
+  "condition": { "type": "pheno:invisible" }
 }
 ```
 

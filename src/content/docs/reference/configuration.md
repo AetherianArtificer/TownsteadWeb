@@ -36,6 +36,16 @@ agingScale = 16.0
 
 `agingScale` sets how many Minecraft days equal one year of villager age. Higher values make everyone age more slowly.
 
+### Block Roots on a Server
+
+```toml
+[roots]
+blockedSpecies = ["townstead_roots:webster"]
+blockedRoots = ["townstead_roots:moon_elf"]
+```
+
+Blocked roots disappear from the root picker and stop spawning naturally. See [Roots](#roots) for the full rules.
+
 ## Server Settings
 
 Server settings affect world behaviour. On a dedicated server, the server's values decide how villagers behave.
@@ -62,7 +72,7 @@ Hunger controls whether villagers get hungry, where they look for food, and what
 
 ### Thirst
 
-Thirst settings are only applied when a supported thirst mod is installed.
+Thirst settings are only applied when a supported thirst mod is installed. Supported backends are Thirst Was Taken, Thirst Was Reclaimed, and Legendary Survival Overhaul.
 
 ```toml
 [needs.thirst]
@@ -70,7 +80,7 @@ Thirst settings are only applied when a supported thirst mod is installed.
 
 | Setting                               | Default | Values          | Description |
 | ------------------------------------- | ------: | --------------- | ----------- |
-| `enableVillagerThirst`                | `true`  | `true`, `false` | Enables villager thirst when a thirst backend mod (TWT, LSO) is installed. |
+| `enableVillagerThirst`                | `true`  | `true`, `false` | Enables villager thirst when a thirst backend mod is installed. |
 | `enableSelfInventoryDrinking`         | `true`  | `true`, `false` | Allows villagers to drink thirst-restoring items from their own inventory. |
 | `enableGroundItemThirstSourcing`      | `true`  | `true`, `false` | Allows villagers to collect thirst-restoring items from ground items. |
 | `enableContainerThirstSourcing`       | `true`  | `true`, `false` | Allows villagers to pull thirst-restoring items from containers and item handlers. |
@@ -78,6 +88,7 @@ Thirst settings are only applied when a supported thirst mod is installed.
 | `thirstLethalFallback`                | `false` | `true`, `false` | Allows dehydration to kill villagers. (NOT CURRENTLY WORKING) |
 | `enableCookWaterPurification`         | `true`  | `true`, `false` | Allows cook villagers to purify impure water bottles in available kitchen skillets. |
 | `preferKitchenStorageForEmptyBottles` | `true`  | `true`, `false` | When villagers drink from bottles, prefers depositing empty bottles into kitchen storage. |
+| `preferredBackend`                    | `"auto"` | `"auto"`, `"legendary_survival_overhaul"`, `"thirst"` | Which thirst mod drives villager thirst when more than one is installed. `auto` prefers Legendary Survival Overhaul, then Thirst Was Reclaimed or Thirst Was Taken. Pinning a backend falls back to the other if the pinned mod is not installed. `thirst` covers both Thirst Was Taken and Thirst Was Reclaimed, since they share a mod id and cannot be installed together. |
 
 ### Fatigue
 
@@ -206,6 +217,44 @@ protectedStorageBlocks = ["minecraft:barrel", "minecraft:chest"]
 protectedStorageTags = ["townstead:protected_food_storage"]
 ```
 
+## Roots
+
+Roots settings let a server disable specific identity content without editing data packs. Each list takes resource ids. A root is blocked when its own id is listed, or when the species, ancestry, or lineage it resolves through is listed.
+
+```toml
+[roots]
+```
+
+| Setting             | Default | Values               | Description |
+| ------------------- | ------: | -------------------- | ----------- |
+| `blockedRoots`      | `[]`    | List of root ids     | Roots to disable on this server. |
+| `blockedSpecies`    | `[]`    | List of species ids  | Blocks every root that resolves to a listed species. |
+| `blockedAncestries` | `[]`    | List of ancestry ids | Blocks every root whose ancestry is listed, whether the root declares the ancestry directly or reaches it through its lineage. |
+| `blockedLineages`   | `[]`    | List of lineage ids  | Blocks every root that selects a listed lineage. |
+
+Blocking does three things:
+
+1. Blocked roots are hidden from the root picker, for both players and the villager editor.
+2. Blocked roots are never rolled for naturally spawned villagers, including as part of a mixed-ancestry founder.
+3. The server rejects any attempt to apply a blocked root, so clients cannot bypass the picker.
+
+Blocking is not retroactive. Villagers and players that already carry a blocked root keep it, keep their appearance, and can still pass it to children. Blocking only stops new selection and new natural spawns.
+
+Id entries follow two conveniences:
+
+- Entries without a namespace assume `townstead_roots`, so `"moon_elf"` means `"townstead_roots:moon_elf"`.
+- Legacy `townstead_origins` ids are accepted and treated as the matching `townstead_roots` id.
+
+```toml
+[roots]
+blockedRoots = ["townstead_roots:moon_elf"]
+blockedSpecies = ["townstead_roots:webster"]
+blockedAncestries = []
+blockedLineages = []
+```
+
+This example removes the Moon Elf root and every Webster root from the picker and from natural spawns, while other elves stay available.
+
 ## Calendar and Aging
 
 Calendar settings control profile selection, offline time behaviour, aging, and new-world start dates.
@@ -319,6 +368,7 @@ Use this list when you already know the setting name and just need to find its s
 | `thirstLethalFallback`                | `[needs.thirst]` |
 | `enableCookWaterPurification`         | `[needs.thirst]` |
 | `preferKitchenStorageForEmptyBottles` | `[needs.thirst]` |
+| `preferredBackend`                    | `[needs.thirst]` |
 | `enableVillagerFatigue`               | `[needs.fatigue]` |
 | `enableFatigueAlerts`                 | `[needs.fatigue]` |
 | `fatigueNocturnalMultiplier`          | `[needs.fatigue]` |
@@ -356,6 +406,10 @@ Use this list when you already know the setting name and just need to find its s
 | `respectProtectedStorage`             | `[storage]` |
 | `protectedStorageBlocks`              | `[storage]` |
 | `protectedStorageTags`                | `[storage]` |
+| `blockedRoots`                        | `[roots]` |
+| `blockedSpecies`                      | `[roots]` |
+| `blockedAncestries`                   | `[roots]` |
+| `blockedLineages`                     | `[roots]` |
 | `profile`                             | `[calendar]` |
 | `realClockCalendar`                   | `[calendar]` |
 | `agingScale`                          | `[calendar]` |

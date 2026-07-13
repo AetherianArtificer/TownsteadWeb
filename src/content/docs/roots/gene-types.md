@@ -174,14 +174,14 @@ These gene types are registered as Roots gene types, but their detailed behaviou
 
 | Area | Gene Types |
 | --- | --- |
-| Body and appearance | `pheno:body_metric`, `pheno:proportions`, `pheno:scaled_part`, `pheno:hide_feature`, `pheno:overlay`, `pheno:particle`, `pheno:glow` |
+| Body and appearance | `pheno:body_metric`, `pheno:proportions`, `pheno:scaled_part`, `pheno:hide_feature`, `pheno:overlay`, `pheno:particle`, `pheno:glow`, `pheno:opacity` |
 | Abilities and attributes | `pheno:ability`, `pheno:active_ability`, `pheno:attribute`, `pheno:step_height`, `pheno:buoyancy`, `pheno:wade`, `pheno:entity_group`, `pheno:effect_immunity`, `pheno:stuck_immunity`, `pheno:disable_regen` |
 | Actions and rules | `pheno:action_over_time`, `pheno:aura`, `pheno:custom_sound`, `pheno:damage_modifier`, `pheno:edible`, `pheno:keep_inventory`, `pheno:mobs_ignore`, `pheno:modify_harvest`, `pheno:prevent`, `pheno:prevent_game_event`, `pheno:prevent_sound`, `pheno:recipe`, `pheno:restrict_equipment`, `pheno:scare_mob`, `pheno:stacking_effect`, `pheno:starting_equipment`, `pheno:trigger` |
 | State and storage | `pheno:collection`, `pheno:inventory`, `pheno:modifier`, `pheno:resource`, `pheno:toggle` |
 
 For example, `pheno:active_ability`, `pheno:trigger`, `pheno:aura`, and `pheno:action_over_time` all use Pheno actions. `pheno:particle`, `pheno:attribute`, and many other Pheno-backed genes can use Pheno conditions.
 
-Resource genes can also be declared inside another gene's `resources` block as companion resources. See [Gene Files](/roots/gene-files/) for the companion resource pattern.
+Resource genes can also be declared inside another gene's `resources` block as companion resources, and supporting components of any gene type can be declared inside a `companions` block. See [Gene Files](/roots/gene-files/) for both patterns.
 
 ## Pheno References
 
