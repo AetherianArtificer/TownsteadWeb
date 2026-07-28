@@ -43,7 +43,9 @@ Non-multiply modes bake a tinted copy of the texture on the client, cached and c
 
 A tint normally applies to the whole attachment. `tint_mask` names a second texture that sets how much of the tint applies to each pixel, so part of an attachment can be tinted and part of it left alone, like a wing where the membrane takes the gene's colour and the chitin stays neutral.
 
-The mask is a grayscale PNG that goes beside the base texture, in `data/<ns>/attachment/textures/`, and it has to be the same size as that texture. Each pixel's brightness is how strongly the tint applies there:
+The mask is a grayscale PNG that goes beside the base texture, in `data/<ns>/attachment/textures/`, and it has to be the same size as that texture. If it is not, it is ignored rather than sampled wrong, and `/townstead attachment doctor` reports the mismatch along with both sizes.
+
+Each pixel's brightness is how strongly the tint applies there:
 
 | Mask pixel | Result |
 | --- | --- |
@@ -66,11 +68,6 @@ To use it, for example to make an insect wing, paint the membrane white and the 
 The `color` blend in that example is not something the mask needs. It is there because the wing texture is painted rather than grayscale, and a mask works with any of the four blend modes.
 
 Without a mask, brightness is the only lever you have, because the `color` blend keeps each pixel's luminance and only replaces its hue and saturation. Near-white and near-black pixels barely change, so a white tail tip stays white while the rest of the tail takes the rolled colour. But a mid-tone region always takes the hue, so you cannot get neutral grey chitin beside a coloured membrane that way. That is what `tint_mask` is for.
-
-Two things to know:
-
-- A masked attachment always bakes a derived texture, even under `multiply`, which otherwise gets its tint for free from a vertex colour. The bake is cached per texture, mask, and colour, and shared across every bearer, so you pay for one bake per distinct colour rather than one per villager.
-- The mask has to match the base texture's dimensions. If it does not, it is ignored rather than sampled wrong, and `/townstead attachment doctor` reports the mismatch along with both sizes.
 
 ## Heritable Colour
 
