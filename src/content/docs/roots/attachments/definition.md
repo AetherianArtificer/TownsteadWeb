@@ -39,6 +39,7 @@ Treat validation errors as authoring failures even where rendering can continue;
 | `rotation` | [x, y, z] | no | Base orientation in degrees, applied ZYX. |
 | `scale` | number | no | Uniform render scale. Defaults to `1.0`. |
 | `tint`, `tint_blend`, `tint_strength` | mixed | no | Colouring. See [Surfaces & Colour](/roots/attachments/surfaces/). |
+| `tint_mask` | ref | no | A grayscale texture gating the tint per pixel, so part of one attachment tints and the rest stays neutral. See [Surfaces & Colour](/roots/attachments/surfaces/). |
 | `emissive` | ref | no | A second texture drawn full-bright over the same geometry. |
 | `render` | string | no | `cutout` (default) or `translucent`. |
 | `hides_under` | list | no | Armour slots that hide the whole attachment while worn. See below. |
