@@ -1,6 +1,6 @@
 ---
 title: Gene Files
-description: Gene file anatomy, variants, loci, and companion resources
+description: Gene file anatomy, variants, loci, companion resources, and companion components
 ---
 
 Gene files live in `data/<namespace>/gene/<path>.json` and use `townstead:gene/v2`.
@@ -35,6 +35,7 @@ Gene files live in `data/<namespace>/gene/<path>.json` and use `townstead:gene/v
 | `weight` | integer | no | Gene expression tie-break weight. Minimum `1`. |
 | `variants` | object | no | Named variants. |
 | `resources` | object | no | Local companion resources for this gene. |
+| `companions` | object | no | Local companion components of any gene type for this gene. |
 
 ## Variants
 
@@ -126,3 +127,39 @@ Inside the same gene, a bare `"resource": "mana"` or `"compared_to_resource": "m
 ```
 
 Companion resources ride along with the parent gene's expression, so they tick and sync only when the parent gene is expressed.
+
+## Companion Components
+
+A gene can also declare local `companions`: supporting components of any gene type that belong to the same identity. Each entry becomes a real gene with a derived id of `<gene_id>/<companion_name>`, but it is never inherited, rolled, or shown apart from its parent. Unlike `resources` entries, a companion entry must declare its `type`.
+
+Use companions when one ability is really several cooperating pieces. This vanish ability carries its own break-on-attack trigger and a shimmer that keeps the bearer faintly visible, all in one gene file and one gene card:
+
+```json
+{
+  "schema": "townstead:gene/v2",
+  "type": "pheno:active_ability",
+  "display_name": "Vanish",
+  "slot": 1,
+  "cooldown": 60,
+  "action": {
+    "type": "pheno:apply_effect",
+    "effect": "minecraft:invisibility",
+    "duration": 2400
+  },
+  "companions": {
+    "shimmer": {
+      "type": "pheno:opacity",
+      "alpha": 0.15,
+      "condition": { "type": "pheno:invisible" }
+    },
+    "reveal": {
+      "type": "pheno:trigger",
+      "trigger": "when_attack",
+      "target": "self",
+      "action": { "type": "pheno:clear_effect", "effect": "minecraft:invisibility" }
+    }
+  }
+}
+```
+
+Local `resource` references work inside companion entries too, so a companion drain or gate can name a `resources` meter from the same file by its short name.

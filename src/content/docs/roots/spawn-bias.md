@@ -49,6 +49,8 @@ At a spawn point, Townstead resolves the effective weight in this order:
 
 Spawn bias from supporting files is resolved for the selected root. If the same place is weighted in more than one supporting file, the more identity-specific value is used.
 
+Server owners can also remove roots from the spawn roll entirely, without editing any pack, through the `[roots]` blocklists in the server config. A blocked root is treated as zero weight everywhere. See the [configuration reference](/reference/configuration/#roots).
+
 ## Example
 
 ```json

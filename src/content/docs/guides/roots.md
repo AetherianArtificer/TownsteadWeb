@@ -37,6 +37,10 @@ Children can inherit from their parents, so families can carry visible features 
 
 Some roots belong to different species, which decide the body base and visual assets a root uses. Ancestries and lineages can mix within the same species, but different species do not have children together.
 
+## Server Restrictions
+
+Server owners can block specific roots, species, ancestries, or lineages in the server config. Blocked roots do not appear in the root picker and do not spawn naturally. Anyone who already has a blocked root keeps it, along with their appearance and family line. See the [configuration reference](/reference/configuration/#roots) for the settings.
+
 ## For Pack Authors
 
 This page is the player-facing guide. If you are making roots, genes, species, lineages, custom appearances, or inheritance rules, use the [Roots reference](/roots/) instead.

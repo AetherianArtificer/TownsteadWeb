@@ -148,6 +148,20 @@ Gene commands are **Operator** commands for fast iteration without root wiring.
 | `/townstead gene grant <villager> "<ns>:<gene>"` | Puts any registered gene on a live villager: homozygous, freshly rolled, expressed and rendering the same frame, inheriting like a natural roll. |
 | `/townstead gene revoke <villager> "<ns>:<gene>"` | Removes the gene again. |
 
+## Birth
+
+The birth command is an **Operator** command that forces an immediate birth, for testing root, heritage, and genotype inheritance without waiting out a gestation. Children are built through MCA's normal pregnancy path, so litter-size genes roll the clutch and inheritance behaves exactly as on a natural birth.
+
+`@target` is a literal of the birth command, not a real entity selector. It resolves to the MCA villager under your crosshair, or the nearest one within 16 blocks, and only works when a player runs the command.
+
+| Command | Description |
+| --- | --- |
+| `/townstead birth` | Births from the MCA villager you are looking at, or the nearest one within 16 blocks. The co-parent is the mother's partner (villager or player), or the mother herself if unpartnered. |
+| `/townstead birth @target <father>` | Births from the looked-at villager as mother with an explicit co-parent. The father may be an MCA villager or a player. Use `@s` to be the co-parent yourself. |
+| `/townstead birth <mother>` | Births from an explicit mother. The co-parent is the mother's partner (villager or player), or the mother herself if unpartnered. |
+| `/townstead birth <mother> @target` | Births from an explicit mother with the looked-at villager as father. The pick never selects the mother herself. |
+| `/townstead birth <mother> <father>` | Births from two explicit parents. |
+
 ## Debug
 
 Debug commands live under `/townstead debug` and are **Operator** commands for inspecting live gene behaviour.
