@@ -3,7 +3,7 @@ title: Buildings
 description: Reference for Townstead building extension data packs.
 ---
 
-Townstead extends MCA building types with a separate file. Keep the MCA building definition in `data/<namespace>/building_types/`, then put Townstead-specific catalog, spirit, spawn, and enclosure data under `extended_buildings`.
+Townstead extends MCA building types with a separate file. Keep the MCA building definition in `data/<namespace>/building_types/`, then put Townstead-specific catalog, spirit, spawn, dialogue, and enclosure data under `extended_buildings`.
 
 ## File Location
 
@@ -54,7 +54,10 @@ This adds a catalog icon and community-spirit values to the matching MCA buildin
 | `catalog` | No | Controls how the building appears in Townstead's catalog. |
 | `spirit` | No | Adds community-spirit points when this building is present. |
 | `spawn` | No | Restricts which roots can spawn from this building. |
+| `dialogue` | No | Associates this building with general village-life dialogue topics. |
 | `enclosure` | No | Marks this building type as an open-air enclosure. |
+| `workers` | No | Careers that may visit this building for work while its orders are pending. See [Visiting Workers](#visiting-workers). |
+| `storage_roles` | No | Semantic storage roles this building holds, such as `townstead:general`. See [Storage](/careers/storage/#building-storage-roles). |
 
 ## Catalog
 
@@ -107,6 +110,20 @@ Townstead currently uses building spawn policies for MCA inn spawns. The format 
 
 Older packs may use `allowed_origins` and `denied_origins`; Townstead still reads them as fallback aliases.
 
+## Dialogue Topics
+
+```json
+{
+  "dialogue": {
+    "topics": ["workshop", "metalworking"]
+  }
+}
+```
+
+`topics` contains semantic village-life topics that this exact building type satisfies. Dialogue may ask whether a village has a topic without knowing which building pack supplied it. A compatibility pack can therefore associate several alternative smithies with `metalworking`, while another pack can add new dialogue about the broader `workshop` topic.
+
+Topics are plain, non-empty strings. They are not building IDs, and they do not inherit from similarly named building types. List every topic the building is meant to satisfy.
+
 ## Enclosures
 
 ```json
@@ -133,3 +150,29 @@ The matching MCA building type still needs to define its block requirements in `
 ## Compatibility
 
 Older packs may still use Townstead fields directly inside MCA `building_types`, companion files under `data/<namespace>/spirit/`, or spawn policies under `data/<namespace>/building_spawn/`. Townstead still reads those formats for compatibility, but `extended_buildings` is the preferred place for new building data and wins when both define the same value.
+
+## Visiting Workers
+
+A career has one primary workplace, derived from its `poi` declarations in `work.json`. A building can additionally accept careers as visiting workers:
+
+```json
+{
+  "schema": "townstead:extended_building/v1",
+  "workers": ["townstead:cook", "townstead:baker"]
+}
+```
+
+The building owns this list because it knows which trades it was built to host. The career still owns capabilities: its work tasks decide which stations and recipes the visitor may use. Listing Cook does not grant access to every machine in the room.
+
+A worker services a compatible secondary building only while that building's order sheet has pending work, holds the assignment for one complete production cycle, and returns to their primary site when nothing is pending. Carried inventory belongs to the primary site.
+
+## Storage Roles
+
+```json
+{
+  "schema": "townstead:extended_building/v1",
+  "storage_roles": ["townstead:general"]
+}
+```
+
+`storage_roles` says what the building holds so that a career can prefer it for external storage. Townstead ships `townstead:general` for a village store; a pack may use any resource ID that its careers name in their `storage.preferred_roles`. See [Storage](/careers/storage/#building-storage-roles).

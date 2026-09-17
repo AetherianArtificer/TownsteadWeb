@@ -46,6 +46,7 @@ Use [Rigs](/roots/rigs/) for the full rig file format and [Appearance Assets](/r
 | `admixture_chance` | number | no | Chance from `0` to `1` that newly generated founders can start with mixed heritage from compatible roots in this species. |
 | `genes` | array | no | Species-level genes shared by descendants. |
 | `personalities` | object | no | Broad personality policy for roots in this species. See [Personality Policy](/roots/personality-policy/). |
+| `hair` | boolean or object | no | Turns MCA hair on or off and limits its colours. See [Hair Policy](/roots/hair-policy/). |
 | `character_editor` | object | no | Custom character editor layout. Omit it to keep MCA's native Character tab unchanged. |
 
 ## Example

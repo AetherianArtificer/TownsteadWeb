@@ -103,4 +103,4 @@ The important split is between the assigned root and the carried heritage. A vil
 6. Runtime systems read the expressed gene set to apply abilities, attributes, visuals, resources, sounds, restrictions, and other behaviours.
 7. Character creation and customization screens can build body and appearance tabs from the loaded roots, species, rigs, genes, and compatible assets.
 
-Start with [File Basics](/roots/file-basics/) and [Root Profiles](/roots/root-profiles/) for authoring structure, then [Gene Files](/roots/gene-files/) and [Inheritance](/roots/inheritance/) for the genetic model. For visuals, see [Rigs](/roots/rigs/) and [Appearance Assets](/roots/appearance-assets/).
+Start with [File Basics](/roots/file-basics/) and [Root Profiles](/roots/root-profiles/) for authoring structure, then [Gene Files](/roots/gene-files/) and [Inheritance](/roots/inheritance/) for the genetic model. For visuals, see [Rigs](/roots/rigs/) and [Appearance Assets](/roots/appearance-assets/). For resources that show as on-screen meters, see [Resource HUD](/roots/resource-hud/).

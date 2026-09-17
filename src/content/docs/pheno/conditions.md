@@ -9,33 +9,43 @@ Conditions test the current context and return true or false. Entity conditions 
 
 | Family | Registered Types |
 | --- | --- |
-| State flags | `pheno:alive`, `pheno:daytime`, `pheno:exists`, `pheno:glowing`, `pheno:hostile`, `pheno:invisible`, `pheno:on_fire`, `pheno:passenger`, `pheno:riding`, `pheno:tamed`, `pheno:using_item` |
-| Numeric checks | `pheno:air_supply`, `pheno:fall_distance`, `pheno:hunger`, `pheno:thirst`, `pheno:energy`, `pheno:max_health`, `pheno:saturation_level`, `pheno:xp_levels`, `pheno:xp_points`, `pheno:health`, `pheno:brightness`, `pheno:velocity`, `pheno:dimensions`, `pheno:fluid_height`, `pheno:scale`, `pheno:count` |
+| State flags | `pheno:alive`, `pheno:baby`, `pheno:daytime`, `pheno:exists`, `pheno:glowing`, `pheno:hostile`, `pheno:invisible`, `pheno:named`, `pheno:on_fire`, `pheno:passenger`, `pheno:riding`, `pheno:tameable`, `pheno:tamed`, `pheno:using_item` |
+| Numeric checks | `pheno:air_supply`, `pheno:fall_distance`, `pheno:hunger`, `pheno:thirst`, `pheno:energy`, `pheno:max_health`, `pheno:saturation_level`, `pheno:xp_levels`, `pheno:xp_points`, `pheno:health`, `pheno:brightness`, `pheno:velocity`, `pheno:dimensions`, `pheno:fluid_height`, `pheno:scale`, `pheno:count`, `pheno:value`, `pheno:bond_count` |
 | Movement and pose | `pheno:movement` |
 | Social interaction | `pheno:interaction` |
 | World, weather, and fluids | `pheno:biome`, `pheno:block`, `pheno:block_in_radius`, `pheno:building`, `pheno:dimension`, `pheno:distance_from_coordinates`, `pheno:environment`, `pheno:in_fluid`, `pheno:structure`, `pheno:submerged_in`, `pheno:time_of_day`, `pheno:village` |
-| Entity identity | `pheno:entity_type`, `pheno:in_tag`, `pheno:entity_group`, `pheno:root` |
+| Entity identity | `pheno:entity_type`, `pheno:in_tag`, `pheno:entity_group`, `pheno:root`, `pheno:personality`, `pheno:profession`, `pheno:life_stage` |
 | Villager state | `pheno:mood` (`min`/`max` over -15..15, or `is` with band names `depressed`/`sad`/`unhappy`/`passive`/`fine`/`happy`/`overjoyed`), `pheno:gender` (`is`: `male`/`female`/`neutral`; `masculine`/`feminine` aliases). Both evaluate on server and client alike. Mood matches villagers only. Gender matches villagers and players with MCA data; entities without an MCA gender never match, so wrap in `pheno:not` when unknown bearers should pass. |
 | Player and inventory | `pheno:gamemode`, `pheno:inventory`, `pheno:equipped_item` |
 | Effects and cooldowns | `pheno:on_cooldown`, `pheno:since_spawn`, `pheno:status_effect`, `pheno:status_effect_tag` |
-| Pheno systems | `pheno:ability`, `pheno:compare_resource`, `pheno:resource`, `pheno:toggled`, `pheno:variant`, `pheno:collection_size`, `pheno:collection_contains`, `pheno:collection_count` |
+| Pheno and Townstead systems | `pheno:ability`, `pheno:compare_resource`, `pheno:resource`, `pheno:skill`, `pheno:career_xp`, `pheno:chronicle_count`, `pheno:toggled`, `pheno:variant`, `pheno:collection_size`, `pheno:collection_contains`, `pheno:collection_count`, `pheno:config`, `pheno:reserved`, `townstead:worksite`, `townstead:work_signal` |
 | Logic and selection | `pheno:and`, `pheno:or`, `pheno:not`, `pheno:any`, `pheno:none`, `pheno:constant`, `pheno:chance`, `pheno:entity_in_radius` |
 
 ## State Flags
+
+`pheno:profession` accepts one profession ID or an array in `profession`. Townstead resolves
+Career compatibility identities before comparing them. A root alias matches the complete Career;
+a Path alias matches only a member of that Career whose foreign profession or learned Skills imply
+the mapped Path. For example, when the Chef's Delight contribution is active,
+`chefsdelight:cook` matches any Cook while `chefsdelight:chef` matches only a Cook on the Chef Path.
+An absent optional mod contributes no aliases.
 
 State flag conditions take no fields beyond `type`. They read live entity state and return true or false.
 
 | Type | True When |
 | --- | --- |
 | `pheno:alive` | The entity is alive. |
+| `pheno:baby` | The entity is an ageable mob in its baby state. |
 | `pheno:daytime` | The level is currently day. |
 | `pheno:exists` | Always true for the current context entity. |
 | `pheno:glowing` | The entity is currently glowing. |
 | `pheno:hostile` | The entity implements Minecraft's hostile enemy marker. |
 | `pheno:invisible` | The entity is invisible. |
+| `pheno:named` | The entity has a custom name. |
 | `pheno:on_fire` | The entity is on fire. |
 | `pheno:passenger` | The entity has at least one passenger. |
 | `pheno:riding` | The entity is riding another entity. |
+| `pheno:tameable` | The entity is an ownable or tameable animal, whether or not it is already tamed. |
 | `pheno:tamed` | The entity is a tameable animal and is tamed. |
 | `pheno:using_item` | The entity is using an item. |
 
@@ -120,6 +130,8 @@ Comparisons use `comparison` strings: `==`, `!=`, `<`, `<=`, `>`, `>=`, plus wor
 | `pheno:any` | `on` | True when the selector returns at least one target. |
 | `pheno:none` | `on` | True when the selector returns no targets. |
 | `pheno:count` | `on`, `comparison`, `compare_to` | Compares selector result count. `comparison` defaults to `>=`; `compare_to` defaults to `1`. |
+| `pheno:value` | `value`, `comparison`, `compare_to` | Compares any two [Pheno values](/pheno/selectors-values/#values). Both operands are required. |
+| `pheno:bond_count` | `kind`, `active`, `comparison`, `compare_to` | Compares the number of bonds of one kind. `active` defaults to `true`; `compare_to` is a Pheno value and defaults to `1`. |
 
 `pheno:entity_in_radius` counts nearby living entities. It accepts `radius` (default `8`), `comparison` (default `>=`), `compare_to` (default `1`), and an optional nested entity `condition`. The bearer itself is not counted.
 
@@ -130,7 +142,7 @@ Comparisons use `comparison` strings: `==`, `!=`, `<`, `<=`, `>`, `>=`, plus wor
 | `pheno:biome` | `biome`, `biome_tag`, `condition` | Tests the biome at the entity position. `condition` takes priority, then `biome_tag`, then `biome`. |
 | `pheno:block` | `x`, `y`, `z`, `block_condition` | Tests a block relative to the entity's block position. Offsets default to `0`; `block_condition` is required. |
 | `pheno:block_in_radius` | `radius`, `block_condition`, `comparison`, `compare_to` | Counts matching blocks in a cube around the entity. `radius` defaults to `4` and is clamped from `0` to `8`; `comparison` defaults to `>=`; `compare_to` defaults to `1`. |
-| `pheno:building` | `building`, `building_type`, `id`, `village`, `village_id`, `min_size`, `max_size` | Tests the Townstead/MCA building at the entity position. With no fields, true when the entity is in any known building. `building` accepts a full type id or slug, such as `mca:tavern` or `tavern`; `building_type` is an alias. |
+| `pheno:building` | `building`, `building_type`, `building_prefix`, `type_prefix`, `id`, `village`, `village_id`, `min_size`, `max_size` | Tests the Townstead/MCA building at the entity position. With no fields, true when the entity is in any known building. `building` accepts a full type id or slug, such as `mca:tavern` or `tavern`; `building_type` is an alias. `building_prefix` matches a family of authored building types, such as every level whose ID begins with `compat/example/kitchen_l`; `type_prefix` is an alias. |
 | `pheno:dimension` | `dimension` | Tests the level dimension id, such as `minecraft:overworld`. |
 | `pheno:distance_from_coordinates` | `x`, `y`, `z`, `min`, `max`, `ignore_y` | Tests distance from the entity to fixed coordinates. Coordinates default to `0`; `min` defaults to `0`; `ignore_y` defaults to `false`. |
 | `pheno:environment` | `weather`, `exposure`, `time`, `biome`, `dimension`, `effects` | Convenience condition that combines several world and effect checks. Present categories are ANDed; list values inside a category are ORed. |
@@ -162,6 +174,8 @@ Comparisons use `comparison` strings: `==`, `!=`, `<`, `<=`, `>`, `>=`, plus wor
 | `exposure: "thunder"` or `exposure: "thunderstorm"` | The level is thundering and it is raining at the entity's block position. |
 | `exposure: "snow"` | It is precipitating at the entity's block position, and the local biome precipitation is snow. |
 
+Nested biome `condition` objects accept `pheno:in_tag`, `pheno:temperature`, and `pheno:precipitation`. `pheno:temperature` uses optional `min` and `max` bounds over the biome's temperature at the current position. `pheno:precipitation` uses `precipitation: "none"`, `"rain"`, or `"snow"`. Each nested condition supports `inverted: true`.
+
 ### Block Conditions
 
 `block_condition` objects support `"inverted": true` on any condition. Names may be written with or without the `pheno:` namespace.
@@ -184,12 +198,17 @@ Comparisons use `comparison` strings: `==`, `!=`, `<`, `<=`, `>`, `>=`, plus wor
 | `slipperiness` | `min`, `max` | Tests friction/slipperiness. |
 | `replaceable` | none | True when the block can be replaced. |
 | `movement_blocking` | none | True when the block blocks movement. |
+| `smokey` | none | Uses Minecraft's campfire-smoke test at this position. |
 | `light_blocking` | none | True when the block blocks light. |
 | `water_loggable` | none | True when the block can hold water. |
 | `block_entity` | none | True when a block entity exists at the position. |
+| `block_data` | `key`, `value`, `exists` | Tests a scalar persistent-data key on the block entity. Supply `value` for equality, or `exists` to test presence. |
+| `value` | `value`, `comparison`, `compare_to` | Compares two Pheno values in the block context. Useful for timers and numeric block data. |
+| `config` | `file`, `path`, `equals`, `default`, `scope` | Tests a scalar TOML config value. `path` is a string or key array. Global config is the default; `scope: server` reads the current world's `serverconfig`. `default` is used when the file or key is absent; without it, the condition fails closed. |
 | `distance_from_coordinates` | `x`, `y`, `z`, `min`, `max` | Tests distance from the block position to fixed coordinates. |
 | `offset` | `x`, `y`, `z`, `condition` | Tests another block position offset from the current one. |
 | `adjacent` | `condition` | True when any adjacent block passes the nested condition. |
+| `block_chain` | `direction`, `max`, `through`, `end` | Walks in one direction until `end` passes, refusing positions that do not pass `through`. |
 | `and` | `conditions` | True when every child block condition passes. |
 | `or` | `conditions` | True when any child block condition passes. |
 | `constant` | `value` | Always returns `value`; defaults to `true`. |
@@ -224,9 +243,19 @@ Nested `fluid_condition` objects support `"inverted": true`.
 | `pheno:in_tag` | `tag` | Alias-style entity type tag check. |
 | `pheno:entity_group` | `group` | Tests the expressed creature group, such as `default`, `undead`, `arthropod`, `illager`, or `aquatic`. |
 | `pheno:root` | `root` | Tests the entity's current root id. |
+| `pheno:personality` | `personality`, `match` | Tests one personality ID or an array. `match` is `exact`, `base`, or `either` (the default). `exact` tests a data-pack personality identity; `base` tests its MCA behaviour personality, so a custom personality extending `mca:crabby` matches `mca:crabby`. |
+| `pheno:profession` | `profession` | Tests one villager profession ID or an array of IDs. Non-villagers do not match. |
+| `pheno:life_stage` | `stage` or `is`, `senior_counts_as_adult` | Tests `baby`, `toddler`, `child`, `teen`, `adult`, or `senior` using the Root's life cycle. `adult` includes seniors by default. |
 | `pheno:ability` | `ability` | True when an innate ability is currently active. |
+| `pheno:skill` | `skill` | True when the entity has learned the named Career Skill. Use the full Skill resource ID outside a Profession-owned document. |
+| `pheno:career_xp` | `career`, `at_least`, `at_most` | Server-side Career XP range. Defaults: `at_least: 1`, no practical maximum. |
+| `pheno:chronicle_count` | `key`, `at_least`, `at_most` | Tests the entity's recorded Chronicle counter. It is server-side for live entities, but also works while Chronicle fabricates a subject's past. |
 | `pheno:toggled` | `gene` | True while a toggle gene is switched on. |
 | `pheno:variant` | `gene`, `variant` or `is` list | True while the entity's expressed allele of a variant gene carries one of the named variants. Lets a heritable style drive powers: which aura a revealed form fires, or a bonus tied to one tusk style. |
+| `pheno:config` | `file`, `path`, `equals`, `default`, `scope` | Tests a value in an ordinary TOML file. `scope: server` reads the current world's `serverconfig`; otherwise the global config directory is used. A missing value compares against `default`. |
+| `pheno:reserved` | none | True when a live action execution currently holds an exclusive reservation on the entity. |
+| `townstead:worksite` | `scope`, `buildings`, `block_condition`, `entity_condition`, `comparison`, `compare_to` | Counts matching workplaces, blocks, or living entities. `scope` is `assigned`, `profession`, or `village`; building names may end in `*`. Supply at most one nested condition. The count comparison defaults to `>= 1`. See [Work Feedback](/careers/work-feedback/#work-state). |
+| `townstead:work_signal` | `signal` | Tests a namespaced, read-only fact exposed by a work engine. This is primarily for [Profession feedback](/careers/work-feedback/); signals describe runtime state and do not contain dialogue policy. |
 
 Known ability keys are `climbing`, `water_breathing`, `fire_immunity`, `night_vision`, `slow_fall`, `lava_vision`, `invisibility`, `swimming`, `walk_on_fluid`, `ignore_water`, `hover`, `sprinting`, `aerial_affinity`, `grounded`, `elytra_flight`, `creative_flight`, and `phasing`.
 
@@ -236,7 +265,7 @@ Known ability keys are `climbing`, `water_breathing`, `fire_immunity`, `night_vi
 | --- | --- | --- |
 | `pheno:gamemode` | `gamemode` | Player-only. Tests `survival`, `creative`, `adventure`, or `spectator`. |
 | `pheno:equipped_item` | `slot`, `item_condition` | Tests an equipment slot. `slot` defaults to `mainhand`; valid slots include `mainhand`, `offhand`, `head`, `chest`, `legs`, and `feet`. If `item_condition` is omitted, the condition only checks that the slot is occupied. |
-| `pheno:inventory` | `item_condition`, `min`, `max` | Player-only. Counts matching items across the inventory. `min` defaults to `1`; `max` has no practical default limit. |
+| `pheno:inventory` | `item_condition`, `min`, `max` | Counts matching items carried by a player, villager, or another inventory-bearing entity. `min` defaults to `1`; `max` has no practical default limit. |
 | `pheno:on_cooldown` | `item` | Player-only. Tests whether an item is currently on cooldown. |
 | `pheno:status_effect` | `effect`, `min_amplifier` | Tests an active status effect. `min_amplifier` defaults to `0`. |
 | `pheno:status_effect_tag` | `tag`, `min_count` | Counts active effects in a mob-effect tag. `min_count` defaults to `1`. |
@@ -246,7 +275,7 @@ Known ability keys are `climbing`, `water_breathing`, `fire_immunity`, `night_vi
 
 ### Item Conditions
 
-Nested `item_condition` objects support `"inverted": true`.
+Nested `item_condition` objects support `"inverted": true`. Type names may be written with or without the `pheno:` namespace; for example, `enchantment` and `pheno:enchantment` are the same item condition.
 
 | Type | Fields | Description |
 | --- | --- | --- |
@@ -261,6 +290,7 @@ Nested `item_condition` objects support `"inverted": true`.
 | `fireproof` | none | True when the item is fire resistant. |
 | `enchantment` | `enchantment`, `min` | Tests an enchantment level; without `enchantment`, tests whether the stack is enchanted at all. `min` defaults to `1`. |
 | `base_enchantment` | `enchantment`, `min` | Alias-style enchantment check. |
+| `data` | `key`, `value`, `min`, `max`, `default`, `exists` | Tests scalar item custom data. Use `value` for equality, a numeric range for counters, or `exists` for presence. `default` lets a missing numeric key participate in a range. |
 | `and` | `conditions` | True when every child item condition passes. |
 | `or` | `conditions` | True when any child item condition passes. |
 | `constant` | `value` | Always returns `value`; defaults to `true`. |
@@ -286,6 +316,8 @@ These take no fields beyond `type`.
 | `pheno:riding` | The actor is directly riding the target. |
 | `pheno:riding_root` | The actor's root vehicle is the target. |
 | `pheno:riding_recursive` | The target appears anywhere in the actor's vehicle chain. |
+| `pheno:hostile` | The target is a hostile mob, or a mob currently targeting the actor. |
+| `pheno:same_village` | Both entities are inside the same MCA village border. |
 
 ### Relationship Measurements
 
@@ -320,3 +352,5 @@ Directional wrappers take a nested bi-entity `condition`:
 | `pheno:compare_scales` | `which`, `comparison` | Compares actor scale against target scale. `which` is `width`, `height`, or `both`; default `both`. |
 | `pheno:collection_contains` | `collection` | True when the target is present in the actor's collection store. |
 | `pheno:collection_count` | `collection`, `comparison`, `compare_to` | Compares the target's tally in the actor's collection. Defaults: `comparison: >=`, `compare_to: 1`. |
+
+`pheno:passenger_recursive` is an entity condition rather than a bi-entity condition. It counts every passenger below the entity, including passengers riding other passengers. `comparison` defaults to `>=`, `compare_to` defaults to `1`, and optional `where` is a bi-entity condition evaluated as `(holder, passenger)`.
