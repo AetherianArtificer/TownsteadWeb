@@ -61,6 +61,8 @@ Typed entity selectors:
 | `pheno:command` | `selector` | Uses vanilla command selector syntax such as `@e[type=minecraft:zombie,distance=..8]`. Parsed once at load; returns only living entities. Requires a server-side entity focus. |
 | `pheno:ray` | ray fields | Selects the first living entity hit by a ray, or all hits when `pierce: true`. Entities behind the first block collision are not selected. |
 | `pheno:collection` | `collection` | Selects live entity members from a collection on the focus entity. Gone or unloaded members are skipped. |
+| `pheno:village` | `where`, `limit`, `order` | Selects living entities inside the current MCA village bounds. The focus entity is excluded. Server-side only. |
+| `pheno:reservation` | none | Selects the living entities reserved by the current action execution. Returns nothing outside a reservation-aware host. |
 
 ## Block Selectors
 
@@ -70,6 +72,8 @@ Block selectors use the shared spatial forms above. Typed block selectors:
 | --- | --- | --- |
 | `pheno:ray` | ray fields | Selects the first block hit by a ray. Returns no positions if the ray reaches its end without hitting a block. |
 | `pheno:collection` | `collection` | Selects stored block positions from a collection on the focus entity. Entries that no longer decode are skipped. |
+| `pheno:connected` | `condition`, `limit` | Flood-selects face-connected blocks from the focus position. Without `condition`, it follows the focus block's type or the enclosing host's default block membership. `limit` defaults to `256` and is capped at `8192`. |
+| `pheno:column` | `direction`, `distance`, `where`, `limit` | Selects an ordered straight run away from the focused block. `direction` accepts a Minecraft direction and defaults to `down`. `distance` is required to remain between 1 and 64. The optional block condition `where` filters the run, and `limit` stops after that many matches. |
 
 ## Ray Fields
 
@@ -121,5 +125,15 @@ Numeric fields that accept values can be either a JSON number or a typed value o
 | --- | --- |
 | `4` | Constant numeric value. |
 | `{ "type": "pheno:count", "on": ... }` | Counts selected entities and returns the count. `on` is an entity selector. |
+| `{ "type": "pheno:if", "condition": {...}, "then": ..., "else": ... }` | Chooses one of two values using a block condition at the focused block. Both branches are required. |
+| `{ "type": "pheno:bond_count", "kind": "townstead:marriage", "active": true }` | Counts the focus entity's bonds of one kind. `active` defaults to `true`. |
+| `{ "type": "pheno:bond_max", "kind": "townstead:marriage" }` | Reads the bond kind's `max_active`; an unlimited kind returns a practically unbounded value. |
+| `{ "type": "pheno:game_time" }` | Current world game time in ticks. |
+| `{ "type": "pheno:block_data", "key": "progress", "default": 0 }` | Numeric persistent data on the focused block entity. |
+| `{ "type": "pheno:arithmetic", "operation": "add", "values": [...] }` | Combines values with `add`, `subtract`, `multiply`, `divide`, `min`, or `max`. |
 
 `pheno:count` currently counts entity selectors. For block counts, use condition/action logic that operates in a block selector context rather than the numeric value source.
+
+Values resolve against the current focus. In a block action, `pheno:block_data` reads the block being acted on, including after an `on` or `offset` wrapper has moved that focus. A missing block entity or key returns `default`, which itself defaults to `0`.
+
+Arithmetic requires at least one value and evaluates from left to right. Division by zero leaves the accumulated result unchanged. This is deliberate: a malformed denominator does not turn the remainder of a block procedure into infinity or `NaN`.

@@ -126,7 +126,7 @@ Inside the same gene, a bare `"resource": "mana"` or `"compared_to_resource": "m
 }
 ```
 
-Companion resources ride along with the parent gene's expression, so they tick and sync only when the parent gene is expressed.
+Companion resources ride along with the parent gene's expression, so they tick and sync only when the parent gene is expressed. Add a `display` block when the value should use Townstead's composable [Resource HUD](/roots/resource-hud/).
 
 ## Companion Components
 

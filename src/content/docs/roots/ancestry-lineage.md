@@ -38,6 +38,7 @@ Schema: `townstead:ancestry/v1`
 | `genes` | array | no | Broad ancestry genes. |
 | `spawn_bias` | object | no | Natural founder weighting. See [Spawn Bias](/roots/spawn-bias/). |
 | `personalities` | object | no | Broad personality allow/deny policy. See [Personality Policy](/roots/personality-policy/). |
+| `hair` | boolean or object | no | Broad hair toggle and colour policy. See [Hair Policy](/roots/hair-policy/). |
 
 ### Ancestry Example
 
@@ -81,6 +82,7 @@ Schema: `townstead:lineage/v1`
 | `genes` | array | no | Lineage-specific genes layered after ancestry genes. |
 | `spawn_bias` | object | no | Lineage-specific founder weighting. See [Spawn Bias](/roots/spawn-bias/). |
 | `personalities` | object | no | Lineage personality allow/deny policy. See [Personality Policy](/roots/personality-policy/). |
+| `hair` | boolean or object | no | Lineage hair toggle and colour policy, overriding the ancestry's. See [Hair Policy](/roots/hair-policy/). |
 
 ### Lineage Example
 

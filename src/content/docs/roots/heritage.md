@@ -21,6 +21,7 @@ Schema: `townstead:heritage/v1`
 | `backstory` | component | no | Optional descriptive text. |
 | `priority` | number | no | Higher priority wins when more than one profile matches. Defaults to `0`. |
 | `match` | object | yes | Ancestry fraction requirements. |
+| `hair` | boolean or object | no | Turns MCA hair on or off and limits its colours for characters that match this profile. See [Hair Policy](/roots/hair-policy/). |
 
 ## Example
 
