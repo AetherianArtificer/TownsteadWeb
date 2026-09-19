@@ -71,6 +71,4 @@ The farmer's status shows the reason, and they say it out loud when you are clos
 
 ## Farming Yourself
 
-Your own farming counts toward a Farmer career of your own, with the same credit a villager earns for the same action: harvesting a fully grown crop, planting one, tilling ground into farmland, and pouring water onto a cell painted Water on a Field Post. Breaking an unripe crop earns nothing, and pulling weeds is not counted. You do not need a Field Post for any of it except watering. Ranks and skills are on your career record at the Archives. See [Careers](/guides/professions/).
-
-The setting `enablePlayerFarmingCredit` in the [configuration](/reference/configuration/#farming) turns this off.
+Your own farming counts toward a Farmer career of your own, with the same credit a villager earns for the same action: harvesting a fully grown crop, planting one, tilling ground into farmland, pouring water onto a cell painted Water on a Field Post, and pulling weeds from a Field Post's cells or the ring around them. Breaking an unripe crop earns nothing. You do not need a Field Post for any of it except watering and weeding. Ranks and skills are on your career record at the Archives. See [Careers](/guides/professions/).

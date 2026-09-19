@@ -168,7 +168,6 @@ Farming settings control farm radius, targeting cadence, water placement, and gr
 | Setting                           | Default | Values           | Description |
 | --------------------------------- | ------: | ---------------- | ----------- |
 | `enableFarmAssist`                | `true`  | `true`, `false`  | Enables lightweight farming assist: anti-trample and idle unstuck nudges for harvest chores. |
-| `enablePlayerFarmingCredit`       | `true`  | `true`, `false`  | Credits players with Farmer career XP for harvesting a grown crop, planting, tilling, and watering a cell painted Water on a Field Post, using the same amounts as villagers. |
 | `farmerFarmRadius`                | `12`    | `4` to `32`      | Maximum horizontal farm radius around the anchor used by farmer AI. |
 | `farmerCellCooldownTicks`         | `120`   | `0` to `2400`    | Minimum ticks before reworking the same soil cell. |
 | `farmerPathfailMaxRetries`        | `3`     | `1` to `20`      | How many times a target can fail pathing before it is temporarily blacklisted. |
@@ -446,7 +445,6 @@ Use this list when you already know the setting name and just need to find its s
 | `enableRepeatedWorkRequests`          | `[feedback]` |
 | `minimumRequestIntervalTicks`         | `[feedback]` |
 | `enableFarmAssist`                    | `[farming]` |
-| `enablePlayerFarmingCredit`           | `[farming]` |
 | `farmerFarmRadius`                    | `[farming]` |
 | `farmerCellCooldownTicks`             | `[farming]` |
 | `farmerPathfailMaxRetries`            | `[farming]` |

@@ -11,10 +11,15 @@ Villager engines report their own completions. Players are credited by hooks tha
 
 - Cooking stations report the player who initiated the work when finished output appears. Unattended stations remember the player who loaded them and credit that player only when the output is actually produced.
 - Smelting credits the player who takes the result.
-- Farming credits the player for harvesting a fully grown crop, placing a crop, tilling farmland, and pouring water onto a cell that a Field Post plan marks as Water, with the same XP and activity keys as the harvest engine. Weeding is not credited.
+- Fishing credits the player for every reel that lands something, with the same XP and activity key as the fisherman engine.
+- Farming credits the player for harvesting a fully grown crop, placing a crop, tilling farmland, pouring water onto a cell that a Field Post plan marks as Water, and clearing a weed from a planned cell or the ring around one, with the same XP and activity keys as the harvest engine.
+- Crafting credits the player for every item made at a crafting table or in the inventory grid, through the first career whose craft task admits the crafting table and that output.
+- A non-food item taken from a furnace, smoker, or blast furnace, and a potion taken from a brewing stand, credit the first career whose smelt, smoke, or brew_potion task admits that station and that output.
+- Shearing credits the player for every animal shorn, with the same XP and activity key as the shepherd engine.
+- Entity-delivery Jobs credit the player who kills a target the Job names while holding the Job's tool, with the Job's own policy checked on the hit. The kill pays the Job's XP to the first career whose work task type matches the Job.
 - A player's right-click on a block is compared with every block-interaction Job. When the target block, its condition, the held item, and the interaction's preconditions all agree that the click is a real completion, the player earns the Job's XP in the first career whose work task names that block. One physical Job belongs to one career; a second definition claiming the same task and block does not award XP twice.
 
-Entity-delivery Jobs, fishing, and shearing have no player bridge. Everything funnels through the same progression path, so daily caps, Chronicle activity, self-discovery, and rank-up feedback behave identically for players and villagers.
+Stations from other mods that keep their output in their own block, such as grinders, taxidermy tables, and kegs, have no player bridge yet. Everything else funnels through the same progression path, so daily caps, Chronicle activity, self-discovery, and rank-up feedback behave identically for players and villagers.
 
 ## Completed-Work History
 
