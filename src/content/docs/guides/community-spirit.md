@@ -40,7 +40,7 @@ When the name changes, everyone nearby sees it in chat: *Riverbend has grown int
 
 ## What It Affects
 
-Community Spirit is identity. It names your village, and with [Traveler's Titles](/compats/travelers-titles/) installed the name and spirit appear when you arrive. It has no effect on villager behaviour.
+Community Spirit is identity. It names your village, and with [Traveler's Titles](/compats/travelers-titles/) installed the name and spirit appear when you arrive. It has no effect on villager behaviour. With [cultures](/guides/cultures/), it also draws villagers toward the peoples within their culture that suit what the village has built, and it can change which clothes they prefer.
 
 ## Accessibility
 

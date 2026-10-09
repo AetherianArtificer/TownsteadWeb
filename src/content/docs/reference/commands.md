@@ -53,6 +53,40 @@ These commands are primarily intended for testing reaction data.
 
 A reaction may still decline to play because of its cooldown, chance, or available candidates.
 
+## Social and Conversations
+
+All social commands are **Operator** commands for testing conversations, expressions, dialogue, and performances.
+
+### Conversations
+
+| Command | Description |
+| --- | --- |
+| `/townstead social conversations` | Lists the loaded conversation topics. Load errors in topic files show as red lines. |
+| `/townstead social conversation <first> <second>` | Starts a preview conversation between two MCA villagers. It uses the normal checks for distance, sight, schedules and topics. A preview gives no memories, opinion or mood changes. |
+| `/townstead social conversation <first> <second> <topic>` | Starts a preview conversation with the given topic. |
+| `/townstead social inspect <first> <second>` | Shows what the first villager knows about the second: context facts, relationship tags, relationship qualities, social inclinations, memories, bonds, and the gate weight of each topic for the pair. |
+| `/townstead social simulate` | Runs 20 whole conversations at once between random pairs of MCA villagers within 32 blocks. |
+| `/townstead social simulate <count>` | Runs `<count>` conversations, from 1 to 500. |
+| `/townstead social simulate <count> <radius>` | Runs `<count>` conversations between villagers within `<radius>` blocks, from 4 to 256. |
+| `/townstead social simulate pair <first> <second>` | Runs 10 conversations between two villagers. The villager who starts changes each time. |
+| `/townstead social simulate pair <first> <second> <count>` | Runs `<count>` conversations between two villagers, from 1 to 200. |
+
+A simulation is a dry run with real villagers and the real conversation engine. Nothing happens in the world: no chat, gestures, relationship changes, memories, gossip, or cooldowns. Distance and line of sight are not checked. Chat shows a summary, and the full transcript goes to `logs/townstead-conversations.txt`. Use it to test [conversation data packs](/conversations/testing/).
+
+### Expressions, Dialogue and Performances
+
+When a command has no `<target>`, it uses the MCA villager you are looking at within 16 blocks. If you are not looking at one, it uses the nearest MCA villager within 16 blocks.
+
+| Command | Description |
+| --- | --- |
+| `/townstead social list expressions` | Lists the loaded expression cues. |
+| `/townstead social list dialogue` | Lists the loaded dialogue intents. |
+| `/townstead social list performances` | Lists the loaded performance clips. |
+| `/townstead social expression <cue> [target]` | Shows an expression cue above a living entity. A cue ID without a namespace uses `townstead_expressions`. |
+| `/townstead social dialogue <intent> [target]` | Makes an MCA villager say a line for a dialogue intent, to you. An intent ID without a namespace uses `social`. |
+| `/townstead social performance <clip> [target] [ticks]` | Plays a performance clip on a living entity for `[ticks]` ticks, from 1 to 1200. The default is 80. A clip ID without a namespace uses `townstead_performance`. |
+| `/townstead social stop [target]` | Stops a performance started by these commands. |
+
 ## Query
 
 Query commands are available in Townstead 0.7.5 and later. They read Townstead snapshots without changing world state. The `<path>` argument selects a value inside the snapshot and is reported back in chat.
@@ -139,6 +173,24 @@ Attachment authoring commands are **Operator** commands. The full authoring work
 | `/townstead attachment dump <id>` | Prints the definition as file-ready JSON with live adjustments folded in. Click the message to copy it. |
 | `/townstead attachment dump-geo <id>` | Writes the definition's live geometry blob to `townstead-dump/<id>.geo.json` on the server: the exact bytes clients render, including converted `.bbmodel` output. |
 
+## Roots
+
+Root commands are **Operator** commands. They also run from command blocks and datapack functions.
+
+| Command | Description |
+| --- | --- |
+| `/townstead root set <targets> "<ns>:<root>"` | Assigns a root to one or more MCA villagers or players. The new root reseeds genes, heritage, and personality, and body metrics and hair roll again inside the root's ranges, as on a natural spawn. Targets that already have the root do not change. |
+| `/townstead root get <target>` | Shows the root of an MCA villager or player. |
+
+`<targets>` accepts selectors that resolve to more than one entity, such as `@e[type=mca:female_villager,distance=..10]`. Entities that are not MCA villagers or players are skipped. A player's body metrics change only when that player already has MCA villager-model data.
+
+Roots on the server blocklist cannot be assigned. Wrap the root ID in quotes when typing the command.
+
+```txt
+/townstead root set @e[type=mca:male_villager,limit=1,sort=nearest] "townstead_roots:overworlder"
+/townstead root get @s
+```
+
 ## Genes
 
 Gene commands are **Operator** commands for fast iteration without root wiring.
@@ -170,6 +222,60 @@ Debug commands live under `/townstead debug` and are **Operator** commands for i
 | --- | --- |
 | `/townstead debug powers` | Dumps your own power-resolution chain: the applied root, every expressed genotype gene, the player-model expression gate, and each active power with its toggle state. Separates a "gene does nothing" report into its causes. |
 | `/townstead debug glide` | Gate-by-gate flight report for villagers within 16 blocks: flight gene and lift ability, threat state, the current travel target's launch verdict (glide ready, line blocked, too close, beyond range, too far up), or for idle villagers a survey of how many joy-flight landing spots the terrain offers. |
+
+## Cultures and Naming
+
+Wrap a culture ID in quotes when you type it, such as `"examplepack:fisherfolk"`. Without a target, villager commands use the villager you look at, or the nearest one. See [Cultures](/cultures/testing/).
+
+| Command | Access | Description |
+| --- | --- | --- |
+| `/townstead naming [target]` | Player | Shows how a villager is named: full name, naming tradition, family type, culture, name list, region and family name. |
+| `/townstead naming village` | Player | Shows the culture of the village you are in. |
+| `/townstead naming cultures` | Player | Lists the loaded cultures. |
+| `/townstead naming set "<culture>" [target]` | Operator | Sets a villager's culture, and builds their family name again from its tradition. |
+| `/townstead naming set-village "<culture>"` | Operator | Sets the culture of the village you are in. Residents keep their culture. |
+| `/townstead naming clear [target]` | Operator | Clears a villager's culture, naming tradition and family name, so they get them again. |
+| `/townstead culture villager` | Operator | Shows a villager's culture, the top culture that players see, their mix of cultures, and the last day it drifted. |
+| `/townstead culture village` | Operator | Shows the village's founding culture, its Community Spirit, and the mix of cultures that living there pulls toward. |
+
+## Founding
+
+A founding profile gives a village its culture and government. Profiles come from data packs, such as culture packs. Wrap a profile ID in quotes when you type it, such as `"examplepack:harbour_guild"`. Minecraft does not accept a `:` in an unquoted word.
+
+| Command | Access | Description |
+| --- | --- | --- |
+| `/townstead founding profiles` | Player | Lists the loaded founding profiles, with the culture and government of each. |
+| `/townstead founding inspect` | Player | Shows the founding record of the MCA village you are in: profile, culture, government, founding biome, and natural weight. |
+| `/townstead founding apply "<profile>"` | Operator | Applies a founding profile to the MCA village you are in. It sets the culture and government. Residents who already live there keep their culture, and drift toward the village's culture over time. |
+
+## Debug Villages
+
+Debug village commands are **Operator** commands for testing. They place, refill and remove whole villages.
+
+| Command | Description |
+| --- | --- |
+| `/townstead debug village "<profile>"` | Places a vanilla village structure at your position, founds it with the profile, and spawns 8 residents. The structure type comes from the biome. |
+| `/townstead debug village "<profile>" <residents>` | As above, with 1 to 32 residents. |
+| `/townstead debug village "<profile>" structure <structure>` | Places the given structure: `auto`, `plains`, `desert`, `savanna`, `snowy`, `taiga`, or any structure ID. |
+| `/townstead debug village "<profile>" structure <structure> <residents>` | As above, with 1 to 32 residents. |
+| `/townstead debug village repopulate "<profile>"` | In the MCA village you are in, removes the residents, applies the profile again, and spawns 8 new residents. The buildings stay. |
+| `/townstead debug village repopulate "<profile>" <residents>` | As above, with 1 to 32 residents. |
+| `/townstead debug village remove` | Removes the MCA village you are in and its residents. If you are not in a village, it removes the nearest village within 160 blocks. The buildings stay. |
+| `/townstead debug village remove clear` | Removes the village as above, then clears its area. It also removes any other MCA village in that area. |
+
+Things to know:
+
+- **Spawning needs space.** Townstead does not place a village within 160 blocks of another MCA village. The message names the village that is in the way and gives its position. Stand near it and use `remove clear`, or move farther away.
+- **Existing villagers change culture slowly.** Villagers who already have a culture keep it when you apply a profile or install a culture pack, and drift toward their village's culture over years. Use `repopulate` to replace them now. See [Mixed Cultures & Drift](/cultures/mixed-cultures/).
+- **What `clear` removes.** The area is the box around the village buildings, plus 8 blocks on each side. It goes from the lowest building floor to 12 blocks above the highest building. Townstead sets every block in it to air, with no drops. It also removes dropped items, item frames, paintings, armor stands, iron golems, and villagers in the area. Players are not affected.
+- **What `clear` leaves.** Foundations below the lowest floor stay. On a slope, Townstead cuts the hill above that floor. Paths or fields more than 8 blocks from a building stay. Townstead does not clear an area wider than 320 blocks, or a village that has no buildings.
+- **Tombstones make villages.** MCA counts a tombstone as a building. A lone headstone can make a small village that blocks a new spawn. `remove clear` removes such villages when they are in the cleared area.
+
+```txt
+/townstead debug village remove clear
+/townstead debug village "examplepack:harbour_guild" 8
+/townstead debug village repopulate "examplepack:harbour_guild" 10
+```
 
 ## Memory Diagnostics
 

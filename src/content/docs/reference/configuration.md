@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-Townstead splits configuration between server-side behaviour and client-side preferences. Server settings control villager AI, needs, work, storage, calendar behaviour, and integrations. Client settings control local settings: audio, catalog UI, and accessibility options.
+Townstead splits configuration between server-side behaviour and client-side preferences. Server settings control villager AI, needs, work, storage, calendar behaviour, and integrations. Client settings control local settings: audio, catalog UI, the dialogue screen, and accessibility options.
 
 Tables are grouped by configuration section, such as `[needs.hunger]`, with the setting names shown as they appear inside that section.
 
@@ -327,6 +327,7 @@ Debug settings are useful while testing behaviour, but are usually noisy in regu
 | -------------------- | ------: | --------------- | ----------- |
 | `debugVillagerAI`    | `false` | `true`, `false` | Enables debug chat messages for villager AI, including farmer and cook behaviour. |
 | `debugVillagerSleep` | `false` | `true`, `false` | Enables sleep and rest debug logs and villager debug state updates. |
+| `debugLogging`       | `false` | `true`, `false` | Enables verbose diagnostic logs in several systems. For example, every line of a villager conversation goes to the log. |
 
 ## Client Settings
 
@@ -361,6 +362,20 @@ Client settings affect only the local player's presentation and UI.
 | Setting               | Default | Values          | Description |
 | --------------------- | ------: | --------------- | ----------- |
 | `useTownsteadCatalog` | `true`  | `true`, `false` | Uses the Townstead extended catalog with kitchen building tiers. Disable to use MCA's original catalog. |
+
+### Dialogue
+
+```toml
+[dialogue]
+```
+
+| Setting          | Default | Values          | Description |
+| ---------------- | ------: | --------------- | ----------- |
+| `useRpgDialogue` | `true`  | `true`, `false` | Shows the Townstead visual overlay on MCA's talk screen. Set to `false` to use MCA's default talk screen. |
+
+With `useRpgDialogue` set to `false`, MCA's Talk button opens MCA's default talk screen, and so does the **Talk to Villager** key. The setting is local to the player, so two players on one server can each use the talk screen they prefer.
+
+See [Conversations & Dialogue](/guides/conversations/#talking-to-you).
 
 ### Resource HUD
 
@@ -483,6 +498,7 @@ Use this list when you already know the setting name and just need to find its s
 | `debugVillagerSleep`                  | `[debug]` |
 | `muteMoodVocalizations`               | `[mood_audio]` |
 | `useTownsteadCatalog`                 | `[catalog]` |
+| `useRpgDialogue`                      | `[dialogue]` |
 | `anchor`                              | `[resource_hud]` |
 | `offsetX`                             | `[resource_hud]` |
 | `offsetY`                             | `[resource_hud]` |

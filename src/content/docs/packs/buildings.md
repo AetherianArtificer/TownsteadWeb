@@ -3,7 +3,7 @@ title: Buildings
 description: Reference for Townstead building extension data packs.
 ---
 
-Townstead extends MCA building types with a separate file. Keep the MCA building definition in `data/<namespace>/building_types/`, then put Townstead-specific catalog, spirit, spawn, dialogue, and enclosure data under `extended_buildings`.
+Townstead extends MCA building types with a separate file. Keep the MCA building definition in `data/<namespace>/building_types/`, then put Townstead-specific catalog, spirit, spawn, dialogue, and site data under `extended_buildings`.
 
 ## File Location
 
@@ -55,7 +55,8 @@ This adds a catalog icon and community-spirit values to the matching MCA buildin
 | `spirit` | No | Adds community-spirit points when this building is present. |
 | `spawn` | No | Restricts which roots can spawn from this building. |
 | `dialogue` | No | Associates this building with general village-life dialogue topics. |
-| `enclosure` | No | Marks this building type as an open-air enclosure. |
+| `enclosure` | No | States whether Townstead accepts a room, an open-air site, or both. |
+| `requires` | No | States where the building stands, such as over water or inside a fence ring. |
 | `workers` | No | Careers that may visit this building for work while its orders are pending. See [Visiting Workers](#visiting-workers). |
 | `storage_roles` | No | Semantic storage roles this building holds, such as `townstead:general`. See [Storage](/careers/storage/#building-storage-roles). |
 
@@ -124,28 +125,81 @@ Older packs may use `allowed_origins` and `denied_origins`; Townstead still read
 
 Topics are plain, non-empty strings. They are not building IDs, and they do not inherit from similarly named building types. List every topic the building is meant to satisfy.
 
-## Enclosures
+## Enclosure
 
 ```json
 {
-  "enclosure": {
-    "minInterior": 4,
-    "maxInterior": 1024
-  }
+  "enclosure": "optional"
 }
 ```
 
-Enclosures are open-air building types such as pens and docks. Townstead derives perimeter and interior requirements from the matching MCA building type's `blocks` map:
+Use `enclosure` to state the physical form Townstead accepts for this building type.
 
-- Fences, fence gates, and walls become perimeter requirements.
-- Other blocks become interior signatures for classification.
+| Value | Description |
+| --- | --- |
+| `required` | Townstead accepts a closed room only. This is the default. |
+| `optional` | Townstead accepts a closed room or an open-air site. |
+| `none` | Townstead accepts an open-air site only. |
+
+MCA recognises a room by filling the air inside it and finding a roof above. A dock or a pen has no roof, so MCA rejects it. Set `enclosure` to `optional` or `none`, and Townstead recognises the building when a player adds it from the blueprint.
+
+Townstead tries the room form first. When the player stands inside a closed room, MCA handles the report instead.
+
+An older object form is still read:
+
+```json
+{
+  "enclosure": { "minInterior": 4, "maxInterior": 1024 }
+}
+```
+
+Townstead reads that form as `optional` and ignores the two interior values. Use `requires` to state the shape of the site.
+
+## Site Requirements
+
+MCA counts the blocks a building needs. MCA cannot state where those blocks stand. Use `requires` to add that condition.
+
+```json
+{
+  "schema": "townstead:extended_building/v1",
+  "enclosure": "optional",
+  "requires": [
+    { "surface_over": "#townstead:liquids", "count": 5 }
+  ]
+}
+```
+
+Write one entry per condition. Townstead accepts the building only when every entry is met.
+
+### surface_over
+
+Townstead looks for connected cells that a villager can stand on, with the named block below them.
 
 | Field | Default | Description |
 | --- | ---: | --- |
-| `minInterior` | `4` | Smallest interior area accepted for this enclosure. |
-| `maxInterior` | `1024` | Largest interior area accepted for this enclosure. |
+| `surface_over` |  | Block ID or `#tag` to find below the surface. |
+| `count` | `1` | Number of cells needed. |
+| `max_drop` | `6` | How far below a cell Townstead looks for the block. |
 
-The matching MCA building type still needs to define its block requirements in `building_types`.
+Use this entry for a dock. The deck can be any material, so slabs, stairs, planks, and masonry all work. Natural ground does not qualify, because the block below natural ground is the bed of the liquid and not the liquid. A waterlogged block counts as its fluid. Blocks in `#townstead:natural_surfaces`, such as ice and lily pads, never qualify.
+
+### enclosed
+
+Townstead fills the ground at one level and stops at fences, fence gates, walls, doors, and solid blocks. The entry is met only when the fill does not escape.
+
+| Field | Default | Description |
+| --- | ---: | --- |
+| `enclosed` |  | Set to `true` to require closed ground. |
+| `min_interior` | `4` | Smallest interior area accepted. |
+| `max_interior` | `4096` | Largest interior area accepted. |
+
+Use this entry for a pen. A fence gate is part of the ring whether it is open or closed. A roof over the pen does not change the result.
+
+### How Townstead measures the site
+
+For a building type with `requires`, Townstead measures the building from the cells these entries return. A block is part of the building when it stands within 2 blocks horizontally of one of those cells, at any height. A lantern on a tall mast over the site counts. A fence 20 blocks away does not.
+
+For a building type without `requires`, Townstead uses the `mergeRange` value from the MCA building type instead.
 
 ## Compatibility
 

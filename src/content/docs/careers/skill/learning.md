@@ -16,7 +16,7 @@ The server checks all of these rules before it records a skill:
 5. Every `evidence` counter has reached its target.
 6. The character has enough unspent Insight for `cost`.
 
-Insight is one shared budget. Every career in which the character has standing contributes its rank allowance, and every learned skill in any career spends from the same pool. A Farmer rank can therefore pay for a Cook skill. Rank, prerequisites, exclusivity, and evidence remain per skill.
+Insight is one shared budget. Every career in which the character has standing contributes the Insight that its Career XP has earned, and every learned skill in any career spends from the same pool. A Farmer rank can therefore pay for a Cook skill. Rank, prerequisites, exclusivity, and evidence remain per skill.
 
 A Path level lists alternatives, but learning one does not close the others. Use `exclusive_with` when two options must never coexist. Otherwise the cost of a second option is the Insight it consumes.
 

@@ -19,7 +19,7 @@ The design rule is simple: **progression is work history**. A successful Cook ta
 | Path | A named group of skills inside one career. Paths organise specialisation; they are not child careers. |
 | Title | A display name earned by learning every skill in a declared build. |
 | Combo Skill | An automatic benefit earned from rank thresholds in two or more careers. |
-| Insight | The shared skill-point budget. Every career rank earns it; every registered skill spends it. |
+| Insight | The shared skill-point budget. Career XP earns it at checkpoints and rank-ups; every registered skill spends it. |
 | Career provider | A document from an optional mod that adds workplaces, work, stations, or clothing to a career or path it does not own. |
 | Job site | A block, building, or site rule that makes work available in the world. |
 | Work task | A reference to one of Townstead's built-in work engines, narrowed by data-defined targets and conditions. |
@@ -108,8 +108,8 @@ A Combo Skill joins several careers. A Career provider lets an optional mod exte
 2. The loader resolves aliases, paths, titles, requirements, job-site providers, work tasks, trades, and cross-references.
 3. The validator reports missing skills, invalid tiers, contradictory relations, and prerequisite cycles.
 4. A player or villager completes a work task.
-5. Townstead applies career-specific XP modifiers, adds XP within the daily cap, and records a Chronicle event.
-6. A rank-up adds to the character's shared Insight and can unlock Combo Skills.
+5. Townstead applies career-specific XP modifiers, adds XP at the full rate up to the daily cap and at a reduced rate after it, and records a Chronicle event.
+6. A checkpoint or rank-up adds to the character's shared Insight. A rank-up can also unlock Combo Skills.
 7. Townstead checks self-discovery requirements for gated careers.
 8. The Career record renders the server-authoritative result.
 

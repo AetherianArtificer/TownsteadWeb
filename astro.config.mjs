@@ -5,6 +5,9 @@ import starlight from '@astrojs/starlight';
 // https://astro.build/config
 export default defineConfig({
 	site: process.env.SITE,
+	redirects: {
+		'/packs/cultures-beliefs': '/cultures/',
+	},
 	integrations: [
 		starlight({
 			title: 'Townstead',
@@ -48,6 +51,7 @@ export default defineConfig({
 						{ label: 'Relationships', slug: 'guides/relationships' },
 						{ label: 'Chronicles', slug: 'guides/chronicles' },
 						{ label: 'Roots', slug: 'guides/roots' },
+						{ label: 'Cultures', slug: 'guides/cultures' },
 						{ label: 'Life Stages', slug: 'guides/life-stages' },
 						{ label: 'Calendars & Stamps', slug: 'guides/calendars-and-stamps' },
 					],
@@ -193,6 +197,56 @@ export default defineConfig({
 								{ label: 'Storage', slug: 'careers/storage' },
 							],
 						},
+					],
+				},
+				{
+					label: 'Conversations',
+					items: [
+						{ label: 'How Conversations Work', slug: 'conversations' },
+						{
+							label: 'Data Files',
+							items: [
+								{ label: 'Topics', slug: 'conversations/topics' },
+								{ label: 'Moves & Pairs', slug: 'conversations/moves-and-pairs' },
+								{ label: 'Subjects', slug: 'conversations/subjects' },
+								{ label: 'Encounters', slug: 'conversations/encounters' },
+								{ label: 'Frames', slug: 'conversations/frames' },
+								{ label: 'Pools & Line Files', slug: 'conversations/lines' },
+								{ label: 'Line Fields', slug: 'conversations/line-fields' },
+								{ label: 'Voices & Cultures', slug: 'conversations/voices' },
+							],
+						},
+						{
+							label: 'Writing Lines',
+							items: [
+								{ label: 'Text & Placeholders', slug: 'conversations/text' },
+								{ label: 'State & Requirements', slug: 'conversations/state-and-requirements' },
+								{ label: 'How Lines Are Chosen', slug: 'conversations/selection' },
+								{ label: 'Translations', slug: 'conversations/translations' },
+							],
+						},
+						{ label: 'Built-in Vocabulary', slug: 'conversations/vocabulary' },
+						{ label: 'Testing', slug: 'conversations/testing' },
+					],
+				},
+				{
+					label: 'Cultures',
+					items: [
+						{ label: 'How Cultures Work', slug: 'cultures' },
+						{
+							label: 'Culture Data',
+							items: [
+								{ label: 'Culture Files', slug: 'cultures/culture-files' },
+								{ label: 'Subcultures', slug: 'cultures/subcultures' },
+								{ label: 'Personal Names', slug: 'cultures/naming' },
+								{ label: 'Settlement & Faction Names', slug: 'cultures/settlement-names' },
+								{ label: 'Clothing', slug: 'cultures/clothing' },
+								{ label: 'Founder Bias', slug: 'cultures/founder-bias' },
+							],
+						},
+						{ label: 'Mixed Cultures & Drift', slug: 'cultures/mixed-cultures' },
+						{ label: 'Building a Culture Pack', slug: 'cultures/culture-packs' },
+						{ label: 'Testing & Commands', slug: 'cultures/testing' },
 					],
 				},
 				{

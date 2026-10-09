@@ -74,7 +74,7 @@ The profession ID must already exist in the Minecraft registry when a data pack 
 | `icon` | No | Resource ID used by the Career record. An item ID is the usual choice. |
 | `work_sound` | No | Sound-event ID used when the pack registers a new villager profession. Existing vanilla professions already own their registry sound, but may still declare it as complete Profession metadata. |
 | `mods` | No | Loads the definition only when the mod expression passes. |
-| `daily_cap` | No | Maximum career XP applied per Minecraft day. Use a positive value for a career that must progress. |
+| `daily_cap` | No | Career XP earned at the full rate per Minecraft day. After the cap, XP continues at a reduced rate (see [Progression](/careers/profession/progression/)). Use a positive value for a career that must progress. |
 | `skills` | No | Profession-wide Skill references from the root `skill/` directory. Path Skills are derived from their Path and are not listed here. |
 | `requirements` | No | Pheno condition that gates acquisition. |
 | `acquisition_routes` | No | Non-empty list that makes this a gated career. |

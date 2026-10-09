@@ -24,7 +24,7 @@ The fisherman also stops when they are hungry, tired, or cold, and comes back af
 
 ## Docks
 
-A dock is a recognised building around the barrel, in three tiers: **Landing**, **Pier**, and **Wharf**. Each is a platform of planks, slabs, stairs, or masonry with a barrel on it, with fences and lanterns from the second tier up. See [Catalog](/guides/catalog/) for the exact counts.
+A dock is a recognised building around the barrel, in three tiers: **Landing**, **Pier**, and **Wharf**. Build a deck over open water and put the barrel on it. The deck can be any material. Add fences and lanterns for the second tier and the third. See [Catalog](/guides/catalog/) for the exact counts.
 
 The bonuses apply only while the fisherman is standing on the deck:
 
