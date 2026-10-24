@@ -11,7 +11,7 @@ You can use a data particle wherever Pheno accepts a particle ID: `pheno:spawn_p
 
 ```json
 {
-  "schema": "pheno:particle/v1",
+  "schema": "townstead:particle/v1",
   "texture": "examplepack:textures/particle/frost_mote.png",
   "frames": 4,
   "frame_time": 3,
@@ -33,7 +33,7 @@ You can use a data particle wherever Pheno accepts a particle ID: `pheno:spawn_p
 
 | Field | Default | Notes |
 | --- | --- | --- |
-| `schema` | | `pheno:particle/v1`. If the schema is wrong, Townstead skips the file. |
+| `schema` | | `townstead:particle/v1`. If the schema is wrong, Townstead skips the file. |
 | `mods` | | Optional. Townstead loads the file only when these mods are present. |
 | `texture` | required | A data-pack texture ID (`ns:textures/...png`). A resource-pack texture ID also works. |
 | `frames` | `1` | The number of animation frames, one above the other in the texture. |
