@@ -17,12 +17,62 @@ Some names also exist in other Pheno domains. For example, `pheno:resource` can 
 
 | Type | Fields | Behaviour |
 | --- | --- | --- |
-| `pheno:active_ability` | `action`, `condition`, `cooldown`, `slot`, `ai_trigger`, `resource_cost` | Adds an activated ability. The holder triggers `action` from a Root Ability key slot; villagers can use it when `ai_trigger` allows it: `never` (default), `always`, `when_hurt`, `when_threatened`, `when_flying` (mid-glide, only while extra lift would help reach the travel target), or `when_hurt_nearby` (a hurt villager, player, or animal within a few blocks). |
-| `pheno:trigger` | `trigger`, `target`, `action`, `condition`, `damage_condition`, `key` | Runs `action` when a supported event fires. |
-| `pheno:action_over_time` | `action`, `interval`, `condition`, `resource_cost` | Runs `action` repeatedly while the gene is expressed and the condition passes. `resource_cost` checks and spends a resource before each run. An amount of `0` declares that the periodic action uses the meter without spending it, which also makes a `when_referenced` resource visible on the HUD. |
+| `pheno:active_ability` | `action`, `condition`, `cooldown`, `slot`, `ai_trigger`, `resource_cost`, `windup` | Adds an activated ability. The holder triggers `action` from a Root Ability key slot; villagers can use it when `ai_trigger` allows it: `never` (default), `always`, `when_hurt`, `when_threatened`, `when_flying` (mid-glide, only while extra lift would help reach the travel target), or `when_hurt_nearby` (a hurt villager, player, or animal within a few blocks). |
+| `pheno:trigger` | `trigger`, `target`, `action`, `condition`, `damage_condition`, `bientity_condition`, `key`, `item_condition`, `item_action` | Runs `action` when a supported event fires. See [Triggers](/pheno/triggers/). |
+| `pheno:action_over_time` | `action`, `interval`, `condition`, `resource_cost`, `avoid` | Runs `action` repeatedly while the gene is expressed and the condition passes. `resource_cost` checks and spends a resource before each run. An amount of `0` declares that the periodic action uses the meter without spending it, which also makes a `when_referenced` resource visible on the HUD. `avoid` controls how villagers keep away from the places where the condition passes. See [Hazard Avoidance](/pheno/hazard-avoidance/). |
 | `pheno:aura` | `radius`, `interval`, `action`, `condition`, `include_self`, `target`, `resource_cost` | Runs `action` on every living entity in range each interval. `target` filters recipients: `all` (default), `hostile` (monsters only), or `non_hostile` (villagers, players, animals), so a healing aura never mends a raider. `resource_cost` makes each pulse that reaches someone spend a resource meter; an unaffordable pulse is skipped. |
 
 Action fields use [Pheno Actions](/pheno/actions/). Conditions use [Pheno Conditions](/pheno/conditions/).
+
+## Wind-Up
+
+`windup` delays an active ability's action. Give a number of ticks, or an object:
+
+```json
+{
+  "type": "pheno:active_ability",
+  "cooldown": 800,
+  "windup": {
+    "ticks": 10,
+    "slow": 0.7,
+    "interruptible": true,
+    "action": { "type": "pheno:play_sound", "sound": "minecraft:entity.warden.sonic_charge" },
+    "on_interrupt": { "type": "pheno:spawn_particles", "particle": "minecraft:smoke" }
+  },
+  "action": { "type": "pheno:area_of_effect", "radius": 6, "action": { "type": "pheno:damage", "amount": 2 } }
+}
+```
+
+| Field | Default | Notes |
+| --- | --- | --- |
+| `ticks` | required | How long the wind-up lasts. |
+| `slow` | `1` | Movement speed kept while winding up. `0.7` slows by 30%. |
+| `interruptible` | `false` | Taking damage cancels the wind-up. |
+| `action` | none | Runs as the wind-up starts, for tells and sounds. |
+| `on_interrupt` | none | Runs when damage cancels the wind-up. |
+
+The cooldown starts on the press, so the key cannot queue a second cast. The resource cost is paid when the wind-up completes. An interrupted wind-up, or one that can no longer be paid for, gives the cooldown back.
+
+## Death Saves
+
+A `pheno:prevent` gene with `"what": "death"` cancels the killing blow. `set_health` (default `1`) is the health the bearer is left on, and `action` runs on them once they are saved, with the killer as `other` and the killing blow as `pheno:event_damage`. Every `when_death_prevented` [trigger](/pheno/triggers/) on the bearer fires as well. Price a save with a resource in the `condition` and pay it in the `action`:
+
+```json
+{
+  "type": "pheno:prevent",
+  "what": "death",
+  "condition": { "type": "pheno:compare_resource", "resource": "lives", "comparison": ">=", "compare_to": 1 },
+  "set_health": 2,
+  "action": {
+    "type": "pheno:and",
+    "actions": [
+      { "type": "pheno:change_resource", "resource": "lives", "amount": -1 },
+      { "type": "pheno:apply_effect", "effect": "minecraft:resistance", "duration": 40, "amplifier": 4 }
+    ]
+  },
+  "resources": { "lives": { "max": 1, "start": 1, "regen": 1, "regen_interval": 18000 } }
+}
+```
 
 ## Resource And State Genes
 
@@ -32,7 +82,7 @@ Action fields use [Pheno Actions](/pheno/actions/). Conditions use [Pheno Condit
 | `pheno:collection` | collection config | Defines persistent collection state used by collection conditions and actions. |
 | `pheno:inventory` | inventory config | Adds inventory behaviour or storage hooks. |
 | `pheno:toggle` | `slot`, `ai_trigger` | Adds a toggleable state used by other genes or conditions, flipped from a Root Ability key. With an `ai_trigger` (same values as `active_ability`), villagers manage it themselves: held ON while the trigger is true, released when it stops. |
-| `pheno:modifier` | target, operation, value, condition fields | Modifies a Pheno capability or runtime value. |
+| `pheno:modifier` | target, operation, value, condition fields | Modifies a Pheno capability or runtime value. Targets: `healing`, `damage_dealt`, `projectile_damage`, `knockback_taken`, `knockback_dealt`, `break_speed`, `jump`, `exhaustion`, `xp_gain`, `food`, `breeding_cooldown`, `status_effect_duration`, `status_effect_amplifier`, `enchantment_level`, `durability_loss`, `fishing_lure`, `fishing_luck`, `anvil_break_chance`, `anvil_material_repair`, `anvil_prior_work`, `farmland_trample`, `map_fill_radius`. Unlike the knockback resistance attribute, `knockback_taken` above `1` throws the bearer further. |
 
 Resource genes can be standalone gene files or companion resources inside another gene's `resources` block. See [Gene Files](/roots/gene-files/#companion-resources).
 
@@ -49,6 +99,18 @@ Resource genes can be standalone gene files or companion resources inside anothe
 | `pheno:glow` | `condition` | Makes the holder glow, optionally only while a condition passes. |
 | `pheno:particle` | `particle`, `count`, `spread`, `speed`, `y_offset`, `condition` | Emits ambient simple particles around the holder. |
 | `pheno:opacity` | `alpha`, `condition` | Sets the body render opacity while the condition holds. `1` is solid, `0` is unseen. |
+| `pheno:scale` | `scale`, `reach`, `speed` | Scales the whole body: model, hitbox, and eye height together, for players and villagers. Several scale genes multiply; the result is held between `0.25` and `3`. `reach` (default `false`) also scales block and entity reach, and `speed` (default `false`) scales walking speed. |
+
+`pheno:scale` is a true size change, unlike `pheno:body_metric` and `pheno:proportions`, which only roll MCA's body sliders. On 1.21, it sets the vanilla `generic.scale` attribute. On 1.20.1, Townstead sizes and draws the body itself. Villagers keep Townstead's door-safe size limits whatever the scale, so a giant villager renders large but still fits through a door and paths like everyone else. Players are not limited.
+
+```json
+{
+  "schema": "townstead:gene/v2",
+  "type": "pheno:scale",
+  "display_name": "Pixie Stature",
+  "scale": 0.5
+}
+```
 
 `pheno:particle` uses simple particle ids such as `minecraft:flame` or `minecraft:end_rod`. It is an ambient gene effect, not the same as the one-shot [Pheno action](/pheno/actions/) `pheno:spawn_particles`.
 
@@ -81,7 +143,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 
 | Type | Behaviour |
 | --- | --- |
-| `pheno:ability` | Grants a movement ability by id, such as `elytra_flight`, `creative_flight`, `slow_fall`, or `hover`. `mode` is `passive` (always on) or `toggle`; a toggle takes a Root Ability key `slot` the holder flips it with. |
+| `pheno:ability` | Grants a movement ability by id, such as `elytra_flight`, `creative_flight`, `slow_fall`, or `hover`. `mode` is `passive` (always on) or `toggle`; a toggle takes a Root Ability key `slot` the holder flips it with. `slow_fall` takes a `style`: `float` (default) slows every descent; `parachute` lets hops and steps fall normally, then holds a slow descent from a drop of 2 or more blocks until landing. |
 | `pheno:flight_speed` | Scales creative-style flight speed. `multiplier` is a factor over the vanilla base (`0.5` is half speed, `2.0` double), optionally gated by a `condition`. |
 | `pheno:attribute` | Adds or multiplies a Minecraft attribute, optionally gated by a condition. |
 | `pheno:step_height` | Changes step height under configured gates. |
@@ -93,7 +155,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 | `pheno:disable_regen` | Disables natural regeneration while active. |
 | `pheno:custom_sound` | Adds or overrides sound behaviour. |
 | `pheno:damage_modifier` | Changes incoming or outgoing damage. |
-| `pheno:attack_modifier` | Multiplies damage dealt to the current victim. `modifier` is required; optional `condition` tests the bearer and `bientity_condition` tests `(attacker, victim)`. Use this when the modifier needs victim-relative context. |
+| `pheno:attack_modifier` | Multiplies damage dealt to the current victim. `modifier` is required; optional `condition` tests the bearer, `bientity_condition` tests `(attacker, victim)`, and `damage_condition` tests the damage itself (for example `{ "type": "pheno:magic" }` for a spell-only bonus). Use this when the modifier needs victim-relative or damage-type context. |
 | `pheno:edible` | Makes configured items edible or changes eating behaviour. |
 | `pheno:keep_inventory` | Keeps inventory on death while active. |
 | `pheno:mobs_ignore` | Causes configured mobs to ignore the holder. |
@@ -101,6 +163,7 @@ Resource genes can be standalone gene files or companion resources inside anothe
 | `pheno:innate_tool` | Treats an empty main hand as the declared `item` for harvest checks and digging speed, optionally gated by `condition`. It can improve the empty hand but does not replace a held item or change attack damage. |
 | `pheno:block_break_speed` | Multiplies digging speed for one `block` or block `tag`. `value` defaults to `1`; optional `condition` tests the bearer. |
 | `pheno:prevent` | Prevents configured behaviours. |
+| `pheno:rest` | Changes how the holder sleeps. `recovery` multiplies how much a villager recovers in a bed (default `1`). `prefers` is a [rest spot](/packs/rest-spots/) ID or a list: a villager does not claim another home while a free preferred one is within 48 blocks. While the `prevent` condition is true, the holder cannot sleep: a villager wakes up, and a player cannot lie down and sees `message`, a translation key. |
 | `pheno:prevent_game_event` | Prevents the holder from emitting configured vanilla game events. |
 | `pheno:prevent_sound` | Prevents configured sounds. |
 | `pheno:recipe` | Grants or gates recipe behaviour. |

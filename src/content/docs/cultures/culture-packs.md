@@ -53,6 +53,7 @@ data/<namespace>/founding_profile/<name>.json
 | `spawn_bias` | Place weights, in the same format as a [Root spawn bias](/roots/spawn-bias/). |
 | `population` | Which Roots settle the town. See [Which Roots Settle a Village](/cultures/founder-bias/#which-roots-settle-a-village). |
 | `faction` | The faction kind and the offices it fills. |
+| `resident_states` | [Entity states](/pheno/entity-states/) that a share of the residents get. See [Resident States](#resident-states). |
 | `when` | A [Pheno condition](/pheno/conditions/) on a resident. The profile is only used when it is true. |
 
 When a village is founded with the profile, Townstead:
@@ -60,6 +61,29 @@ When a village is founded with the profile, Townstead:
 1. sets the village's culture;
 2. names the village from the culture's [settlement names](/cultures/settlement-names/);
 3. creates its faction, named from the culture's [faction names](/cultures/settlement-names/#faction-names).
+
+### Resident States
+
+`resident_states` gives a share of the town's residents an [entity state](/pheno/entity-states/), such as a curse or a form of service. Use it for a town where many people share a condition, for example a town of werebears and their servants.
+
+```json
+"resident_states": [
+  { "state": "examplepack:werebear", "share": 0.6, "amount": [4, 8] },
+  { "state": "examplepack:servant", "share": 0.75 }
+]
+```
+
+| Field | Description |
+| --- | --- |
+| `state` | Required. The ID of the entity state. |
+| `share` | Required. The chance that a resident gets the state, from 0 to 1. |
+| `amount` | The value of the state. A number, or `[min, max]` for a random value in that range. Townstead rounds the value to a whole number. The default is 1. |
+
+Each adult who comes to live in the town rolls once against each entry, in the order of the list, after the town has its faction. A villager born in the town does not roll. That villager gets states only from inheritance.
+
+A state that [excludes](/pheno/entity-states/#state-files) another state cannot take hold on a resident who already has that state. In the example, if `examplepack:servant` excludes `examplepack:werebear`, a werebear never becomes a servant. Then 60% of the residents are werebears, 30% are servants, and 10% have neither state.
+
+A resident who cannot have the state does not get it, for example a resident with a body that the state does not allow.
 
 ## Order of Work
 

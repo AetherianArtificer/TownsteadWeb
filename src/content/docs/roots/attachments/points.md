@@ -7,15 +7,15 @@ An attachment point is a named anchor on a rig: a bone plus a placement, carryin
 
 Path: `data/<namespace>/attachment_point/<id>.json`
 
-Schema: `townstead:attachment_point/v1`
+Schema: `townstead:attachment_point/v2`, with `offset` and `rotation` as Blockbench shows them. The older `townstead:attachment_point/v1` still loads, with Minecraft's Y-down offset and X and Z reversed rotation (see [Schema Versions](/roots/attachments/definition/#schema-versions)).
 
 ## Fields
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `bone` | string | no | The model bone the point rides. Defaults to `body`. |
-| `offset` | [x, y, z] | no | Placement in model pixels, relative to the bone. |
-| `rotation` | [x, y, z] | no | Base orientation applied to anything anchored here (ZYX degrees). |
+| `offset` | [x, y, z] | no | Placement in pixels relative to the bone, Y up. |
+| `rotation` | [x, y, z] | no | Base orientation applied to anything anchored here, in Blockbench's degrees. |
 | `mirror` | bool | no | Render anchored geometry mirrored across X. One authored ear fits both sides. |
 | `rig` | string | no | Scope the point to one rig id. Empty means universal. |
 | `tags` | list | no | The tags attachments target (`ear`, `tail_root`, and so on). |
@@ -30,10 +30,10 @@ For example, a universal `ear` point may serve every rig. A spider pack can repl
 
 ```json
 {
-  "schema": "townstead:attachment_point/v1",
+  "schema": "townstead:attachment_point/v2",
   "rig": "my_pack:spider",
   "bone": "cephalothorax",
-  "offset": [3, 1, -4],
+  "offset": [3, -1, -4],
   "rotation": [0, 25, 0],
   "tags": ["ear"]
 }

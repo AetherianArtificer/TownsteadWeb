@@ -3,11 +3,15 @@ title: Aliases And Compatibility
 description: Merge equivalent profession IDs and map optional mods onto a career.
 ---
 
-Three mechanisms connect other mods' profession IDs to a Townstead career. Inline aliases are unconditional, compatibility contributions are mod-gated, and Career providers also bring workplaces and work.
+There are three ways to connect the profession IDs of other mods to a Townstead career:
+
+- Inline aliases always apply.
+- Compatibility contributions apply only when a mod is installed.
+- Career providers also add workplaces and work.
 
 ## Root Aliases
 
-Aliases merge equivalent profession IDs into one root Career identity:
+An alias makes a different profession ID count as this Career:
 
 ```json
 {
@@ -18,14 +22,13 @@ Aliases merge equivalent profession IDs into one root Career identity:
 }
 ```
 
-XP reads, XP writes, definition lookups, work, and trades resolve the alias to the canonical profession ID. An alias cannot override a primary definition. If two definitions claim the same alias, the first claim wins and the loader reports a diagnostic.
+For XP, definition lookups, work, and trades, Townstead converts the alias to the main profession ID. An alias cannot replace a main definition. If two definitions declare the same alias, Townstead uses the first one and reports a diagnostic.
 
-Use inline `aliases` for identities that are always meaningful, such as a legacy ID supplied by
-the same pack. An alias does not register the named profession and does not borrow its POI.
+Use inline `aliases` for IDs that always have the same meaning, such as an old ID from the same pack. An alias does not register the named profession, and it does not use that profession's POI.
 
 ## Optional Compatibility Identities
 
-Put optional-mod mappings in an independently addressable contribution:
+Put the mappings for an optional mod in a separate contribution file:
 
 ```text
 data/<namespace>/profession/<career>/compatibility/<contribution>.json
@@ -44,42 +47,25 @@ data/<namespace>/profession/<career>/compatibility/<contribution>.json
 }
 ```
 
-Compatibility is separate from `profession.json` by design. A Profession describes the Career
-itself; a compatibility contribution describes how another mod's identities join that Career.
-Keeping the mapping in its own resource also lets several packs extend the same Career without
-replacing its root definition or replacing one another. For example, separate cooking integrations
-can contribute `chefs_delight.json`, `farmers_delight.json`, and another independently named file
-under the same `compatibility/` directory.
+Compatibility is in a separate file from `profession.json`. The Profession describes the Career. A compatibility contribution describes how the professions of another mod connect to that Career. With separate files, several packs can extend the same Career without replacing its root definition or each other. For example, cooking integrations can add `chefs_delight.json`, `farmers_delight.json`, and other files to the same `compatibility/` directory.
 
-Use a distinct resource path for each integration. As with trades and other contributions, a
-higher-priority data pack can deliberately replace one compatibility contribution by supplying the
-same path. It does not need to take ownership of the complete Profession to do so.
+Use a different resource path for each integration. As with trades and other contributions, a data pack with a higher priority can replace one compatibility contribution with a file at the same path. It does not need to replace the whole Profession.
 
-`aliases` maps each foreign profession to the owning Career root. `path_aliases` maps a foreign
-profession to the owning Career and one loaded Path. The Path ID is local to the Career, so the
-example means `townstead:cook` on its `chef` Path.
+- `aliases` maps each profession from the other mod to the root of this Career.
+- `path_aliases` maps a profession from the other mod to this Career and one loaded Path. The Path ID is local to the Career, so the example means the `chef` Path of `townstead:cook`.
 
-The `schema` field is required. `mods` uses the standard mod-gate expression and should normally
-name the mod that registers the foreign professions. An unmet gate removes the complete
-contribution: it does not create placeholder professions, picker entries, POIs, trades, or JEP
-entries. A Path alias must name a Path that loaded in the same session.
+The `schema` field is required. `mods` uses the standard mod-gate expression. It usually names the mod that registers the other professions. When the gate is not met, Townstead ignores the whole contribution. It does not add placeholder professions, picker entries, POIs, trades, or JEP entries. A Path alias must name a Path that loaded in the same session.
 
-Compatibility changes semantic matching, not physical ownership. A foreign profession retains
-its registry identity, native job-site predicate, offers, and other mod behaviour. Townstead
-canonicalises Career history and work while remembering whether that identity implies a Path.
+Compatibility changes only how Townstead matches professions. The profession from the other mod keeps its registry ID, its own job-site rule, its offers, and its other behaviour. Townstead records Career history and work under this Career, and also records whether the profession means a Path.
 
-The compatibility schema is the integration boundary for Profession identity. Future versions may
-add other genuinely cross-mod mappings here. Intrinsic Career content still belongs in its normal
-document: define Paths in `path/`, merchant offers in `trade/`, work in `work.json`, and Skills beside
-their Path. Do not move ordinary Career content into compatibility merely because an optional mod
-uses it.
+Use the compatibility file only for mappings between mods. Put the usual Career content in its usual file: Paths in `path/`, merchant offers in `trade/`, work in `work.json`, and Skills next to their Path. Do not move usual Career content into compatibility only because an optional mod uses it.
 
 ## Career Providers
 
-A compatibility contribution maps identities. When an optional mod also brings workplaces, machines, stations, or clothing, put that in a Career provider:
+A compatibility contribution maps IDs. When an optional mod also adds workplaces, machines, stations, or clothing, put them in a Career provider:
 
 ```text
 data/<namespace>/career_provider/<name>.json
 ```
 
-A provider contributes `poi`, `tasks`, `clothing`, and `storage` to a career, or `skills`, `worksites`, `work`, and presentation to a Path, when its `mods` gate passes. It never creates a career or registers a profession. Beverage Artisan is composed entirely this way: its own `work.json` is empty, and every bar and brewery mod supplies a provider. See [Career Providers](/careers/career-providers/).
+When its `mods` gate passes, a provider adds `poi`, `tasks`, `clothing`, and `storage` to a career. It can also add `skills`, `worksites`, `work`, and presentation to a Path. A provider never adds a career or registers a profession. The Beverage Artisan career is made only from providers: its own `work.json` is empty, and each bar and brewery mod adds a provider. See [Career Providers](/careers/career-providers/).

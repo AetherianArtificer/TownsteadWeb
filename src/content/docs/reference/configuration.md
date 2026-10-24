@@ -114,8 +114,9 @@ Fatigue controls how villagers accumulate exhaustion during activity and recover
 
 | Setting                    | Default  | Values | Description |
 | -------------------------- | -------: | ------ | ----------- |
-| `enableVillagerTemperature` | `true`  | `true`, `false` | Enables villager body temperature. Villagers drift toward the climate at their position, dress for it, and seek a hearth or shade when they are uncomfortable. |
-| `preferredBackend`         | `"auto"` | `"auto"`, `"legendary_survival_overhaul"`, `"cold_sweat"`, `"tough_as_nails"`, `"builtin"` | Which mod reports the ambient temperature. `auto` prefers Legendary Survival Overhaul, then Cold Sweat, then Tough As Nails, then Townstead's own model. `builtin` ignores temperature mods. |
+| `enableVillagerTemperature` | `true`  | `true`, `false` | Enables temperature: body temperature for villagers and players, room heat, crop climate, and the Room Thermometer and Thermostat. Villagers drift toward the climate at their position, dress for it, and seek a hearth or shade when they are uncomfortable. Temperature also needs Legendary Survival Overhaul, Cold Sweat or Tough As Nails. |
+| `preferredBackend`         | `"auto"` | `"auto"`, `"legendary_survival_overhaul"`, `"cold_sweat"`, `"tough_as_nails"`, `"builtin"` | Which mod reports the ambient temperature. `auto` uses the first installed mod of Legendary Survival Overhaul, Cold Sweat and Tough As Nails. `builtin` uses only Townstead's own model, but a temperature mod must still be installed. |
+| `climateAuthority`         | `"townstead"` | `"townstead"`, `"backend"` | Whose climate counts when a temperature mod is installed. `townstead` sets the mod's outdoor temperature from Townstead's climate model. `backend` keeps the mod's own climate and adds only what it lacks. See [Temperature Mods](/climate/temperature-mods/). |
 
 ### Conversations
 
@@ -300,6 +301,19 @@ Calendar settings control profile selection, offline time behaviour, aging, and 
 When `realClockCalendar` is `false`, Townstead follows Minecraft's day counter. Use this for vanilla pacing or with day-cycle mods that already control the length of a Minecraft day.
 
 When `realClockCalendar` is `true`, Townstead also adds the real-world days that elapsed while the game was off when the world loads again. Use it for long-haul life-sim worlds where the calendar should keep moving while you are away.
+
+## Personas
+
+Settings for [Personas](/stories/) and for villagers who are [downed](/stories/downed/) instead of dying. The Switchboard **Personas** dial also sets `permadeath`.
+
+```toml
+[personas]
+```
+
+| Setting          | Default  | Values                    | Description |
+| ---------------- | -------: | ------------------------- | ----------- |
+| `permadeath`     | `false`  | `true`, `false`           | When false, a Persona who would die is downed instead and gets up later. When true, Personas die like anyone else. |
+| `downedRecovery` | `"DAWN"` | `MINUTES`, `DAWN`, `DAY`  | How long a downed villager stays down when nobody helps. `MINUTES`: about five minutes. `DAWN`: until the next dawn, and at least half a day. `DAY`: a full day. |
 
 ## Integrations
 
@@ -517,3 +531,5 @@ Use this list when you already know the setting name and just need to find its s
 | `spiritLargerHitTargets`              | `[accessibility]` |
 | `spiritHighContrast`                  | `[accessibility]` |
 | `spiritFontScale`                     | `[accessibility]` |
+| `permadeath`                          | `[personas]` |
+| `downedRecovery`                      | `[personas]` |

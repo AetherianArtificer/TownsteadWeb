@@ -3,11 +3,11 @@ title: Work Tasks
 description: Assign Townstead work engines, stations, targets, and recipes to careers.
 ---
 
-A work task connects a profession to a reusable work engine. The engine owns pathfinding, reservations, recovery, safety, and tick behaviour. The Career's `work.json` selects the engine and narrows what it can use.
+A work task connects a profession to a work engine. The engine does the pathfinding, reservations, recovery, safety checks, and tick behaviour. The `work.json` of the Career chooses the engine and limits what the engine can use.
 
-Data cannot create an arbitrary AI state machine. It can declare a Job for one of Townstead's general executors. The Job's `task` ID becomes a valid work-task type automatically, so a pack can name new kinds of work freely. A block-interaction Job can describe a substantial block procedure once that executor has brought the worker, target, and required item together. Pheno actions own that procedure's state changes, loot, effects, and item wear.
+Data cannot add a new AI. It can declare a Job for one of Townstead's general executors. The `task` ID of the Job automatically becomes a valid work-task type, so a pack can add new kinds of work with any name. A block-interaction Job can describe a long block procedure. The executor brings the worker, the target, and the required item together. Then Pheno actions do the procedure: block changes, loot, effects, and item wear.
 
-Work is described across these pages:
+These pages describe work:
 
 - [Work Jobs](/careers/work/jobs/)
 - [Targets And Scope](/careers/work/targets/)
@@ -36,82 +36,82 @@ Work is described across these pages:
 }
 ```
 
-This document belongs at `data/<namespace>/profession/<career>/work.json`.
+Put this file at `data/<namespace>/profession/<career>/work.json`.
 
 ## Field Reference
 
 | Field | Default | Description |
 | --- | ---: | --- |
-| `type` |  | Required registered work-task ID. A bare ID resolves in `townstead_work`. |
-| `workstations` | `[]` | Allowed block IDs or block tags. Empty uses the engine's default stations. |
-| `entities` | `[]` | Allowed entity IDs or entity tags. Empty uses the engine's default targets. |
+| `type` |  | Required. A registered work-task ID. A short ID refers to the `townstead_work` namespace. |
+| `workstations` | `[]` | Allowed block IDs or block tags. When empty, the engine uses its default stations. |
+| `entities` | `[]` | Allowed entity IDs or entity tags. When empty, the engine uses its default targets. |
 | `recipes` | `[]` | Allowed recipe IDs, output item IDs, output tags, or classification tokens. |
-| `deny_recipes` | `[]` | Recipes or outputs to refuse. Deny rules win. |
+| `deny_recipes` | `[]` | Recipes or outputs to refuse. Townstead checks deny rules first. |
 | `recipe_inputs` | `[]` | Required input item IDs, tags, or classification tokens. |
-| `deny_recipe_inputs` | `[]` | Input items that make a recipe ineligible. Deny rules win. |
-| `weight` | `1` | Relative preference among available work tasks. |
-| `scope` | `worksite` | Where the task searches for a workstation. |
-| `requirements` | Always | Pheno condition that must pass for this task to be available. |
-| `order` | | Presentation for a task players may place on a worksite order sheet: `{ "name": "Slaughter", "icon": "minecraft:iron_sword" }`. Both fields are required when present. See the [Orders](/guides/orders/) guide for the player-facing screen. |
-| `access` | `profession` | Path work only. `path` limits the task to workers currently on the owning Path. See [Path Work](/careers/skill/paths/#path-work). |
+| `deny_recipe_inputs` | `[]` | Input items that stop a recipe. Townstead checks deny rules first. |
+| `weight` | `1` | How much the worker prefers this task to other available tasks. |
+| `scope` | `worksite` | Where the task looks for a workstation. |
+| `requirements` | Always | Pheno condition. The task is available only when it passes. |
+| `order` | | The name and icon of the task on a worksite order sheet, for players: `{ "name": "Slaughter", "icon": "minecraft:iron_sword" }`. When present, both fields are required. For the screen, see the [Orders](/guides/orders/) guide. |
+| `access` | `profession` | Path work only. `path` gives the task only to workers who are on the Path now. See [Path Work](/careers/skill/paths/#path-work). |
 
-All target arrays only narrow the engine's own safe set. They cannot make an engine operate a target that its code rejects. For example, an entity list cannot bypass the slaughter engine's never-kill rules.
+Target lists can only limit what the engine already accepts. They cannot make an engine use a target that its code rejects. For example, an entity list cannot get past the rules of the slaughter engine about animals that it must never kill.
 
 ## Built-In Task Types
 
-Every type below names one of Townstead's work engines. The engine owns the villager's behaviour; the task entry says where it may work and what it may make. The types fall into three families.
+Each type below names one of Townstead's work engines. The engine controls what the villager does. The task entry says where the villager can work and what the villager can make. There are three groups of types.
 
 ### Recipe stations
 
-These engines read recipes from the installed mods and work them at a station. The entry names the stations with `workstations` and, optionally, narrows the recipes. The station block needs a [workstation definition](/careers/workstations/) so the engine knows how to load it.
+These engines read recipes from the installed mods and make them at a station. The entry names the stations with `workstations`, and can limit the recipes. The station block needs a [workstation definition](/careers/workstations/), so that the engine knows how to load it.
 
 | Type | What the villager does | Used by |
 | --- | --- | --- |
-| `townstead_work:cook` | Gathers ingredients, loads a pot, skillet, stove, campfire, furnace, or similar station, waits, and shelves or plates the dish. | Cook, Baker |
-| `townstead_work:chop` | Works an item on a cutting board with a tool. Credited as cooking. | Cook |
+| `townstead_work:cook` | Gets ingredients, loads a pot, skillet, stove, campfire, furnace, or a similar station, waits, and puts the dish on a shelf or a plate. | Cook, Baker |
+| `townstead_work:chop` | Uses a tool to cut an item on a cutting board. Counts as cooking. | Cook |
 | `townstead_work:brew` | Makes drinks at brewing stations, kegs, kettles, and bars. | Beverage Artisan |
-| `townstead_work:smoke` | Smokes food at a smoker. Pair it with `recipe_inputs` so a shared smoker does not become every smeltable output. | Butcher |
-| `townstead_work:smelt` | Runs furnace-style recipes, fuel included. | Armorer, Toolsmith, Weaponsmith, Mason |
-| `townstead_work:craft` | Works recipes at a surface that holds nothing: crafting table, stonecutter, smithing, cartography, lectern. Always narrow `recipes`; the family is every recipe in the game. | Armorer, Baker, Cartographer, Fletcher, Librarian, Mason, Toolsmith, Weaponsmith |
-| `townstead_work:brew_potion` | Mixes potions at a brewing stand. | Cleric |
-| `townstead_work:grind` | Runs a grinder or mortar. | Butcher |
-| `townstead_work:taxidermy` | Runs a taxidermy table. | Butcher |
+| `townstead_work:smoke` | Smokes food in a smoker. Use it with `recipe_inputs`, so that the villager does not make every output of a shared smoker. | Butcher |
+| `townstead_work:smelt` | Makes furnace recipes, and adds fuel. | Armorer, Toolsmith, Weaponsmith, Mason |
+| `townstead_work:craft` | Makes recipes at a station that holds no items: crafting table, stonecutter, smithing table, cartography table, lectern. Always limit `recipes`, because without a limit it accepts every recipe in the game. | Armorer, Baker, Cartographer, Fletcher, Librarian, Mason, Toolsmith, Weaponsmith |
+| `townstead_work:brew_potion` | Makes potions at a brewing stand. | Cleric |
+| `townstead_work:grind` | Uses a grinder or mortar. | Butcher |
+| `townstead_work:taxidermy` | Uses a taxidermy table. | Butcher |
 
 ### Zone work
 
-These engines work an area rather than a station. The entry usually needs nothing beyond `type` and `weight`; the workplace comes from the career's job block, and the area is read from the world.
+These engines work in an area, not at a station. The entry usually needs only `type` and `weight`. The workplace comes from the job block of the career, and the engine reads the area from the world.
 
 | Type | What the villager does | Used by |
 | --- | --- | --- |
-| `townstead_work:harvest` | Tills, plants, waters, and harvests the fields marked by a Field Post. Records harvested, planted, tilled, groomed, irrigated, and farmed activity. See [Farming](/guides/farming/). | Farmer |
-| `townstead_work:fish` | Fetches a rod, walks to open water, casts, reels, and brings the catch back to the barrel. See [Fishing](/guides/fishing/). | Fisherman |
+| `townstead_work:harvest` | Tills, plants, waters, and harvests the fields that a Field Post marks. Records harvested, planted, tilled, groomed, irrigated, and farmed activity. See [Farming](/guides/farming/). | Farmer |
+| `townstead_work:fish` | Gets a rod, walks to open water, casts, reels in, and brings the catch back to the barrel. See [Fishing](/guides/fishing/). | Fisherman |
 
 ### Tending
 
 | Type | What the villager does | Used by |
 | --- | --- | --- |
-| `townstead_work:shear` | Shears sheep inside a livestock pen and carries the wool to storage. Records tended activity. See [Shepherding](/guides/shepherding/). | Shepherd |
+| `townstead_work:shear` | Shears sheep in a livestock pen and carries the wool to storage. Records tended activity. See [Shepherding](/guides/shepherding/). | Shepherd |
 | `townstead_work:store` | Carries wool to a wool shed when the shepherd cannot shear. | Shepherd |
 
 ### Job-defined types
 
-Any other type is defined by a [Work Job](/careers/work/jobs/) in a data pack, and a Profession may use it once that Job exists. Townstead's own Jobs define `townstead_work:slaughter`, `townstead_work:butcher`, `townstead_work:dismantle`, `townstead_work:cure`, `townstead_work:clean`, `townstead_work:hammer`, and `townstead_work:maintain_climate` this way. Several Jobs may share one task ID when they are alternative procedures for the same kind of work.
+A [Work Job](/careers/work/jobs/) in a data pack defines each other type. A Profession can use the type when that Job exists. Townstead's own Jobs define `townstead_work:slaughter`, `townstead_work:butcher`, `townstead_work:dismantle`, `townstead_work:cure`, `townstead_work:clean`, `townstead_work:hammer`, and `townstead_work:maintain_climate` in this way. Several Jobs can use the same task ID when they are different ways to do the same work.
 
-Declaring a task type does not teach Townstead how an unknown machine stores inputs or finishes recipes; that is the workstation definition's job.
+A task type does not tell Townstead how an unknown machine stores inputs or finishes recipes. The workstation definition does that.
 
 ## Troubleshooting
 
-Run `/pheno validate` after reload. An unknown task type or malformed target entry is reported against the profession resource and its JSON path.
+Run `/pheno validate` after a reload. It reports an unknown task type or a malformed target entry with the profession resource and the JSON path.
 
-If a task loads but villagers do not perform it, check these items in order:
+If a task loads but villagers do not do it, check these items in order:
 
-1. The villager's registered profession resolves to this career definition.
-2. The career has a valid workplace and an available seat.
-3. The task's `requirements` condition passes.
+1. The registered profession of the villager matches this career definition.
+2. The career has a valid workplace and a free seat.
+3. The `requirements` condition of the task passes.
 4. The search `scope` includes the station.
-5. The station block passes `workstations`.
-6. The recipe passes output and input filters.
+5. The station block matches `workstations`.
+6. The recipe matches the output and input filters.
 7. A workstation definition or integration supports the machine.
-8. The station is not claimed by another worker.
+8. No other worker has claimed the station.
 
-Enable `debugVillagerAI` in the server config for the work trace.
+To see the work trace, set `debugVillagerAI` in the server config.

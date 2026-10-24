@@ -28,6 +28,16 @@ Use `@s` for commands that take `<target>`, the no-target emote forms for yourse
 | `/townstead calendar time-mode real_clock` | Operator | Uses real-clock calendar progression for this world. |
 | `/townstead calendar time-mode default` | Operator | Clears the world override and returns to the configured default. |
 
+## Climate
+
+| Command | Access | Description |
+| --- | --- | --- |
+| `/townstead climate here` | Player | Shows how the air temperature where you stand is made up: mean, season, day and night, weather, snow, heat sources in sight, ground, dimension and season clock. Also shows what you feel and your comfortable range. |
+| `/townstead climate biome [biome]` | Player | Shows a biome's climate zone and how Townstead chose it. Without a biome, uses the biome where you stand. |
+| `/townstead climate year [biome]` | Player | Shows noon and midnight temperatures across the year for a biome at your height. |
+
+See [Testing & Commands](/climate/testing/).
+
 ## Emotes
 
 An emote target must be a player or an MCA villager. When no target is supplied, the command applies to the player running it.
@@ -151,6 +161,7 @@ All Pheno commands are **Operator** commands intended for pack authoring and dia
 | `/pheno explain <target>` | Shows effective capabilities for a living entity, including applied and ignored contributions. |
 | `/pheno expand <gene>` | Prints the normalized form of a loaded gene. Long output is truncated in chat. |
 | `/pheno dump` | Writes generated Pheno reference files to the server's `pheno/` directory. |
+| `/pheno patches` | Lists every data patch, its targets, and whether each target loaded and was patched. See [Pack Compatibility](/reference/compatibility/#patches). |
 | `/pheno parity <target>` | Compares legacy gene outputs with capability-layer outputs for a living entity. |
 | `/pheno skills <target>` | Under development. Lists learned profession skills on a living entity. |
 | `/pheno learn <target> <skill>` | Under development. Teaches a profession skill using the normal skill rules. |

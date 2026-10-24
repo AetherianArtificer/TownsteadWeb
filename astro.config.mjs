@@ -7,6 +7,7 @@ export default defineConfig({
 	site: process.env.SITE,
 	redirects: {
 		'/packs/cultures-beliefs': '/cultures/',
+		'/packs/personas': '/stories/',
 	},
 	integrations: [
 		starlight({
@@ -52,8 +53,10 @@ export default defineConfig({
 						{ label: 'Chronicles', slug: 'guides/chronicles' },
 						{ label: 'Roots', slug: 'guides/roots' },
 						{ label: 'Cultures', slug: 'guides/cultures' },
+						{ label: 'Stories & Personas', slug: 'guides/personas' },
 						{ label: 'Life Stages', slug: 'guides/life-stages' },
 						{ label: 'Calendars & Stamps', slug: 'guides/calendars-and-stamps' },
+						{ label: 'Climate', slug: 'guides/climate' },
 					],
 				},
 				{
@@ -78,6 +81,9 @@ export default defineConfig({
 								{ label: 'Actions', slug: 'pheno/actions' },
 								{ label: 'Selectors & Values', slug: 'pheno/selectors-values' },
 								{ label: 'Gene Nodes', slug: 'pheno/gene-nodes' },
+								{ label: 'Triggers', slug: 'pheno/triggers' },
+								{ label: 'Hazard Avoidance', slug: 'pheno/hazard-avoidance' },
+								{ label: 'Entity States', slug: 'pheno/entity-states' },
 							],
 						},
 						{
@@ -133,6 +139,11 @@ export default defineConfig({
 							label: 'Rigs & Appearance',
 							items: [
 								{ label: 'Rigs', slug: 'roots/rigs' },
+								{ label: 'Model & Bones', slug: 'roots/rigs/model' },
+								{ label: 'Models From Other Mods', slug: 'roots/rigs/other-mods' },
+								{ label: 'Gear & Clothing', slug: 'roots/rigs/gear' },
+								{ label: 'Body & Camera', slug: 'roots/rigs/body' },
+								{ label: 'Poses & Emotes', slug: 'roots/rigs/poses' },
 								{ label: 'Appearance Assets', slug: 'roots/appearance-assets' },
 							],
 						},
@@ -247,6 +258,48 @@ export default defineConfig({
 						{ label: 'Mixed Cultures & Drift', slug: 'cultures/mixed-cultures' },
 						{ label: 'Building a Culture Pack', slug: 'cultures/culture-packs' },
 						{ label: 'Testing & Commands', slug: 'cultures/testing' },
+					],
+				},
+				{
+					label: 'Climate',
+					items: [
+						{ label: 'How Climate Works', slug: 'climate' },
+						{ label: 'Seasons & Calendars', slug: 'climate/seasons' },
+						{
+							label: 'Climate Data',
+							items: [
+								{ label: 'Biome Profiles', slug: 'climate/biome-profiles' },
+								{ label: 'Climate Zones', slug: 'climate/zones' },
+								{ label: 'Dimensions', slug: 'climate/dimensions' },
+								{ label: 'Climate Settings', slug: 'climate/settings' },
+							],
+						},
+						{ label: 'Underground', slug: 'climate/underground' },
+						{ label: 'Crops', slug: 'climate/crops' },
+						{ label: 'Temperature Mods', slug: 'climate/temperature-mods' },
+						{ label: 'Testing & Commands', slug: 'climate/testing' },
+					],
+				},
+				{
+					label: 'Stories & Personas',
+					items: [
+						{ label: 'How Stories & Personas Work', slug: 'stories' },
+						{ label: 'Your First Story', slug: 'stories/first-story' },
+						{ label: 'Writing in Ink', slug: 'stories/ink' },
+						{
+							label: 'Data Files',
+							items: [
+								{ label: 'Villager Stories', slug: 'stories/story-files' },
+								{ label: 'Personas', slug: 'stories/persona-files' },
+								{ label: 'Quests, Goals & Rewards', slug: 'stories/quests' },
+								{ label: 'Conditions, Actions & Checkpoints', slug: 'stories/conditions-actions' },
+							],
+						},
+						{ label: 'Relationships & Demeanor', slug: 'stories/relationships' },
+						{ label: 'Scenes & Cast', slug: 'stories/scenes' },
+						{ label: 'Story Tools', slug: 'stories/story-tools' },
+						{ label: 'Downed', slug: 'stories/downed' },
+						{ label: 'Testing & Commands', slug: 'stories/testing' },
 					],
 				},
 				{

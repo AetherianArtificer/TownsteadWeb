@@ -129,8 +129,12 @@ Numeric fields that accept values can be either a JSON number or a typed value o
 | `{ "type": "pheno:bond_count", "kind": "townstead:marriage", "active": true }` | Counts the focus entity's bonds of one kind. `active` defaults to `true`. |
 | `{ "type": "pheno:bond_max", "kind": "townstead:marriage" }` | Reads the bond kind's `max_active`; an unlimited kind returns a practically unbounded value. |
 | `{ "type": "pheno:game_time" }` | Current world game time in ticks. |
+| `{ "type": "pheno:air_temperature", "felt": false }` | The air temperature in °C at the focus, with rooms, ground and nearby heat. With `"felt": true` on a villager, it is what the villager feels after clothing, wetness and work. Without a temperature mod, it is the vanilla biome temperature in °C. |
+| `{ "type": "pheno:climate", "field": "humidity" }` | One part of the [climate](/climate/) at the focus: `mean` (the day's mean in °C), `seasonal`, `diurnal`, `phase` (0 to 1 from the start of spring, `0` without a season mod), `swing`, `humidity`, `diurnal_range` or `depth` (blocks of terrain overhead). Zone fields are `0` for a biome without a zone. Without a temperature mod, `mean` is the vanilla biome temperature in °C, and `seasonal` and `diurnal` are `0`. |
+| `{ "type": "pheno:event_damage", "scale": 0.2, "max": 2, "default": 0 }` | The damage of the event a trigger is answering (`when_hurt`, `when_attack`, `when_death_prevented`, or a ward's `on_absorb`), times `scale`, capped at `max`. Outside such an event, or after a `pheno:delay`, it is `default`. Use it for lifesteal: heal a fifth of each hit. |
 | `{ "type": "pheno:block_data", "key": "progress", "default": 0 }` | Numeric persistent data on the focused block entity. |
 | `{ "type": "pheno:arithmetic", "operation": "add", "values": [...] }` | Combines values with `add`, `subtract`, `multiply`, `divide`, `min`, or `max`. |
+| `{ "type": "pheno:provider", "provider": "examplemod:holy_ground", "default": 0 }` | The current reading of a provider that a supported mod registers. When the provider has no reading, the value is `default`, which defaults to `0`. Some providers report about a place. During [hazard avoidance](/pheno/hazard-avoidance/), Townstead asks those providers about the block it tests. |
 
 `pheno:count` currently counts entity selectors. For block counts, use condition/action logic that operates in a block selector context rather than the numeric value source.
 

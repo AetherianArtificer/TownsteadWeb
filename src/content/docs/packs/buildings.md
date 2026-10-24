@@ -141,7 +141,7 @@ Use `enclosure` to state the physical form Townstead accepts for this building t
 | `optional` | Townstead accepts a closed room or an open-air site. |
 | `none` | Townstead accepts an open-air site only. |
 
-MCA recognises a room by filling the air inside it and finding a roof above. A dock or a pen has no roof, so MCA rejects it. Set `enclosure` to `optional` or `none`, and Townstead recognises the building when a player adds it from the blueprint.
+MCA recognises a room by filling the air inside it and finding a roof above. A dock or a pen has no roof, so MCA rejects it. Set `enclosure` to `optional` or `none`, and Townstead recognises the building when a player adds it from the blueprint. A building type with an `enclosed` entry is also recognised when its ring closes. See [enclosed](#enclosed).
 
 Townstead tries the room form first. When the player stands inside a closed room, MCA handles the report instead.
 
@@ -185,7 +185,13 @@ Use this entry for a dock. The deck can be any material, so slabs, stairs, plank
 
 ### enclosed
 
-Townstead fills the ground at one level and stops at fences, fence gates, walls, doors, and solid blocks. The entry is met only when the fill does not escape.
+Townstead moves over the ground the way a grazing animal moves. The entry is met only when an animal inside cannot get out.
+
+- Townstead steps onto anything up to a slab high, and drops down any height.
+- Townstead climbs 1 block onto natural ground in `#townstead:terrain`, such as dirt, grass, sand, and stone. A pen on a slope is therefore one pen.
+- Fences, fence gates, walls, and doors are always closed. A fence gate is closed whether it is open or shut.
+- Other solid blocks are closed, even at 1 block high. A row of hay bales or leaves is a wall.
+- Townstead does not move diagonally. Fences that touch only at a corner close the ring.
 
 | Field | Default | Description |
 | --- | ---: | --- |
@@ -193,7 +199,11 @@ Townstead fills the ground at one level and stops at fences, fence gates, walls,
 | `min_interior` | `4` | Smallest interior area accepted. |
 | `max_interior` | `4096` | Largest interior area accepted. |
 
-Use this entry for a pen. A fence gate is part of the ring whether it is open or closed. A roof over the pen does not change the result.
+Use this entry for a pen. A roof over the pen does not change the result.
+
+When the last block of a ring is placed in a village, Townstead adds the building to the village. Townstead also checks the building again when a block near it changes. When the building opens, it stays in the village, and the nearest player sees where animals can get out. Villages with MCA's Auto Scan turned off are not changed. The server setting `mca_buildings.enableEnclosureRecognition` turns this off for the world.
+
+When a player adds the building from the blueprint and the ring is open, Townstead shows where animals can get out.
 
 ### How Townstead measures the site
 

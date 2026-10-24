@@ -29,10 +29,13 @@ Gene files live in `data/<namespace>/gene/<path>.json` and use `townstead:gene/v
 | `type` | string | yes | Gene type key. |
 | `display_name` | component | no | Display name for UI and catalogues. |
 | `description` | component | no | Longer help text. |
-| `category` | string | no | Defaults to `general`. |
+| `category` | string | no | Defaults to `general`. Genes in `Abilities` are listed as the root's powers in the picker. |
+| `icon` | string | no | An item id, or a `.png` texture path (`<namespace>:textures/...`). Drawn for actives and toggles in the ability wheel. |
+| `drawback` | boolean | no | `true` for a power that costs its bearer something. The picker lists it in red beside the root's strengths. |
 | `dominance` | string | no | `dominant` by default, or `recessive`. |
 | `locus` | id | no | Inheritance slot. Some gene types provide a default. |
 | `weight` | integer | no | Gene expression tie-break weight. Minimum `1`. |
+| `penetrance` | number | no | Chance, from `0` to `1`, that a single carried copy shows. Two copies always show. Leave it out to show from one copy. See [Inheritance](/roots/inheritance/#penetrance). |
 | `variants` | object | no | Named variants. |
 | `resources` | object | no | Local companion resources for this gene. |
 | `companions` | object | no | Local companion components of any gene type for this gene. |

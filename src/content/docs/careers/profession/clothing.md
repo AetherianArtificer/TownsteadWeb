@@ -3,12 +3,11 @@ title: Profession Clothing
 description: Choose the outfits a career wears and how they cover hair.
 ---
 
-A profession's `clothing` field is presentation data for MCA villagers. This page describes the field on `profession.json`; the [Core Fields](/careers/profession-files/#core-fields) table lists it alongside the rest.
+The `clothing` field of a profession sets what MCA villagers in that career wear. This page describes the field in `profession.json`. The [Core Fields](/careers/profession-files/#core-fields) table lists it with the other fields.
 
 ## Profession Clothing
 
-`clothing` is presentation data. It does not alias Profession behaviour, trades, work, or Career
-history. Give one clothing identity as a string, or list identities in preference order:
+`clothing` changes only how villagers look. It does not change the behaviour, trades, work, or Career history of the Profession. Give one clothing identity as a string, or list identities in order of preference:
 
 ```json
 "clothing": [
@@ -17,13 +16,9 @@ history. Give one clothing identity as a string, or list identities in preferenc
 ]
 ```
 
-On a Profession change, Townstead asks MCA's merged clothing catalogue for each identity in order.
-The first identity with clothing compatible with the villager's gender supplies the outfit. Mods,
-Career packs, and ordinary resource packs all contribute to the same catalogue, so the Profession
-does not declare which mod provides an identity.
+When a villager changes Profession, Townstead looks up each identity in order in MCA's clothing catalogue. Townstead uses the first identity that has clothing for the villager's gender. Mods, Career packs, and resource packs all add to the same catalogue, so the Profession does not say which mod supplies an identity.
 
-A string preserves MCA's normal hair rendering. Use an object only when one particular outfit
-includes headwear that needs to cover the hairstyle:
+With a string, MCA draws the hair as usual. Use an object only when an outfit has headwear that must cover the hair:
 
 ```json
 "clothing": [
@@ -35,22 +30,17 @@ includes headwear that needs to cover the hairstyle:
 ]
 ```
 
-The `hair` policy belongs to that fallback entry and applies only when clothing supplied by that
-identity is actually selected:
+The `hair` setting applies only when Townstead uses clothing from that entry:
 
 | `hair` | Effect |
 | --- | --- |
-| `normal` | Default. MCA renders the complete hairstyle. |
-| `covered` | Hides hair attached to the head while retaining hair that hangs over the shoulders or body. Use this for complete hats, hoods, and veils. The clothing texture must provide the full headwear, including any crown or top surface. |
-| `hidden` | Hides the complete hairstyle. Use this only for fully enclosed headwear. |
+| `normal` | Default. MCA draws all of the hair. |
+| `covered` | Hides the hair on the head, but keeps the hair that hangs over the shoulders or body. Use it for full hats, hoods, and veils. The clothing texture must draw all of the headwear, including the top. |
+| `hidden` | Hides all of the hair. Use it only for headwear that encloses the whole head. |
 
-When `clothing` is absent, MCA's clothing authored directly for the Profession continues to work.
-If no such clothing exists, Townstead retains the villager's current clothes instead of replacing
-them with a random civilian outfit. An empty list, an exhausted fallback list, or a manual clothing
-lock also retains the current clothes.
+When there is no `clothing` field, MCA's own clothing for the Profession still works. If there is no such clothing, Townstead keeps the villager's current clothes. It does not give the villager a random civilian outfit. Townstead also keeps the current clothes when the list is empty, when no entry in the list matches, or when the clothing is locked by hand.
 
-A Career pack can provide its own MCA clothing entries. Keep each catalogue filename distinct; the
-last path segment supplies its default gender:
+A Career pack can add its own MCA clothing entries. Give each catalogue file a different path. The last part of the path sets the default gender:
 
 ```text
 data/yourstudio_beekeeping/skins/clothing/beekeeper/female.json
@@ -69,7 +59,4 @@ For example, `female.json` can contain:
 ]
 ```
 
-Use adjacent `male.json` and `neutral.json` catalogues for other variants. Neutral entries match
-every gender. Multiple compatible entries may share an identity; MCA uses `chance` as their
-selection weight. The normal texture is sufficient. Matching `burnt` textures are optional and use
-MCA's corresponding clothing directory.
+Put the other variants in `male.json` and `neutral.json` files next to it. Neutral entries match every gender. More than one entry can have the same identity. MCA then uses `chance` as the weight to choose between them. The normal texture is enough. You can also add matching `burnt` textures in MCA's matching clothing directory.

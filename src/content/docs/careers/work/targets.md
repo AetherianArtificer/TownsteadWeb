@@ -3,7 +3,7 @@ title: Targets And Scope
 description: Narrow a work task with target sets, allow and deny rules, search scope, and requirements.
 ---
 
-Every field on a work task narrows what its engine may use. None of them can make an engine operate a target its own code rejects.
+Each field of a work task limits what its engine can use. No field can make an engine use a target that its code rejects.
 
 ## Target Sets
 
@@ -17,28 +17,28 @@ Target fields accept resource IDs and `#tag` references:
 }
 ```
 
-For `recipes`, a plain resource ID can match either the recipe ID or the output item ID. A tag matches the output item's tags.
+In `recipes`, a resource ID matches the recipe ID or the output item ID. A tag matches the tags of the output item.
 
 Recipe and input filters also accept classification tokens:
 
 | Token | Matches |
 | --- | --- |
 | `edible` | Any food output. |
-| `weapon` | Swords, axes, tridents, maces, and compatible modded subclasses. |
+| `weapon` | Swords, axes, tridents, maces, and modded items of the same kinds. |
 | `armor` | Armour and shields. |
 | `tool` | Digging tools, shears, flint and steel, and brushes. |
-| `block` | Placeable block items. |
+| `block` | Block items that a player can place. |
 | `ranged` | Projectile weapons and arrows. |
 | `navigation` | Maps, compasses, and spyglasses. |
 | `book` | Books, writable books, written books, and enchanted books. |
 
-Classification is useful when the item class is more reliable than a tag. Tags remain the extension point for unusual items.
+Use a token when the kind of item is easier to match than a tag. Use tags for unusual items.
 
 ## Allow And Deny Rules
 
-An empty allow set accepts the engine's complete default set. A non-empty allow set narrows it.
+An empty allow list accepts all of the default targets of the engine. A list with entries limits them.
 
-Deny rules are checked first:
+Townstead checks deny rules first:
 
 ```json
 {
@@ -47,9 +47,9 @@ Deny rules are checked first:
 }
 ```
 
-The example admits food except rotten flesh.
+The example accepts all food except rotten flesh.
 
-Input filters solve a different problem. They classify the raw material rather than the result:
+Input filters check the ingredients, not the result:
 
 ```json
 {
@@ -59,17 +59,17 @@ Input filters solve a different problem. They classify the raw material rather t
 }
 ```
 
-This prevents a shared smoker from making every smeltable output part of the Butcher's work.
+With this filter, the Butcher does not make every output of a shared smoker.
 
 ## Search Scope
 
 | Scope | Search area |
 | --- | --- |
-| `worksite` | Only the assigned workplace. This is the default and the least expensive search. |
-| `nearby` | The workplace and its immediate surroundings. |
-| `village` | Recognized buildings across the village. |
+| `worksite` | Only the assigned workplace. This is the default, and the fastest search. |
+| `nearby` | The workplace and the area just around it. |
+| `village` | All recognised buildings in the village. |
 
-Use the narrowest scope that reaches the intended stations. A village-wide search costs more and can make a worker claim a machine that belongs to another room.
+Use the smallest scope that reaches the stations. A search of the whole village is slower, and a worker can then claim a machine in a different room.
 
 ## Requirements
 
@@ -85,4 +85,4 @@ A task can use any Pheno condition:
 }
 ```
 
-The exact condition must be registered. A malformed condition refuses the task instead of making it unconditional.
+The condition type must be registered. If the condition is malformed, Townstead rejects the task. The task does not become available without a condition.

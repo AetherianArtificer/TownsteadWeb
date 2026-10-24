@@ -24,6 +24,7 @@ How an attachment is painted, beyond its base texture. All of these live in the 
 | --- | --- |
 | `"#RRGGBB"` | The flat colour. |
 | `"skin"` | The skin colour the bearer's face actually rendered with (MCA's melanin gradient plus any origin tint), captured from the skin layer each frame. The older `"skin_tint": true` still works as an alias. |
+| `"coat"` | The bearer's coat when it has one (an expressed skin-tone gene, such as fur or scales), else its hair colour. A cat's ears match its fur, while a half-cat with a human skin gets ears the colour of their hair. |
 | `"hair"` | The bearer's rendered hair colour, greying included. Falls back to the flat tint until hair has rendered, or when the rig hides hair. |
 | `"eyes"` | The bearer's expressed eye colour, matching the face overlay. |
 | `"gene"` | The heritable colour rolled on the granting gene's tint channels. See below. |

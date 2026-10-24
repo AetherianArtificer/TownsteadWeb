@@ -13,7 +13,7 @@ Keys in the dialogue screen: Space or Enter advances, W and S or the arrow keys 
 
 To turn off this visual overlay, set `useRpgDialogue` to `false` under `[dialogue]` in the client configuration. Talking to a villager then uses MCA's default talk screen, and so does the **Talk to Villager** key. The setting is local to the player. See the [configuration reference](/reference/configuration/#dialogue).
 
-MCA's interact screen also shows the villager's needs icons, their schedule, and their profession with its career rank. Hover their name for their birth date. Click the genes icon to open their [Heritage](/guides/roots/#heritage). With an emote mod installed, a **Pose** button opens a wheel to pose the villager.
+MCA's interact screen also shows the villager's needs icons, their schedule, and their profession with its career rank. Hover their name for their birth date. Click the genes icon to open their [Heritage](/roots/heritage/). With an emote mod installed, a **Pose** button opens a wheel to pose the villager.
 
 ## Villagers Talking To Each Other
 

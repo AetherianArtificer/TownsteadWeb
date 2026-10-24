@@ -3,11 +3,11 @@ title: Grants And Powers
 description: Passive capability grants and Pheno powers on a learned skill.
 ---
 
-A skill changes the character through two fields. `grants` feeds the shared capability resolver; `power` attaches one Pheno component.
+A skill changes a character through two fields. `grants` adds passive capabilities. `power` adds one Pheno component.
 
 ## Passive Grants
 
-Each grant contributes to Pheno's shared capability resolver:
+Each grant adds a value to one of Pheno's shared capabilities:
 
 ```json
 {
@@ -29,30 +29,30 @@ Each grant contributes to Pheno's shared capability resolver:
 
 | Field | Default | Description |
 | --- | ---: | --- |
-| `capability` |  | Required capability ID. |
-| `flag` | `false` | Makes this a boolean grant when true. |
+| `capability` |  | Required. The capability ID. |
+| `flag` | `false` | When `true`, the grant is a boolean. |
 | `op` | `add` | `add`, `multiply`, `min`, `max`, `replace`, `set`, or `deny`. |
-| `value` | `0` | Numeric operand. A multiply grant defaults to `1`. |
-| `priority` | `0` | Contribution priority in the capability resolver. |
+| `value` | `0` | The number. For `multiply`, the default is `1`. |
+| `priority` | `0` | The priority of this value when Pheno combines the values of a capability. |
 | `stacking_group` |  | Optional stacking group. |
-| `exclusivity_group` |  | Optional capability-level exclusivity group. |
+| `exclusivity_group` |  | Optional exclusivity group for the capability. |
 
-The Career record derives effect lines from these fields. Keep the description readable, but do not hide an important numeric effect only in prose.
+The Career record makes its effect lines from these fields. Write a clear description, but do not put an important number only in the description.
 
 ### Career XP Grants
 
-The progression service recognizes two capability IDs for each career path:
+Townstead reads two capability IDs for each career:
 
 ```text
 townstead:<career_path>_xp_flat
 townstead:<career_path>_xp_per_tier
 ```
 
-`_xp_flat` adds XP once per completed task. `_xp_per_tier` adds XP for each point of the task's work magnitude. The requested award is never less than 1 XP before the daily cap is applied.
+`_xp_flat` adds XP once for each completed task. `_xp_per_tier` adds XP for each point of the work magnitude of the task. Before Townstead applies the daily cap, the XP for a task is always at least 1.
 
 ## Pheno Powers
 
-`power` accepts one registered Pheno component. The same power vocabulary used by genes is available to skills.
+`power` accepts one registered Pheno component. Skills can use the same powers as genes.
 
 ```json
 {
@@ -73,6 +73,6 @@ townstead:<career_path>_xp_per_tier
 }
 ```
 
-An unknown or malformed power drops the power and reports a diagnostic. It does not drop the skill, because the learned skill ID is durable history.
+If the power is unknown or malformed, Townstead ignores the power and reports a diagnostic. Townstead keeps the skill, because characters keep the skills that they learned.
 
-Use [Pheno Actions](/pheno/actions/) and [Pheno Conditions](/pheno/conditions/) for the component vocabulary.
+For the component types, see [Pheno Actions](/pheno/actions/) and [Pheno Conditions](/pheno/conditions/).

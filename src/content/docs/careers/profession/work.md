@@ -3,11 +3,11 @@ title: Work And Job Sites
 description: Register the villager profession and declare where its work happens in work.json.
 ---
 
-Villager registration, job sites, and task composition live in `work.json`, beside `profession.json`. The job-site providers on this page are the `poi` entries that document accepts.
+Put villager registration, job sites, and tasks in `work.json`, next to `profession.json`. The job-site providers on this page are the `poi` entries of that file.
 
 ## Work Sidecar
 
-Put villager registration, job sites, and task composition in the adjacent work sidecar:
+Put villager registration, job sites, and tasks in the work file:
 
 ```text
 data/<namespace>/profession/<career>/work.json
@@ -37,13 +37,15 @@ data/<namespace>/profession/<career>/work.json
 }
 ```
 
-The sidecar owns `register_profession`, `poi`, and `tasks`. `storage` states which buildings the career prefers when its own shelves cannot serve; see [Storage](/careers/storage/#profession-storage-preferences). Preferred stations for a Path belong in that Path's own `path.json`. The sidecar cannot create a Path, define merchant offers, or change Career identity, progression, requirements, Skills, titles, or Path membership.
+The work file holds `register_profession`, `poi`, and `tasks`. `storage` names the buildings that the career uses when its own shelves cannot hold the items. See [Storage](/careers/storage/#profession-storage-preferences). Put the preferred stations of a Path in the `path.json` of that Path.
 
-Keeping work separate makes the loading boundary explicit: an ordinary world data pack can extend an existing profession, while a pack that creates a profession must be installed at the profile level before startup.
+The work file cannot add a Path or define merchant offers. It cannot change the identity, progression, requirements, Skills, titles, or Path membership of the Career.
+
+Work is in a separate file because it loads at a different time. An ordinary world data pack can extend an existing profession. A pack that adds a new profession must be installed in the profile before startup.
 
 ## Job-Site Providers
 
-The `poi` array in `work.json` declares how work becomes available. Entries are ordered. An earlier provider claims a place before a later provider can count it.
+The `poi` array in `work.json` says where work is available. The order of the entries is important. When two providers match the same place, the earlier provider counts it, and the later provider does not.
 
 ### Job Block
 
@@ -55,11 +57,11 @@ The `poi` array in `work.json` declares how work becomes available. Entries are 
 }
 ```
 
-Use `block` for one block or `blocks` for several. This provider represents a vanilla-style job-site POI. By default, each matching site adds one worker slot.
+Use `block` for one block or `blocks` for several. This provider is a job-site POI, as in vanilla. By default, each matching site adds one worker slot.
 
-`sites_per_worker` groups several sites into one workload. With a value of `4`, one through four matching sites support one worker, five through eight support two, and nine through twelve support three. Each Job Block entry is grouped independently, so one Career can give different workstation families different ratios. Omit the field, or use `1`, when every site should provide a slot.
+`sites_per_worker` groups several sites into one workload. With a value of `4`, one to four matching sites give one worker, five to eight give two, and nine to twelve give three. Townstead groups each Job Block entry separately, so one Career can use a different ratio for each kind of workstation. To give a slot for each site, leave out the field or use `1`.
 
-A subordinate physical surface can borrow another profession's POI claim:
+A block can use the POI claim of a different profession:
 
 ```json
 {
@@ -69,7 +71,7 @@ A subordinate physical surface can borrow another profession's POI claim:
 }
 ```
 
-`via` names the profession that physically claims the block. Townstead canonicalises the resulting history through aliases and still applies the career's village capacity. Do not use `via` merely because another profession has the same Career meaning. Root aliases and Path aliases belong in a compatibility contribution and do not transfer ownership of the other mod's POI.
+`via` names the profession that claims the block in the world. Townstead converts the resulting history through aliases, and still applies the village capacity of the career. Do not use `via` only because another profession has the same Career meaning. Put root aliases and Path aliases in a compatibility contribution. An alias does not take the POI from the other mod.
 
 ### Building
 
@@ -81,9 +83,9 @@ A subordinate physical surface can borrow another profession's POI claim:
 }
 ```
 
-Use `type_prefixes` for several building prefixes. The suffix after a matching prefix is read as the tier. An untiered or out-of-range building provides one slot. Omit `slots_per_tier` when every matching building provides one slot.
+Use `type_prefixes` for several building prefixes. Townstead reads the text after a matching prefix as the tier. A building with no tier, or with a tier outside the list, gives one slot. To give one slot for each matching building, leave out `slots_per_tier`.
 
-A building family can favour a Path without making either exclusive:
+A kind of building can prefer a Path. Other Paths can still work there, and the Path can still work elsewhere:
 
 ```json
 {
@@ -94,9 +96,9 @@ A building family can favour a Path without making either exclusive:
 }
 ```
 
-`path_affinity` lists local Path IDs. A villager working in such a building is steered toward those Paths when Insight is spent automatically, and a villager already on one of them prefers this family's seats. Station-level preferences in `path.json` still apply.
+`path_affinity` lists local Path IDs. When Townstead spends Insight automatically for a villager who works in such a building, it prefers those Paths. A villager who is already on one of those Paths prefers seats in this kind of building. The station preferences in `path.json` still apply.
 
-A building can also reserve its first seats for the profession that owns it:
+A building can also keep its first seats for the profession that owns it:
 
 ```json
 {
@@ -110,7 +112,7 @@ A building can also reserve its first seats for the profession that owns it:
 }
 ```
 
-`proprietor.professions` are raw villager-profession IDs, which may be aliases of this career. They are deliberately not canonicalised, so the foreign profession keeps its trades, clothing, and identity while Townstead treats the villager as a member of this career. `slots` is the number of seats reserved in each matching building; ordinary staff fill the remaining seats.
+`proprietor.professions` are villager-profession IDs exactly as written. They can be aliases of this career. Townstead does not convert them, so the other mod's profession keeps its trades, clothing, and identity. Townstead still counts the villager as a member of this career. `slots` is the number of seats that Townstead keeps for them in each matching building. Other staff use the remaining seats.
 
 ### Station Post
 
@@ -122,7 +124,7 @@ A building can also reserve its first seats for the profession that owns it:
 }
 ```
 
-A station post is a standalone workplace outside every recognized building. A station inside a building does not add another seat. The building already accounts for that room. Self-declared station-post discovery is parsed but is not yet backed by a general indexed block search; use a startup POI or building provider for production content.
+A station post is a workplace that is not in a recognised building. A station in a building does not add a seat, because the building already counts that room. Townstead reads this provider, but it cannot yet search the world for these blocks. For finished content, use a POI provider or a building provider.
 
 ### Always
 
@@ -130,4 +132,4 @@ A station post is a standalone workplace outside every recognized building. A st
 { "type": "townstead:always" }
 ```
 
-Use this for a profession that needs no physical job site.
+Use this for a profession that needs no job site in the world.

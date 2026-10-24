@@ -77,6 +77,7 @@ Schema: `townstead:lineage/v1`
 | `schema` | string | yes | `townstead:lineage/v1`. |
 | `display_name` | component | no | Shown as the lineage name. |
 | `ancestry` | id | no | The ancestry this lineage specializes. |
+| `ancestry_genes` | boolean | no | `false` files the lineage under its ancestry by name and category only: its founders don't inherit the ancestry's genes. Use it to sort your lineages under another pack's ancestry, inside a gated `overrides` entry, without taking on that pack's ears, build, or powers. Defaults to `true`. |
 | `demonym` | object | no | Overrides ancestry demonym when present. |
 | `backstory` | component | no | Overrides ancestry backstory when present. |
 | `genes` | array | no | Lineage-specific genes layered after ancestry genes. |

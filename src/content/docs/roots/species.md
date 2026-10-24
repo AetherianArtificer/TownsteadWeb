@@ -48,6 +48,7 @@ Use [Rigs](/roots/rigs/) for the full rig file format and [Appearance Assets](/r
 | `personalities` | object | no | Broad personality policy for roots in this species. See [Personality Policy](/roots/personality-policy/). |
 | `hair` | boolean or object | no | Turns MCA hair on or off and limits its colours. See [Hair Policy](/roots/hair-policy/). |
 | `character_editor` | object | no | Custom character editor layout. Omit it to keep MCA's native Character tab unchanged. |
+| `states` | object | no | Entity states this species can or cannot have, such as `{"examplepack:werebear": false}`. A root, lineage or ancestry can override it. Some states need MCA's villager body. Set them to `true` to allow them on a custom rig that you fitted for them. The aspect picker shows only the aspects a character can have. |
 
 ## Example
 

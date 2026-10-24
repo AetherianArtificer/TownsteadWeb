@@ -11,6 +11,7 @@ All `/pheno` commands require permission level 2. They are intended for pack aut
 | `/pheno explain <target>` | Shows effective capabilities for a living entity, including applied and ignored contributions. |
 | `/pheno expand <gene>` | Prints the normalized form of a loaded gene. Long output is truncated in chat. |
 | `/pheno dump` | Writes generated Pheno reference files to the server's `pheno/` directory. |
+| `/pheno patches` | Lists every data patch, its targets, and whether each target loaded and was patched. See [Pack Compatibility](/reference/compatibility/#patches). |
 | `/pheno parity <target>` | Compares legacy gene outputs with capability-layer outputs for a living entity. |
 | `/pheno skills <target>` | Under development. Lists learned profession skills on a living entity. |
 | `/pheno learn <target> <skill>` | Under development. Teaches a profession skill using the normal skill rules. |

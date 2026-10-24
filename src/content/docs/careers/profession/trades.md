@@ -3,23 +3,23 @@ title: Trades
 description: Contribute merchant offers to a career or one of its paths.
 ---
 
-Merchant offers are contributions in `trade/` directories, never inline in `profession.json`.
+Put merchant offers in files in a `trade/` directory. Do not put them in `profession.json`.
 
 ## Trades
 
-Put general Profession offers in independently addressable contribution files:
+Put the general offers of a Profession in separate contribution files:
 
 ```text
 data/<namespace>/profession/<career>/trade/<contribution>.json
 ```
 
-Put Path-specific offers beside the Path they belong to:
+Put the offers of one Path next to that Path:
 
 ```text
 data/<namespace>/profession/<career>/path/<path>/trade/<contribution>.json
 ```
 
-The directory supplies the root Profession. The schema is required, and numbered keys are Minecraft merchant levels:
+The directory sets the Profession. The schema is required. The number keys are Minecraft merchant levels:
 
 ```json
 {
@@ -34,15 +34,21 @@ The directory supplies the root Profession. The schema is required, and numbered
 }
 ```
 
-The enclosing directory supplies the contribution target. A file in the root `trade/` directory contributes to the Profession; a file in a Path's `trade/` directory appears only after the merchant has learned a Skill on that Path. Do not add a `path` field. Each root or Path contribution may use any merchant level from 1 through 5.
+The directory also sets who gets the offers. A file in the root `trade/` directory adds offers to the Profession. A file in the `trade/` directory of a Path adds offers only after the merchant learns a Skill on that Path. Do not add a `path` field. A root or Path contribution can use any merchant level from 1 to 5.
 
-Different files merge their offers by merchant level. Files are applied in resource-ID order. Add `"replace": true` to clear earlier contributions for that file's root-Profession or Path target before adding its offers. Replacement is scoped: replacing `hive_keeper` does not remove root offers or another Path's offers. As with other data-pack resources, a higher pack can replace one individual contribution by providing the same resource path.
+Townstead merges the offers of different files by merchant level, in the order of their resource IDs. Add `"replace": true` to remove the earlier offers for the same Profession root or Path before Townstead adds the offers of this file. The replacement applies only to that target. For example, a replacement for the `hive_keeper` Path does not remove root offers or the offers of other Paths. As with other data-pack resources, a pack with a higher priority can replace one contribution with a file at the same resource path.
 
-`cost` and `result` are required item IDs. Their sibling `cost_count` and `result_count` fields default to `1`. An optional second input uses `secondary_cost` and `secondary_cost_count` in the same way. Missing item IDs cause that offer to disappear instead of crashing trade generation.
+`cost` and `result` are required item IDs. `cost_count` and `result_count` default to `1`. For a second input, use `secondary_cost` and `secondary_cost_count` in the same way. If an item ID does not exist, Townstead removes that offer, and trade generation continues.
 
-Townstead derives the routine merchant settings from the containing level. `max_uses` defaults to `16` at level 1 and `12` thereafter. `villager_xp` defaults to `2`, `5`, `10`, `15`, and `20` across levels 1 to 5. `price_multiplier` defaults to `0.05`. Specify any of these fields only when the offer needs to depart from those values.
+Townstead sets the usual merchant values from the level:
 
-`requires` adds a condition beyond Profession and Path membership. It may be a string naming a Skill or any Pheno entity condition:
+- `max_uses` is `16` at level 1 and `12` at later levels.
+- `villager_xp` is `2`, `5`, `10`, `15`, and `20` for levels 1 to 5.
+- `price_multiplier` is `0.05`.
+
+Set these fields only when an offer needs different values.
+
+`requires` adds a condition, in addition to Profession and Path membership. It can be a string that names a Skill, or any Pheno entity condition:
 
 ```json
 "requires": {
@@ -51,6 +57,6 @@ Townstead derives the routine merchant settings from the containing level. `max_
 }
 ```
 
-A short Skill reference in a root contribution resolves in the Profession's root `skill/` directory. In a Path contribution, it resolves in that Path's sibling `skill/` directory. Use `<path>/<skill>` from the Profession root, or a full resource ID when referring to another Profession's Skill.
+In a root contribution, a short Skill name refers to the root `skill/` directory of the Profession. In a Path contribution, it refers to the `skill/` directory of that Path. Use `<path>/<skill>` from the Profession root. To refer to a Skill of a different Profession, use its full resource ID.
 
-Townstead supports up to eight data-defined offers at each merchant level. Minecraft merchant levels run from 1 to 5.
+Townstead accepts up to eight data-defined offers at each merchant level. Minecraft merchant levels go from 1 to 5.

@@ -44,10 +44,19 @@ When a founder gets a culture and their home village has no culture yet, the vil
 
 ## Which Roots Settle a Village
 
-In a village with a [founding profile](/cultures/culture-packs/#founding-profiles), Townstead also uses `cultural_spawn_bias` to pick which Roots spawn there. This is the population strategy `townstead:cultural_affinity`, which is the default:
+In a village with a [founding profile](/cultures/culture-packs/#founding-profiles), Townstead also uses `cultural_spawn_bias` to pick which Roots spawn there. This is the population strategy `townstead:cultural_affinity`, which is the default.
+
+The strategy divides the residents into two groups:
+
+- **Native Roots** have a rate for the profile's culture. Together they get the share `1 - outsider_baseline`. Each native Root gets a part of that share, in proportion to its rate × multiplier.
+- **Outsider Roots** are all other Roots. Together they get the share `outsider_baseline`. Each outsider Root gets a part of that share, in proportion to (1 + its rate for "any") × multiplier.
+
+For example, with `outsider_baseline` 0.15, the native Roots make up about 85% of the residents. More installed Roots do not decrease this share. The biome and dimension bias of each Root still applies on top of these shares.
+
+If no installed Root has a rate for the culture, each Root gets this weight:
 
 ```text
-Root weight = (outsider_baseline + the Root's rate for the profile's culture + the Root's rate for "any") × multiplier
+Root weight = (outsider_baseline + the Root's rate for "any") × multiplier
 ```
 
 The profile sets these values in its `population` block:
@@ -62,5 +71,5 @@ The profile sets these values in its `population` block:
 
 | Field | Description |
 | --- | --- |
-| `outsider_baseline` | The weight that every Root gets, also with no bias for the culture. 0 or more. The default is 0.1. |
+| `outsider_baseline` | The share of residents from Roots with no rate for the culture, from 0 to 1. The default is 0.1. |
 | `adjustments` | A `multiplier` for one `root`, 0 or more. The default multiplier is 1. |

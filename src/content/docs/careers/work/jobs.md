@@ -3,19 +3,21 @@ title: Work Jobs
 description: Declare block-interaction and entity-delivery Jobs that give a task engine its world operations.
 ---
 
-A Job supplies world operations to one of Townstead's general executors and registers the task ID that Professions place in their `work.json`. The task entry itself is described in the [Field Reference](/careers/work-tasks/#field-reference).
+A Job tells one of Townstead's general executors what to do in the world. It also registers the task ID that Professions use in their `work.json`. For the task entry, see the [Field Reference](/careers/work-tasks/#field-reference).
 
 ## Work Job Documents
 
-A work-job document supplies world operations to a reusable task engine. Place it at:
+Put a work-job file at:
 
 ```text
 data/<namespace>/work_job/<job>.json
 ```
 
-The `type` selects the general executor. The `task` names the work that Professions place on their schedules and is registered by the Job document itself. The executor owns semantic fields such as `target`, `source`, and `destination`; authors do not invent structural role names.
+- `type` chooses the general executor.
+- `task` names the work that Professions add to their schedules. The Job file registers it.
+- The executor sets the field names for roles, such as `target`, `source`, and `destination`. Do not make up other role names.
 
-### Block Interaction
+## Block Interaction
 
 ```json
 {
@@ -44,15 +46,15 @@ The `type` selects the general executor. The `task` names the work that Professi
 }
 ```
 
-Use `block` for one target block. Use `blocks` for several block IDs or `#tag` references. A target-level `condition` is a Pheno block condition shared by every interaction. Townstead tries interactions in authored order and obtains the first applicable item from the worker or work-site storage. `xp` supplies the default award; an interaction may override it.
+Use `block` for one target block. Use `blocks` for several block IDs or `#tag` references. A `condition` on the target is a Pheno block condition for every interaction. Townstead tries the interactions in the order of the file, and gets the first matching item from the worker or from work-site storage. `xp` sets the default XP. An interaction can set its own `xp`.
 
-The default interaction invokes Minecraft's real block-use behaviour with the selected item. `output` identifies one dropped result that Townstead may collect; `outputs` accepts several item IDs. These fields do not create items or prescribe a count. An interaction may provide an explicit Pheno block `action` when ordinary block use is not sufficient. Items returned by that action enter ordinary work-site storage automatically.
+By default, the worker uses the selected item on the block, as a player does in Minecraft. `output` names one dropped item that Townstead can collect. `outputs` accepts several item IDs. These fields do not make items, and do not set a count. When the usual block use is not enough, give the interaction a Pheno block `action`. Townstead puts the items that the action returns into work-site storage automatically.
 
-The work display derives its held item from the applicable interaction's `item` selector. A new tool tag therefore appears in the villager's hands with no further declaration. Generic Job tools are shown only while the Job has a runnable target or source; listing a possible tool does not make an idle worker repeatedly equip it.
+The villager holds the item from the `item` selector of the matching interaction. So a new tool tag shows in the villager's hands with no more data. The villager holds a Job tool only while the Job has a target or source that is ready. A tool in the list does not make an idle worker take it out again and again.
 
-#### Managed requirements
+### Managed Requirements
 
-A block interaction may require temporary preparation. Put these facts in `requirements`, not in an interaction condition, when the worker can establish and later remove them:
+A block interaction can need a temporary preparation, such as a lit fire. When the worker can make the preparation and later undo it, put it in `requirements`, not in an interaction condition:
 
 ```json
 "requirements": [
@@ -91,22 +93,24 @@ A block interaction may require temporary preparation. Put these facts in `requi
 ]
 ```
 
-`satisfied_when` is evaluated at the main target and states the successful world condition. The name is deliberately explicit: it is not a condition for beginning the failure path. A requirement without `provision` must already be satisfied. A managed requirement adds the following fields:
+Townstead checks `satisfied_when` at the main target. It describes the world when the requirement is met. It is not a condition to start the preparation. A requirement without `provision` must already be met. A managed requirement adds these fields:
 
-- `id` is a local, stable name used by feedback rules.
-- `provision.at` is a block selector rooted at the main target. It may yield several candidates in preferred order.
-- `provision.item` and optional `item_condition` describe the tool obtained from the worker or work-site storage.
-- `start` establishes the requirement at a selected source. The engine verifies `satisfied_when` afterward; running an action alone is not success.
-- `managed_when` is a safety check at the selected source before cleanup.
-- `stop` reverses the temporary preparation. It must not require an inventory item, because abandoned work is cleaned after its lease expires.
+- `id` is a local name for feedback rules. Do not change it.
+- `provision.at` is a block selector that starts at the main target. It can find several blocks, in order of preference.
+- `provision.item` and the optional `item_condition` describe the tool. Townstead gets it from the worker or from work-site storage.
+- `start` makes the preparation at the selected block. The engine then checks `satisfied_when`. The action alone does not count as success.
+- `managed_when` is a safety check at the selected block before cleanup.
+- `stop` undoes the preparation. It must not need an inventory item, because Townstead cleans up abandoned work after its lease expires.
 
-Townstead does not run `stop` when the world already satisfied the requirement. When Townstead performs `start`, it records a persistent lease on that source. Workers sharing the preparation hold separate leases, and cleanup occurs only after the final holder releases it. Interrupted leases expire and are cleaned after reload. Cleanup also refuses to act if the source block has been replaced or no longer passes `managed_when`.
+If the requirement was already met in the world, Townstead does not run `stop`. When Townstead runs `start`, it saves a lease on that block. Each worker who uses the preparation has a separate lease. Townstead cleans up only after the last worker releases their lease. Leases from interrupted work expire, and Townstead cleans them up after a reload. Townstead does not clean up if the block was replaced or no longer passes `managed_when`.
 
-This mechanism is general. It can heat a station, power a machine, fill a vessel, open access, or light a work area without making those concepts part of the Job executor.
+Use this for any preparation: heat a station, power a machine, fill a vessel, open a path, or light a work area. The Job executor does not need to know about these things.
 
-An interaction may also have its own Pheno block `condition` and `item_condition`. The former tests the target; the latter tests the selected stack after it has matched `item`. Use them when a stage requires a different tool, a wet cloth, sufficient durability, or another property of the actual input. `output` and `outputs` are optional for an explicit action that returns its products directly or performs successful work without an item result, such as cleaning a spill. The Job still records one completion and awards XP.
+### Interaction Conditions And Actions
 
-An explicit action is an ordered block-action array. The Job makes its selected stack available as the `item` role:
+An interaction can also have its own Pheno block `condition` and `item_condition`. `condition` tests the target. `item_condition` tests the selected stack after it matches `item`. Use them when a step needs a different tool, a wet cloth, enough durability, or another property of the item. `output` and `outputs` are optional for an `action` that returns its own items, or that does work with no item result, such as cleaning a spill. The Job still records one completion and gives XP.
+
+An `action` is an ordered array of block actions. The Job gives the selected stack to the actions as the `item` role:
 
 ```json
 {
@@ -143,17 +147,71 @@ An explicit action is an ordered block-action array. The Job makes its selected 
 }
 ```
 
-The engine checks applicability without changing the world before it claims a target. If an action needs a block entity, a resolvable mapped block, or another runtime prerequisite, its preflight check can refuse the interaction. The action array then runs in order as one work attempt. See [Pheno Actions](/pheno/actions/#data-authored-block-procedures) for the procedure vocabulary.
+Before the engine claims a target, it checks whether the interaction can run, without changing the world. If an action needs a block entity, a mapped block, or something else that is missing, this check stops the interaction. Then the engine runs the action array in order, as one work attempt. For the action types, see [Pheno Actions](/pheno/actions/#data-authored-block-procedures).
 
-Successful completion also records the Job's resource ID in the Chronicle. The example therefore increments `example:beehive_harvest` without a separately authored counter field. Renaming the resource renames the activity; merely referring to an ID does not create a Job or a counter.
+### Credit And Diagnostics
 
-The block-interaction executor drives villager AI. Players earn the same credit through a separate bridge described in [Player Work](/careers/work/history/#player-work).
+Each completion also records the resource ID of the Job in the Chronicle. So the example adds to `example:beehive_harvest` without a separate counter field. If you rename the file, the activity gets the new name. A reference to an ID does not make a Job or a counter.
 
-Block-interaction Jobs expose executor-level diagnostic signals under `townstead_work:block_interaction/`, including `has_worksite`, `has_target`, `has_ready_target`, and `has_input`. These names describe reusable executor state, not a particular Job or block. Prefer ordinary Pheno world conditions when the same fact can be stated without a signal.
+The block-interaction executor controls villagers. Players get the same credit in a different way. See [Player Work](/careers/work/history/#player-work).
 
-### Entity Delivery
+Block-interaction Jobs give diagnostic signals under `townstead_work:block_interaction/`, such as `has_worksite`, `has_target`, `has_ready_target`, and `has_input`. These signals describe the state of the executor, not one Job or block. When a usual Pheno world condition can test the same thing, use the condition.
 
-An entity-delivery job declares an entity `source` and block `destination` directly:
+## Entity Interaction
+
+An entity-interaction job uses an item on an animal where the animal is kept, and carries the result to storage. Shearing and milking are entity interactions.
+
+```json
+{
+  "schema": "townstead:job/v3",
+  "type": "townstead:entity_interaction",
+  "task": "example:shear",
+  "target": {
+    "buildings": ["example:paddock"],
+    "entities": ["#example:wool_animals"],
+    "condition": {
+      "type": "pheno:and",
+      "conditions": [
+        { "type": "pheno:baby", "inverted": true },
+        { "type": "pheno:shearable" }
+      ]
+    },
+    "interactions": [
+      {
+        "item": "#example:shears",
+        "outputs": ["#minecraft:wool"],
+        "xp": 1
+      }
+    ]
+  }
+}
+```
+
+| Field | Default | Description |
+| --- | ---: | --- |
+| `target.buildings` | `[]` | Building types where the animals must stand. A trailing `*` matches a prefix. When the list is empty, Townstead uses the worker's own work site. |
+| `target.entities` | `[]` | Entity IDs or `#tags`. When the list is empty, only `condition` limits the animals. |
+| `target.condition` |  | A Pheno entity condition that the animal must meet. |
+| `target.range` | `2` | Distance in blocks from which the worker uses the item. |
+| `target.interval` | `12` | Ticks between arriving and using the item. |
+| `interactions[].item` |  | Item ID or `#tag`. Townstead gets one from the worker or from work-site storage. |
+| `interactions[].action` | `pheno:use_item_on` | A Pheno action. The worker is the actor and the animal is the target. |
+| `interactions[].outputs` | `[]` | Item IDs or `#tags` that Townstead carries to storage. |
+| `interactions[].condition` |  | A Pheno entity condition for this interaction only. |
+| `interactions[].xp` | `1` | Career experience for each successful use. |
+| `interactions[].activity` | the Job ID | The history counter that the use adds to. |
+
+Without an `action`, the worker uses the item on the animal as a player does. The animal's own interaction runs, so modded animals and modded tools work without other data. The item that is left in the worker's hand, such as worn shears or a filled bucket, goes back to the worker.
+
+For a building type with an `enclosed` site requirement, such as a pen, Townstead checks that an animal is inside by the ground that the building holds, not by its box. An animal outside an L-shaped pen is therefore outside the pen.
+
+The Order Sheet of the worker's own work site controls the Job. The building where the animal stands has no effect. For example, a paused shearing line at a shepherd's workplace stops shearing in every pen.
+
+After each use, Townstead carries the declared outputs to storage. It uses the Career's `storage.preferred_roles` first, and then storage beside the work site. When there is no storage, the worker keeps the outputs and continues to work while there is space in the inventory.
+
+## Entity Delivery
+
+An entity-delivery job declares an entity `source` and a block `destination`:
 
 ```json
 {
@@ -201,9 +259,9 @@ An entity-delivery job declares an entity `source` and block `destination` direc
 }
 ```
 
-`source.item` is an optional item ID or item-tag selector. When present, the engine obtains one from the worker or work-site storage and equips it while running `source.action`. `source.results` maps an eligible entity type to the exact item that the engine must observe before it begins the delivery. It does not create that result. A cancelled mod event may therefore produce the mapped item without leaving a dead entity, while an action that produces no mapped item simply produces no delivery.
+`source.item` is an optional item ID or item tag. When it is present, the engine gets one from the worker or from work-site storage, and the worker holds it while `source.action` runs. `source.results` maps each entity type to the item that must appear before the engine starts the delivery. It does not make that item. So if a mod cancels the death, the mapped item can still appear without a dead entity. If the action makes no mapped item, there is no delivery.
 
-`source.condition` is an ordinary Pheno entity condition. `range` is measured in blocks; `interval` and a literal `cooldown` are measured in ticks. `xp` is awarded after delivery. A server setting may supply `cooldown` instead of a literal:
+`source.condition` is a usual Pheno entity condition. `range` is in blocks. `interval` and a number `cooldown` are in ticks. Townstead gives the `xp` after the delivery. A server setting can set `cooldown` in place of a number:
 
 ```json
 "cooldown": {
@@ -214,4 +272,4 @@ An entity-delivery job declares an entity `source` and block `destination` direc
 }
 ```
 
-`destination.placement` locates the delivered block relative to the destination and can set or copy block-state properties. Its optional Pheno block `action` runs at the placed block after placement. The field names describe the engine's operation; profession-specific nouns remain resource values.
+`destination.placement` sets where the delivered block goes, relative to the destination. It can set or copy block-state properties. Its optional Pheno block `action` runs at the block after Townstead places it. The field names describe what the engine does. Put names that belong to one profession in the resource values, not in field names.

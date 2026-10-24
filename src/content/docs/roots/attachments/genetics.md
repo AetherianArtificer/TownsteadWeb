@@ -42,7 +42,7 @@ A `size` block makes the attachment quantitatively heritable. Each channel rolls
 | --- | --- | --- |
 | `min`, `max` | number | The roll range. |
 | `label` | text | The editor slider label. A literal string or `{ "translate": ... }`. |
-| `heritage` | object | `ancestry` plus `floor`: the expressed value is scaled by the bearer's share of that ancestry, mapped onto `[floor, 1]`. A half-blood grows visibly smaller elven ears than a full elf. |
+| `heritage` | object | `ancestry` plus `floor`: the expressed value is scaled by the bearer's share of that ancestry, mapped onto `[floor, 1]`. A half-blood grows visibly smaller elven ears than a full elf. `ancestry` can also be a list, and the shares add up. Use a list when your lineages join another pack's ancestry while that pack is installed, so bearers still count as full-blooded. |
 
 The single-channel shorthand `"size": { "min": ..., "max": ..., "label": ... }` declares one anonymous channel. Old saves self-heal: alleles rolled before a channel existed roll the missing channels on load, and a legacy anonymous roll is renamed to the gene's first declared channel.
 

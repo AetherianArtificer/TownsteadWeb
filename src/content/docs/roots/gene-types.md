@@ -82,6 +82,7 @@ This example defines local chronotype variants inline:
 | --- | --- | --- |
 | `townstead_roots:attachment` | `attachment`, `attachments`, `size`, `tint` | Grants render attachments, with heritable size channels, style variants, and coat colour. See [Attachments](/roots/attachments/genetics/). |
 | `townstead_roots:eye_color` | `tint` | Tints custom-rig eyes. Accepts `#RRGGBB`, `RRGGBB`, or `#RGB`. |
+| `townstead_roots:iris` | `tint`, `tint_right`, `glow` | Recolours the iris of MCA's own eyes and keeps their shape, lashes, blink, and editor choice. `tint_right` gives the right eye its own colour. `glow` draws the iris emissive. As a variants gene, each variant is one heritable colouring. Custom rigs ignore it. |
 | `townstead_roots:eyes` | `texture`, `glow` | Selects a custom face eye sprite strip, optionally emissive. |
 | `townstead_roots:mouth` | `texture` | Selects a custom face mouth sprite strip. |
 | `townstead_roots:skin_tone` | `tint`, `blend`, `strength` | Tints skin rendering. `blend` supports `multiply`, `screen`, `overlay`, and `color`. |

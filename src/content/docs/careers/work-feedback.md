@@ -3,9 +3,14 @@ title: Work Feedback
 description: Author a Profession's blocked-work dialogue, including personality and Root voices.
 ---
 
-Profession feedback lets a villager explain why work has stopped. The work engine discovers the problem. JSON decides whether the villager should mention it, which problem takes precedence, how often it may be mentioned, and which dialogue key it uses.
+With work feedback, a villager can tell the player why their work has stopped. The work engine finds the problem. The JSON sets:
 
-This follows the same layout as the rest of a Profession. Shared policy is a sidecar. Each named thing is an individual file whose path supplies its identity.
+- whether the villager talks about the problem;
+- which problem comes first;
+- how often the villager can talk about it;
+- which dialogue key the villager uses.
+
+Feedback uses the same layout as the rest of a Profession. Shared settings are in one file. Each rule is in a separate file, and the path of the file gives its ID.
 
 ## Layout
 
@@ -20,13 +25,13 @@ data/<namespace>/profession/<profession>/
    └─ unreachable.json
 ```
 
-The directory supplies the Profession ID. For example, files below `data/example/profession/beekeeper/` belong to `example:beekeeper`. The filename supplies the feedback-rule ID, so `feedback/no_input.json` defines `no_input`.
+The directory gives the Profession ID. For example, files under `data/example/profession/beekeeper/` belong to `example:beekeeper`. The file name gives the ID of the feedback rule, so `feedback/no_input.json` defines `no_input`.
 
-Do not repeat either ID inside the JSON.
+Do not write either ID in the JSON.
 
 ## Profession settings
 
-The optional `feedback.json` sidecar contains values shared by the Profession:
+The optional `feedback.json` file holds the settings for the whole Profession:
 
 ```json
 {
@@ -36,7 +41,10 @@ The optional `feedback.json` sidecar contains values shared by the Profession:
 }
 ```
 
-`interval` is the shared cooldown in ticks. `range` is the maximum distance to the nearest player. The defaults are 1200 ticks and 24 blocks, so omit this sidecar when those values are suitable.
+- `interval` is the shared cooldown, in ticks. The default is 1200.
+- `range` is the largest distance to the nearest player, in blocks. The default is 24.
+
+If the defaults are correct for you, you do not need this file.
 
 ## One rule
 
@@ -61,18 +69,18 @@ Each file in `feedback/` defines one rule:
 
 `trigger` accepts four values:
 
-- `event` is the default. The work engine reports the rule by its file-derived ID, and the normal cooldown applies.
-- `immediate` is an event that bypasses the cooldown. Use it for a one-time result, not a persistent obstruction.
-- `periodic` is considered during the villager's work shift whenever the shared cooldown is ready.
-- `rising` speaks once when `when` changes from false to true. The first observation is silent. Use it for milestones such as a newly completed workplace; it does not use the repeated-request cooldown.
+- `event` is the default. The work engine reports the rule by its ID, and the usual cooldown applies.
+- `immediate` is an event with no cooldown. Use it for a result that happens once, not for a problem that stays.
+- `periodic`: Townstead checks the rule during the work shift of the villager, each time the shared cooldown is ready.
+- `rising`: the villager speaks once when `when` changes from false to true. The villager does not speak at the first check. Use it for milestones, such as a workplace that is now complete. It does not use the cooldown.
 
-Periodic rules are tested from highest `priority` to lowest. The first matching rule speaks. `when` is an ordinary Pheno condition and may use compositions such as `pheno:and`, `pheno:or`, and `pheno:not`. Omit it for an event whose work engine has already identified the complete reason.
+Townstead checks periodic rules from the highest `priority` to the lowest. The villager says the line of the first rule that matches. `when` is a usual Pheno condition, and can use `pheno:and`, `pheno:or`, and `pheno:not`. Leave it out for an event when the work engine already knows the full reason.
 
-`dialogue` is a standard translatable component. `variants` declares the size of its generic numbered pool and defaults to one.
+`dialogue` is a standard translatable component. `variants` is the number of lines in its numbered pool. The default is 1.
 
 ## Language lines
 
-Write the dialogue lines in a language file inside the pack's `data` folder. Townstead reads this file on the server, so a data pack does not need an `assets` folder for its dialogue:
+Write the dialogue lines in a language file in the `data` folder of the pack. Townstead reads this file on the server, so a data pack does not need an `assets` folder for its dialogue:
 
 ```text
 data/example/lang/en_us.json
@@ -86,11 +94,11 @@ data/example/lang/en_us.json
 }
 ```
 
-The `/1`, `/2`, and `/3` suffixes form the generic pool declared by `variants`. Townstead selects one at delivery time. `%1$s` is the listening player's name. Arguments supplied by the work engine begin at `%2$s`.
+The endings `/1`, `/2`, and `/3` make the pool that `variants` declares. Townstead chooses one line when the villager speaks. `%1$s` is the name of the player who listens. Values from the work engine start at `%2$s`.
 
 ## Work state
 
-Describe ordinary world state directly. `townstead:worksite` can count matching workplaces, blocks, or living entities; Townstead does not need to know what a hive, carcass, orchard, or machine is:
+Describe the state of the world directly. `townstead:worksite` can count matching workplaces, blocks, or living entities. Townstead does not need to know what a hive, carcass, orchard, or machine is:
 
 ```json
 {
@@ -105,13 +113,19 @@ Describe ordinary world state directly. `townstead:worksite` can count matching 
 }
 ```
 
-`scope` is `assigned` by default. `profession` considers every workplace supplied by the Profession's POI declarations, while `village` considers every complete building. `buildings` accepts exact building types and trailing-`*` prefixes. Omit both `block_condition` and `entity_condition` to count the matching places themselves. With either condition present, Townstead counts matching blocks or living entities instead. `comparison` defaults to `>=`, and `compare_to` defaults to `1`.
+| Field | Description |
+| --- | --- |
+| `scope` | `assigned` (default): the villager's own workplace. `profession`: every workplace from the POI declarations of the Profession. `village`: every complete building. |
+| `buildings` | Exact building types, or prefixes that end with `*`. |
+| `block_condition`, `entity_condition` | Without either condition, Townstead counts the matching places. With a condition, Townstead counts the matching blocks or living entities. |
+| `comparison` | The default is `>=`. |
+| `compare_to` | The default is `1`. |
 
-The nested conditions are the same Pheno block and entity conditions used elsewhere. Combine `townstead:worksite` with `pheno:inventory` to express such facts as “a ready carcass exists, but the worker carries no skinning knife.” This keeps the vocabulary of the trade in JSON.
+The nested conditions are the usual Pheno block and entity conditions. Use `townstead:worksite` with `pheno:inventory` to describe facts such as "a carcass is ready, but the worker has no skinning knife". In this way, the words of the trade stay in JSON.
 
-A work engine may still expose a `townstead:work_signal` for state that cannot be reconstructed from the world, such as a machine that refused an item for reasons the world does not show. A signal remains a namespaced, read-only fact. It does not contain dialogue policy, and it should not duplicate a fact that `townstead:worksite`, `pheno:inventory`, or another ordinary condition can already describe.
+A work engine can also give a `townstead:work_signal` for a state that the world does not show, such as a machine that refused an item for a hidden reason. A signal is a read-only fact with a namespace. It has no dialogue settings. Do not use a signal for a fact that `townstead:worksite`, `pheno:inventory`, or another usual condition can already describe.
 
-A named [managed Job requirement](/careers/work/jobs/#managed-requirements) exposes its exact state through `townstead:work_requirement`:
+`townstead:work_requirement` reads the exact state of a named [managed Job requirement](/careers/work/jobs/#managed-requirements):
 
 ```json
 {
@@ -122,11 +136,11 @@ A named [managed Job requirement](/careers/work/jobs/#managed-requirements) expo
 }
 ```
 
-`state` accepts `satisfied`, `unsatisfied`, `provisionable`, `missing_source`, and `missing_input`. `unsatisfied` includes every applicable state except `satisfied`; it does not match when the Job or requirement is inapplicable. Use the precise states for dialogue: a missing campfire is not the same problem as an existing campfire without an ignition tool. A provisionable requirement normally needs no complaint because the worker can resolve it.
+`state` accepts `satisfied`, `unsatisfied`, `provisionable`, `missing_source`, and `missing_input`. `unsatisfied` matches every state except `satisfied`. It does not match when the Job or requirement does not apply. Use the exact states for dialogue. For example, a missing campfire is a different problem from a campfire with no tool to light it. The worker can fix a `provisionable` requirement, so it usually needs no complaint.
 
 ## Personality voices
 
-Personality wording belongs to the voice hierarchy, not to another conditional choice inside the rule. Keep the same semantic dialogue key and prefix it with the flattened personality ID:
+Do not add a condition to the rule to change the words for a personality. Use the voice system. Keep the same dialogue key, and put the personality ID in front of it, with dots in place of the colon:
 
 ```json
 {
@@ -135,15 +149,15 @@ Personality wording belongs to the voice hierarchy, not to another conditional c
 }
 ```
 
-A voice tier may provide a different number of variants from the generic pool. Townstead chooses among the variants that tier actually defines.
+A voice can have a different number of lines from the generic pool. Townstead chooses from the lines that the voice defines.
 
-For a custom personality, use its complete flattened ID. `example:courtly` becomes `townstead_voice.example.courtly...`. A custom personality's MCA base personality is the next fallback, so a personality based on crabby inherits crabby lines without restating conditions.
+For a custom personality, use its full ID in the same way. `example:courtly` becomes `townstead_voice.example.courtly...`. If a line is missing, Townstead tries the MCA base personality of the custom personality next. So a personality based on crabby uses the crabby lines, with no extra conditions.
 
-`pheno:personality` remains available for gameplay conditions. It is unnecessary when only the wording changes.
+You can still use `pheno:personality` in gameplay conditions. You do not need it when only the words change.
 
 ## Root voices
 
-Roots use the same mechanism:
+Roots use the same system:
 
 ```json
 {
@@ -151,19 +165,19 @@ Roots use the same mechanism:
 }
 ```
 
-Voice lookup is most specific first:
+Townstead looks for a voice in this order, from the most specific:
 
 ```text
 custom personality → MCA base personality → Root → lineage → ancestry → species
 ```
 
-A Root pack therefore expands a Profession's voice by adding language entries. It does not repeat the Profession ID, feedback condition, trigger, or priority. Missing lines fall through to the next voice tier and finally to the generic pool.
+So a Root pack adds voices to a Profession with language entries only. It does not repeat the Profession ID, the feedback condition, the trigger, or the priority. When a line is missing, Townstead tries the next voice, and at the end the generic pool.
 
 ## Data-pack composition
 
-Separate rule files merge naturally. To add a rule, add a new filename. To replace a rule, provide the same resource path from a higher-priority data pack. To remove a bundled rule, use Minecraft's ordinary resource-filter facilities.
+Separate rule files combine automatically. To add a rule, add a file with a new name. To replace a rule, put a file at the same resource path in a data pack with a higher priority. To remove a rule from Townstead, use the usual resource filters of Minecraft.
 
-Optional integrations may use the same `mods` gate as Profession trade documents:
+Optional integrations can use the same `mods` gate as Profession trade files:
 
 ```json
 {
@@ -175,10 +189,14 @@ Optional integrations may use the same `mods` gate as Profession trade documents
 }
 ```
 
-An unmet gate omits the rule. An invalid gate rejects it.
+When the gate is not met, Townstead ignores the rule. When the gate is invalid, Townstead rejects the rule.
 
 ## Authoring guidance
 
-Name the file after the general problem, not the workstation or the sentence. `no_worksite.json` can serve any Profession; `no_smoker.json` and `ask_for_smoker_angrily.json` bind the rule to one trade or one tone. Keep conditions factual and reusable. Use priorities only to choose among simultaneous obstructions. Use event rules for exact failures reported by a task, periodic rules for persistent conditions, and voice entries for differences in character.
+- Name the file after the general problem, not after the workstation or the sentence. Any Profession can use `no_worksite.json`. Names such as `no_smoker.json` and `ask_for_smoker_angrily.json` tie the rule to one trade or one tone.
+- Keep conditions factual, so that other Professions can use them.
+- Use priorities only to choose between problems that happen at the same time.
+- Use event rules for exact failures that a task reports, and periodic rules for problems that stay.
+- Use voice entries for differences in character.
 
-The result should sound as though the villager understands their work. The machinery underneath should remain useful to the next Profession.
+The villager must sound like a person who understands their work. The rules must still be useful for the next Profession.

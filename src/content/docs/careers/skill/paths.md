@@ -3,11 +3,11 @@ title: Paths
 description: Group skills into specialisation paths, add path work, and steer villagers toward them.
 ---
 
-A path groups a career's skills into a specialisation. This page covers `path.json` from the skill side: levels, path work, and how villagers choose a path. Titles a path or skill build earns are described in [Paths And Titles](/careers/profession/paths-and-titles/).
+A path groups some skills of a career into a specialisation. This page describes `path.json` from the side of skills: levels, path work, and how villagers choose a path. For the titles that a path or skill build earns, see [Paths And Titles](/careers/profession/paths-and-titles/).
 
 ## Paths
 
-Each Path owns a directory. The directory name supplies its ID:
+Each Path has a directory. The directory name is its ID:
 
 ```text
 data/<namespace>/profession/<career>/path/<path>/
@@ -45,7 +45,7 @@ data/<namespace>/profession/<career>/path/<path>/
 }
 ```
 
-Each entry in `skills` is one Path level. Bare names resolve in the sibling `skill/` directory. Array position supplies each referenced Skill's tier. Use an array at a level when the player chooses between several Skills:
+Each entry in `skills` is one Path level. Townstead looks for short names in the `skill/` directory next to `path.json`. The position in the list sets the tier of each Skill. Use an array at a level when the player chooses from several Skills:
 
 ```json
 "skills": [
@@ -55,27 +55,26 @@ Each entry in `skills` is one Path level. Bare names resolve in the sibling `ski
 ]
 ```
 
-The first array contains the level 1 choices; the second contains the level 2 choices. A string remains valid when a level has only one option. Townstead adds every referenced Skill to the Profession's pool, so neither `profession.json` nor the Skill file repeats that relationship. The Path directory gives each one an ID such as `example:beekeeper/wax_worker/clean_rendering`. A Skill may belong to only one individual Path.
+The first array has the choices for level 1. The second array has the choices for level 2. You can use a string when a level has only one choice. Townstead adds every Skill in the list to the Profession, so `profession.json` and the Skill file do not list it again. The Path directory gives each Skill an ID such as `example:beekeeper/wax_worker/clean_rendering`. A Skill can be on only one Path.
 
-Players choose path skills directly. Villagers spend Insight automatically, and a Path's skills only enter that choice when the villager's workplace justifies them: the Path's `worksites` stand in the assigned workplace, or the workplace building declares `path_affinity` for the Path. A villager who already owns a Path skill gives the remaining Path skills more weight and prefers that Path's stations and buildings when choosing work.
+Players choose path skills themselves. Villagers spend Insight automatically. A villager considers the skills of a Path only when their workplace suits the Path:
 
-`mods` is optional. When its expression is unmet, the complete Path is absent, including its
-Skills, title, worksites, and Path trade contributions. This is the appropriate boundary for a
-specialisation supplied by one optional mod. When several optional mods can each supply the
-workplace, set `providers_required` to `true` instead. The Path is then absent until at least one
-[Career provider](/careers/career-providers/) targets it.
+- the `worksites` of the Path are in the villager's workplace, or
+- the workplace building declares `path_affinity` for the Path.
 
-`clothing` gives the Path its own clothing chain in the same format as the Profession field. A
-villager on the Path uses it before the Profession chain. `storage` gives the Path its own
-external-storage preference; see [Storage](/careers/storage/#profession-storage-preferences).
+A villager who already has a Path skill gives more weight to the other skills of that Path. When the villager chooses work, they prefer the stations and buildings of that Path.
 
-Townstead does not store a separate path selection. The learned skill set is the source of truth.
+`mods` is optional. When the expression is not met, Townstead removes the whole Path, with its Skills, title, worksites, and Path trade contributions. Use it for a specialisation that comes from one optional mod. When several optional mods can each supply the workplace, set `providers_required` to `true` instead. Then the Path is available only when at least one [Career provider](/careers/career-providers/) targets it.
 
-When a Path has `title`, Townstead awards that title after one Skill has been learned at every Path level. It does not require every alternative in a level. The directory-derived Path ID is also the title ID. Do not repeat the Path's Skills in a second title declaration. If a standalone title has the same ID, the Path-owned title replaces it.
+`clothing` gives the Path its own clothing list, in the same format as the Profession field. A villager on the Path uses it before the Profession list. `storage` gives the Path its own storage preference. See [Storage](/careers/storage/#profession-storage-preferences).
 
-`powers` is optional. Every character committed to the Path expresses these Pheno components, regardless of which option they selected at a particular level. Use this for Path-wide machinery such as a shared resource producer. Keep an ability that belongs to one choice in that Skill's `power` block instead.
+Townstead does not save a separate path choice. It uses the learned skills only.
 
-Put a Path's preferred stations directly in `path.json`:
+When a Path has a `title`, a character gets that title after they learn one Skill at each Path level. They do not need every choice in a level. The ID of the title is the Path ID. Do not list the Path Skills again in a second title. If a standalone title has the same ID, the Path title replaces it.
+
+`powers` is optional. Each character on the Path has these Pheno components, whatever choices they made at each level. Use it for effects of the whole Path, such as a shared resource. Put an ability that comes with one choice in the `power` block of that Skill.
+
+Put the preferred stations of a Path in `path.json`:
 
 ```json
 {
@@ -84,11 +83,11 @@ Put a Path's preferred stations directly in `path.json`:
 }
 ```
 
-Path-specific merchant contributions belong in the adjacent `trade/` directory. Their location supplies the Path link, just as the adjacent `skill/` directory supplies Skill scope. General Profession offers remain in the Profession's root `trade/` directory.
+Put the merchant offers of a Path in the `trade/` directory next to `path.json`. The location sets the Path, in the same way that the `skill/` directory sets the Path of a Skill. Keep the general offers of the Profession in the root `trade/` directory of the Profession.
 
 ### Path Work
 
-A Path can keep an integration beside its own skills with `work`. Entries use the same format as `tasks` in `work.json`:
+A Path can keep the work of an integration next to its skills with `work`. Entries use the same format as `tasks` in `work.json`:
 
 ```json
 {
@@ -105,4 +104,4 @@ A Path can keep an integration beside its own skills with `work`. Entries use th
 }
 ```
 
-File location records authorship, not exclusivity. Path work joins the parent Profession, so every Cook may make pizza while the Pizzaiolo Path owns the Pizza Delight data. A task that represents a genuine specialisation ability sets `"access": "path"`; only a worker currently on that Path receives it. The default is `"access": "profession"`.
+The location of the file shows who wrote the work. It does not limit who can do it. Path work goes to the whole Profession, so every Cook can make pizza, and the Pizzaiolo Path holds the Pizza Delight data. For a task that only specialists can do, set `"access": "path"`. Then only a worker who is on that Path gets the task. The default is `"access": "profession"`.

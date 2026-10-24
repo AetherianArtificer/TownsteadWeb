@@ -3,24 +3,24 @@ title: Learning Rules
 description: The rules that decide when a skill can be learned, and how skill groups work.
 ---
 
-The server checks these rules before it records a skill for a player or a villager. The fields they read are listed in the [Field Reference](/careers/skills-and-paths/#field-reference).
+The server checks these rules before it records a skill for a player or a villager. The [Field Reference](/careers/skills-and-paths/#field-reference) lists the fields that the rules read.
 
 ## Learning Rules
 
 The server checks all of these rules before it records a skill:
 
-1. The character holds the career that offers the skill.
-2. The character has reached the Skill's Path level in that career.
-3. Every `requires` skill is learned.
-4. No explicit `exclusive_with` relation conflicts with a learned skill, in either direction.
+1. The character has the career that offers the skill.
+2. The character has reached the Path level of the Skill in that career.
+3. The character has learned every skill in `requires`.
+4. No learned skill conflicts with this skill through `exclusive_with`, in either direction.
 5. Every `evidence` counter has reached its target.
-6. The character has enough unspent Insight for `cost`.
+6. The character has enough unspent Insight for the `cost`.
 
-Insight is one shared budget. Every career in which the character has standing contributes the Insight that its Career XP has earned, and every learned skill in any career spends from the same pool. A Farmer rank can therefore pay for a Cook skill. Rank, prerequisites, exclusivity, and evidence remain per skill.
+All careers share one Insight total. Each career adds the Insight that its Career XP has earned, and each skill in any career spends from the same total. For example, Farmer ranks can pay for a Cook skill. The rank, prerequisites, exclusivity, and evidence still apply to each skill separately.
 
-A Path level lists alternatives, but learning one does not close the others. Use `exclusive_with` when two options must never coexist. Otherwise the cost of a second option is the Insight it consumes.
+A Path level lists choices, but a character who learns one choice can still learn the others. Use `exclusive_with` when two choices must never go together. Without it, a second choice only costs more Insight.
 
-Learning a skill records durable history for players and villagers. When normal retraining removes a prerequisite, Townstead also removes every learned skill that depends on it. `retraining: locked` blocks normal removal. The current `costly` policy does not collect a cost and behaves like `free`; do not use it to promise a payment mechanic.
+Townstead saves each learned skill for players and villagers. When normal retraining removes a prerequisite, Townstead also removes each learned skill that needs it. `retraining: locked` stops normal removal. Currently, `costly` takes no cost and works the same as `free`. Do not use it to promise a payment.
 
 ## Prerequisites And Exclusivity
 
@@ -31,15 +31,15 @@ Learning a skill records durable history for players and villagers. When normal 
 }
 ```
 
-`requires` is an AND list. A prerequisite cycle makes every skill on the cycle unreachable and produces an error.
+Every skill in `requires` is required. In a prerequisite cycle, no character can reach any skill on the cycle, and Townstead reports an error.
 
-Exclusivity is checked in both directions at runtime. For clear data, declare the relation on both skills so a reader can see the complete choice from either file.
+Townstead checks exclusivity in both directions. To make the data clear, declare the relation on both skills. Then a reader sees the full choice in either file.
 
-Use `exclusive_with` for a permanent incompatibility. Do not use it only to create a path. Insight already limits how many skills a character can take.
+Use `exclusive_with` for two skills that can never go together. Do not use it only to make a path. Insight already limits how many skills a character can take.
 
 ## Evidence
 
-`evidence` gates a skill on the character's recorded work rather than on rank alone:
+`evidence` makes a skill need recorded work, not only a rank:
 
 ```json
 {
@@ -49,11 +49,11 @@ Use `exclusive_with` for a permanent incompatibility. Do not use it only to crea
 }
 ```
 
-`key` is a Chronicle counter, normally the automatic activity key of a Job or task engine described in [Completed-Work History](/careers/work/history/#completed-work-history). `at_least` is a positive count. Every entry must be met. The Career record shows each requirement with its live count, which is why evidence is a small explicit contract rather than an opaque condition.
+`key` is a Chronicle counter. It is usually the activity key that Townstead records for a Job or task engine. See [Completed-Work History](/careers/work/history/#completed-work-history). `at_least` is a positive count. Every entry must be met. The Career record shows each requirement with its current count. For this reason, evidence is a short list of counters, not a free condition.
 
 ## Skill Groups
 
-`skill_group` separates learning from active expression:
+`skill_group` lets a character learn several skills but use only one at a time:
 
 ```json
 {
@@ -61,6 +61,6 @@ Use `exclusive_with` for a permanent incompatibility. Do not use it only to crea
 }
 ```
 
-Several learned skills can name the same group, but only one is active at a time. Learning a grouped skill equips it. Selecting another learned member changes the active member without deleting the old learning record.
+Several learned skills can name the same group. Only one of them is active at a time. When a character learns a skill in a group, that skill becomes active. When the character chooses another learned skill in the group, that skill becomes active, and the character keeps the old skill.
 
-Ungrouped learned skills are always active.
+A learned skill with no group is always active.

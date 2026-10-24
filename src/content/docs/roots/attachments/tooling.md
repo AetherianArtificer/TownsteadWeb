@@ -19,7 +19,7 @@ Runs every health check and prints located problems. It validates, among other t
 - Morph and visibility channel names no granting gene rolls.
 - Texture dimensions that disagree with the geometry's declared UV space.
 - Targets that resolve to no attachment point, and unknown `hides_under` slots.
-- Physics parameters outside their ranges and invalid segmentation setups.
+- Physics knobs outside their ranges, unknown presets, older physics keys that were converted, and invalid segmentation setups.
 - A `tint` block combined with the anonymous size shorthand, and gene-tinted definitions whose granting gene declares no tint.
 
 A shorter self-check pass also runs at every reload and prints to the server log, so a broken pack is a located error rather than a silently missing part.
@@ -34,7 +34,7 @@ A shorter self-check pass also runs at every reload and prints to the server log
 /townstead attachment adjust <id> physics <chain|all> <param> <value>
 ```
 
-`adjust` edits the loaded definition and re-broadcasts it, so placement and physics feel update on every rendered bearer instantly, with no redeploy. Changes last until the next reload. The physics form covers every spring parameter, including `response_vertical`, `response_forward`, `response_lateral`, and `response_turn`; `chain` is an index or `all`.
+`adjust` changes the loaded definition and sends it to all clients again. The placement and physics change at once on every bearer, with no redeploy. Changes last until the next reload. The physics form takes every [physics knob](/roots/attachments/physics/#knobs), plus `.root` or `.tip` to set one end of a ramp (`frequency.tip`); `chain` is an index or `all`.
 
 The rebroadcast definition also applies to bearers and points rendered after the command. Adjustments exist only in server memory and disappear on `/reload` or server restart unless saved with `dump` and pasted into the pack.
 

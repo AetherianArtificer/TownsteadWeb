@@ -3,9 +3,9 @@ title: Combo Skills
 description: Grant automatic benefits when a character reaches ranks in several careers.
 ---
 
-A Combo Skill is a lateral connection between flat careers. It requires a minimum rank in two or more careers and grants its effects automatically when every threshold is met.
+A Combo Skill connects two or more careers. It needs a minimum rank in each of them. When a character reaches every rank, they get its effects automatically.
 
-Use a Combo Skill when the benefit comes from the meeting of distinct work histories. Do not create a child profession only to represent a combination.
+Use a Combo Skill for a benefit that comes from experience in different kinds of work. Do not make a child profession only to show a combination.
 
 ## File Location
 
@@ -48,31 +48,31 @@ defines `example:apiary_chandler`.
 
 | Field | Required | Description |
 | --- | --- | --- |
-| `display_name` | No | Minecraft text component. Defaults to the resource path. |
-| `description` | No | Minecraft text component shown on the Career record. |
-| `icon` | No | Resource ID used by the Career record. |
-| `professions` | Yes | Map of career IDs to minimum ranks. It must contain at least two careers. |
-| `grants` | No | Passive capability contributions, using the same format as ordinary skills. |
-| `mods` | No | Loads this Combo Skill only when the mod expression passes. |
+| `display_name` | No | Minecraft text component. The default is the resource path. |
+| `description` | No | Minecraft text component. The Career record shows it. |
+| `icon` | No | Resource ID for the Career record. |
+| `professions` | Yes | Career IDs mapped to minimum ranks. It must have at least two careers. |
+| `grants` | No | Passive capabilities, in the same format as for usual skills. |
+| `mods` | No | Townstead loads this Combo Skill only when the mod expression passes. |
 
-Every rank must be at least 1. A one-career definition is malformed because an ordinary skill already represents that case.
+Each rank must be at least 1. A definition with one career is malformed, because a usual skill already does that.
 
 ## Unlock Behaviour
 
-Combo Skill ownership is derived from career XP. It is not stored as a separate flag.
+Townstead decides from career XP whether a character has a Combo Skill. It does not save a separate flag.
 
-When a career rank changes, Townstead checks the thresholds again. A newly completed Combo Skill:
+When a career rank changes, Townstead checks the ranks again. When a character gets a new Combo Skill:
 
-- appears on every involved career section;
-- records a learned-craft Chronicle event;
-- shows an unlock message to a player;
-- contributes its grants to the shared capability resolver.
+- the Combo Skill shows in the section of each career that it needs;
+- Townstead records a learned-craft Chronicle event;
+- a player sees an unlock message;
+- the character gets its grants.
 
-The character does not spend Insight and does not press an Archives stamp. Changing the primary vocation does not affect the result because earlier career ranks remain in the career profile.
+The character does not spend Insight, and does not get an Archives stamp. A change of primary vocation has no effect, because the career profile keeps the earlier career ranks.
 
 ## Grants
 
-Combo Skill grants use the ordinary skill grant format:
+Combo Skill grants use the usual skill grant format:
 
 ```json
 {
@@ -91,21 +91,21 @@ Combo Skill grants use the ordinary skill grant format:
 }
 ```
 
-The example improves both careers without merging their XP tracks. See [Skills And Paths](/careers/skill/grants-and-powers/#passive-grants) for all grant fields and operations.
+The example gives more XP in both careers, but keeps their XP separate. For all grant fields and operations, see [Grants And Powers](/careers/skill/grants-and-powers/#passive-grants).
 
 ## Choosing The Right Mechanism
 
 | Goal | Use |
 | --- | --- |
-| Offer several techniques inside one profession | A skill path |
-| Require earlier experience before a profession can be acquired | A gated career with Pheno requirements |
-| Reward ranks in two or more independent careers | A Combo Skill |
-| Change the display name for one complete skill build | A title |
+| Offer several techniques in one profession | A skill path |
+| Require earlier experience before a character can acquire a profession | A gated career with Pheno requirements |
+| Reward ranks in two or more separate careers | A Combo Skill |
+| Change the displayed name for one complete skill build | A title |
 
-Keeping these mechanisms separate preserves one XP history per career and avoids hardcoded cross-product professions.
+With these mechanisms kept separate, each career has one XP history, and you do not need a profession for each combination.
 
 ## Diagnostics
 
-A malformed Combo Skill is skipped and logged. The `professions` object must contain two or more valid career IDs, and each value must be a rank of 1 or greater.
+Townstead skips and logs a malformed Combo Skill. The `professions` object must have two or more valid career IDs, and each value must be a rank of 1 or more.
 
-The loader applies `mods` before parsing. An unmet gate removes the Combo Skill for that session.
+Townstead checks `mods` before it reads the rest of the file. When the gate is not met, Townstead removes the Combo Skill for that session.

@@ -3,9 +3,9 @@ title: Career Providers
 description: Let an optional mod contribute workplaces, work, worksites, and clothing to an existing Career or Path.
 ---
 
-A Career provider is a document that contributes to a Career or Path that another file owns. It adds workplaces, work tasks, preferred stations, clothing, and storage preferences when its mod gate passes. It never creates a Career, registers a villager profession, or replaces the owning definition.
+A Career provider is a file that adds to a Career or Path from a different file. When its mod gate passes, it adds workplaces, work tasks, preferred stations, clothing, and storage preferences. A provider never adds a Career, registers a villager profession, or replaces the definition that it adds to.
 
-Use a provider when one Career is served by several optional mods. Beverage Artisan is the shipped example: its `work.json` declares no workplaces and no tasks. Every bar, brewery, and cafe mod contributes its own buildings and machines through a provider, so the Career is complete with any one of them installed and empty with none.
+Use a provider when several optional mods each add to one Career. Beverage Artisan is the example in Townstead. Its `work.json` declares no workplaces and no tasks. Each bar, brewery, and cafe mod adds its own buildings and machines through a provider. With one of these mods installed, the Career has work. With none of them, it has no work.
 
 ## File Location
 
@@ -13,7 +13,7 @@ Use a provider when one Career is served by several optional mods. Beverage Arti
 data/<namespace>/career_provider/<name>.json
 ```
 
-The file name is the provider ID. Providers are read on every reload, so removing a pack or mod removes its contribution cleanly.
+The file name is the provider ID. Townstead reads providers on every reload. When you remove a pack or mod, Townstead removes its contribution.
 
 ## Minimal Example
 
@@ -44,19 +44,19 @@ The file name is the provider ID. Providers are read on every reload, so removin
 }
 ```
 
-With Candlelight and Farm & Charm installed, Cooks gain the restaurant as a workplace and its stations as work. Without them, the file has no effect.
+With Candlelight and Farm & Charm installed, Cooks can work in the restaurant and at its stations. Without these mods, the file has no effect.
 
 ## Field Reference
 
 | Field | Required | Description |
 | --- | --- | --- |
 | `schema` | Yes | `townstead:career_provider/v1`. |
-| `profession` | Yes | The Career this provider contributes to. It must be an active Career in the same session. |
-| `path` | No | A local Path ID inside that Career. Required when `contributes.path` is present. |
-| `mods` | No | Standard mod-gate expression. An unmet gate removes the complete contribution. |
-| `priority` | No | Ordering among providers for the same target. Defaults to `0`. |
-| `aliases` | No | Foreign profession IDs that resolve to this Career or Path. They are resolved, not registered. |
-| `contributes` | Yes | An object with `profession` and/or `path` sections. |
+| `profession` | Yes | The Career that this provider adds to. The Career must be active in the same session. |
+| `path` | No | A local Path ID in that Career. Required when `contributes.path` is present. |
+| `mods` | No | Standard mod-gate expression. When the gate is not met, Townstead ignores the whole contribution. |
+| `priority` | No | The order of providers for the same target. The default is `0`. |
+| `aliases` | No | Profession IDs from other mods that count as this Career or Path. Townstead converts them, but does not register them. |
+| `contributes` | Yes | An object with a `profession` section, a `path` section, or both. |
 
 ### Profession section
 
@@ -66,34 +66,34 @@ With Candlelight and Farm & Charm installed, Cooks gain the restaurant as a work
 | --- | --- | --- |
 | `poi` | Union | Job-site providers, in the same format as `poi` in `work.json`. |
 | `tasks` | Union | Work tasks, in the same format as `tasks` in `work.json`. |
-| `clothing` | Union | Clothing identities appended to the Career's fallback chain. |
+| `clothing` | Union | Clothing identities that Townstead adds to the end of the Career's clothing list. |
 | `storage` | Replace | A storage preference object. See [Storage](/careers/storage/#profession-storage-preferences). |
 | `icon` | Replace | Career icon. |
-| `work_sound` | Replace | Work sound used when the Career registers a profession. |
+| `work_sound` | Replace | Work sound for a profession that the Career registers. |
 
 ### Path section
 
-`contributes.path` requires the provider's `path` field and accepts:
+`contributes.path` needs the `path` field of the provider. It accepts:
 
 | Field | Merge rule | Description |
 | --- | --- | --- |
-| `skills` | Union | Additional Path levels, in the same format as `skills` in `path.json`. |
+| `skills` | Union | More Path levels, in the same format as `skills` in `path.json`. |
 | `worksites` | Union | Preferred stations for the Path. |
 | `clothing` | Union | Clothing identities for the Path. |
-| `work` | Union | Path work contributions, including `access`. See [Skills And Paths](/careers/skill/paths/#path-work). |
-| `powers` | Union | Path-wide Pheno components. |
-| `name`, `title`, `color`, `backdrop` | Replace | Path presentation. |
-| `storage` | Replace | A Path storage preference object. |
+| `work` | Union | Path work, including `access`. See [Path Work](/careers/skill/paths/#path-work). |
+| `powers` | Union | Pheno components for everyone on the Path. |
+| `name`, `title`, `color`, `backdrop` | Replace | How the Path looks. |
+| `storage` | Replace | A storage preference object for the Path. |
 
 ## Merge Order
 
-Townstead builds one plan from every active provider before it lowers any Profession document. Array fields form a stable union: a provider cannot remove an entry that the owner or another provider declared. Scalar fields use last-writer-wins, ordered by `priority` and then by resource ID. A provider with a higher priority therefore replaces an icon or title supplied by a provider with a lower priority.
+Townstead combines all active providers before it builds the Profession. For array fields, Townstead keeps every entry. A provider cannot remove an entry from the owner or from a different provider. For single values, Townstead uses the last value, in order of `priority` and then of resource ID. So a provider with a higher priority replaces an icon or title from a provider with a lower priority.
 
-Providers apply after `work.json` establishes the base, so the owning Career's own declarations always come first in a merged array.
+Townstead applies providers after `work.json`, so the Career's own entries are always first in a merged array.
 
 ## Providers And Paths
 
-A Path can declare that it exists only when a provider serves it:
+A Path can declare that it is available only when a provider adds to it:
 
 ```json
 {
@@ -104,13 +104,13 @@ A Path can declare that it exists only when a provider serves it:
 }
 ```
 
-With `providers_required`, the Path, its Skills, title, and trades are absent until at least one active provider targets it. Use this for a specialisation whose entire workplace comes from optional mods. A Path without the flag loads on its own and providers only extend it.
+With `providers_required`, the Path, its Skills, title, and trades are not available until at least one active provider targets the Path. Use it for a specialisation whose workplace comes only from optional mods. A Path without this field loads alone, and providers only add to it.
 
-A provider that names a `path` must target a Path that loaded in the same session. A contribution to a missing Path is skipped.
+When a provider names a `path`, that Path must load in the same session. Townstead skips a contribution to a missing Path.
 
 ## Aliases Through Providers
 
-A provider can map foreign profession IDs to its target:
+A provider can map profession IDs from other mods to its target:
 
 ```json
 {
@@ -123,11 +123,11 @@ A provider can map foreign profession IDs to its target:
 }
 ```
 
-The alias resolves to the Career and, when `path` is set, implies that Path. This has the same meaning as a [compatibility contribution](/careers/profession/aliases/#optional-compatibility-identities). Use the compatibility document when the mapping is the only integration. Use a provider when the same mod also brings workplaces or work.
+The alias counts as the Career. When `path` is set, the alias also means that Path. This works in the same way as a [compatibility contribution](/careers/profession/aliases/#optional-compatibility-identities). Use a compatibility file when the mapping is the only integration. Use a provider when the same mod also adds workplaces or work.
 
 ## Diagnostics
 
-Townstead rejects an invalid provider and reports the error against the provider's resource ID. Other providers are not affected. A provider is invalid when:
+Townstead rejects an invalid provider and reports the error with the resource ID of the provider. Other providers still load. A provider is invalid when:
 
 - `profession` names a Career that is not loaded in this session;
 - `contributes.path` is present, but `path` is empty;
@@ -135,4 +135,4 @@ Townstead rejects an invalid provider and reports the error against the provider
 - `contributes.profession` or `contributes.path` contains a field that is not in the tables above;
 - an array field does not contain an array.
 
-An unmet `mods` gate is not an error. Townstead does not load the provider.
+A `mods` gate that is not met is not an error. Townstead does not load the provider.

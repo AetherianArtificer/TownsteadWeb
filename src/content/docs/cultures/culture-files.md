@@ -60,7 +60,7 @@ A complete culture in one file. The naming block lists its given names and famil
 
 | Field | Required | Description |
 | --- | --- | --- |
-| `schema` | Yes | Must be `townstead:culture/v1`. |
+| `schema` | No | When present, it must be `townstead:culture/v1`. |
 | `name` | No | The name that players see. Plain text or a text component such as `{"translate": "<key>"}`. The default is the file path. |
 | `demonym` | No | What the culture's people are called. See [Demonym](#demonym). |
 | `naming` | No | A naming tradition written in place. See [Personal Names](/cultures/naming/). |

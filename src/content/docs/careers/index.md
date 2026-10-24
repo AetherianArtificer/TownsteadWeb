@@ -3,62 +3,65 @@ title: How Careers Work
 description: Overview of professions, careers, progression, skills, work, and cross-career mastery.
 ---
 
-Townstead Careers is the progression layer around Minecraft professions. A career uses the profession's registry ID as its identity. The definition at `minecraft:farmer` extends the Farmer profession; the definition at `townstead:cook` extends the Cook profession.
+A career adds progression to a Minecraft profession. Each career uses the registry ID of its profession. For example, the definition at `minecraft:farmer` extends the Farmer profession, and the definition at `townstead:cook` extends the Cook profession.
 
-The design rule is simple: **progression is work history**. A successful Cook task advances Cook. A successful Farmer task advances Farmer. Generic Minecraft XP and unrelated work do not become career XP.
+A character gets career XP only from work in that career. A Cook task gives Cook XP. A Farmer task gives Farmer XP. Minecraft XP and work in other careers do not give career XP.
 
 ## The Model
 
 | Term | Meaning |
 | --- | --- |
-| Profession | The Minecraft registry identity used for occupation, appearance, and trading. |
-| Career | The durable history layered onto that profession ID: XP, rank, learned skills, evidence, and earlier periods of work. |
-| Primary vocation | The one career a person currently declares as their work. |
-| Gated career | A career with `acquisition_routes`. Its Pheno requirements must pass before it can be acquired. |
-| Skill | A learned option owned by one career. It can grant capabilities or a Pheno power. |
-| Path | A named group of skills inside one career. Paths organise specialisation; they are not child careers. |
-| Title | A display name earned by learning every skill in a declared build. |
-| Combo Skill | An automatic benefit earned from rank thresholds in two or more careers. |
-| Insight | The shared skill-point budget. Career XP earns it at checkpoints and rank-ups; every registered skill spends it. |
-| Career provider | A document from an optional mod that adds workplaces, work, stations, or clothing to a career or path it does not own. |
+| Profession | The Minecraft registry entry for an occupation. It sets the occupation, the appearance, and the trades. |
+| Career | The saved history of a character in one profession: XP, rank, learned skills, evidence, and earlier periods of work. |
+| Primary vocation | The one career that a character has now as their work. |
+| Gated career | A career with `acquisition_routes`. A character must meet its Pheno requirements before they can acquire it. |
+| Skill | An option that a character learns in one career. A skill can grant capabilities or a Pheno power. |
+| Path | A named group of skills in one career. Use paths for specialisations. A path is not a separate career. |
+| Title | A name that a character gets when they learn every skill in a declared build. |
+| Combo Skill | A benefit that a character gets automatically at given ranks in two or more careers. |
+| Insight | The skill points that all careers share. A character gets Insight at career checkpoints and rank-ups, and spends it on skills. |
+| Career provider | A file from an optional mod. It adds workplaces, work, stations, or clothing to a career or path from a different pack. |
 | Job site | A block, building, or site rule that makes work available in the world. |
-| Work task | A reference to one of Townstead's built-in work engines, narrowed by data-defined targets and conditions. |
+| Work task | A reference to one of Townstead's built-in work engines. Data sets its targets and conditions. |
 
 ## Careers Are Flat
 
-Every career is an independent top-level record. Do not model a Pastry Chef as a child node below Cook. If it is its own profession, give it its own career definition, and use requirements such as Cook XP or Chronicle counters only if it should be gated.
+Each career is a separate record at the top level. A career cannot be a child of a different career. To make a Pastry Chef, choose one of these:
 
-Use the three relationship mechanisms for three different jobs:
+- If a Pastry Chef is a Cook who specialises, make Pastry Chef a [path](/careers/skill/paths/) of Cook. The villager stays a Cook, earns Cook XP, and learns the pastry skills of the path.
+- If a Pastry Chef is a separate profession, give it its own career definition, with its own XP. To make it need Cook experience first, gate it with requirements such as Cook XP or Chronicle counters.
 
-- Use `requirements` and `acquisition_routes` when one career requires earlier experience.
-- Use `paths` when several skills form a specialisation inside one career.
-- Use a Combo Skill when mastery of several careers produces a shared benefit.
+Townstead has three ways to connect careers. Use each one for its own purpose:
 
-Work advances exactly the career that owns the task. A Baker task advances Baker. It does not advance Cook unless a separate mechanic explicitly awards Cook XP.
+- Use `requirements` and `acquisition_routes` when a career needs earlier experience.
+- Use `paths` when some skills form a specialisation in one career.
+- Use a Combo Skill when mastery of several careers gives a shared benefit.
+
+Townstead gives XP only to the career that owns the task. A Baker task gives Baker XP. It does not give Cook XP, unless a different mechanic gives Cook XP directly.
 
 ## Practised And Gated Careers
 
-A profession definition with no `acquisition_routes` is practised. A character can take it up through the Archives and establish its history by doing the work.
+A profession definition with no `acquisition_routes` is practised. A character can take it up in the Archives, and then build its history by doing the work.
 
-A definition with one or more `acquisition_routes` is gated. The career becomes acquirable when its `requirements` condition passes through one of those routes. `self_discovery` is checked after successful career work. Other route names are declarations for an interaction supplied by Townstead or another mod.
+A definition with one or more `acquisition_routes` is gated. A character can acquire the career through one of those routes when its `requirements` condition passes. Townstead checks `self_discovery` after successful career work. Townstead or another mod must supply the interaction for each other route.
 
-This distinction also affects registry startup:
+The kind of career also changes what happens at startup:
 
-- A practised career normally extends a `VillagerProfession` that is already registered.
+- A practised career usually extends a `VillagerProfession` that is already registered.
 - A gated definition in a global Townstead Career pack can register its own `VillagerProfession` at startup.
-- An ordinary world data pack loads after registries freeze. It can add the Career layer, but it cannot create a new `VillagerProfession` ID.
+- An ordinary world data pack loads after the registries freeze. It can add the Career data, but it cannot add a new `VillagerProfession` ID.
 
-Install a Career pack as a Data Pack for the Minecraft profile, then restart Minecraft. Launchers such as CurseForge place an installed Data Pack in the profile's `datapacks/` directory. Townstead recognises packs containing Townstead Profession documents there, mounts them as server data and client resources, and scans them before the profession and POI registries freeze.
+Install a Career pack as a Data Pack for the Minecraft profile, and then restart Minecraft. Launchers such as CurseForge put an installed Data Pack in the `datapacks/` directory of the profile. Townstead finds the packs in that directory that contain Townstead Profession files. It mounts them as server data and client resources, and reads them before the profession and POI registries freeze.
 
-For a manual installation, put the pack in the profile's `datapacks/` directory. `config/townstead/career-packs/` is also supported as an explicit development and server-administration route.
+For a manual installation, put the pack in the `datapacks/` directory of the profile. You can also use `config/townstead/career-packs/` for development and server administration.
 
-CurseForge may offer to install one of the global Data Pack loaders it recognises when it installs the file. Townstead does not require that loader for a Career pack, although using one does not prevent Townstead from recognising the pack.
+When CurseForge installs the file, it can offer to install a global Data Pack loader. Townstead does not need that loader for a Career pack. If you use one, Townstead still finds the pack.
 
-Do not move a profile-installed Career pack into an individual save. `/reload` can update reloadable Career content, but adding or changing `register_profession`, its job blocks, or its registered work sound requires a restart.
+Do not move a Career pack from the profile into a save. `/reload` updates the reloadable Career files. A change to `register_profession`, its job blocks, or its registered work sound needs a restart.
 
 ## File Map
 
-The directory layout keeps one career and its skills together:
+Keep each career and its skills together in one directory:
 
 ```text
 <pack>/
@@ -81,7 +84,7 @@ The directory layout keeps one career and its skills together:
       └─ <profession-wide-skill>.json
 ```
 
-The paths produce these IDs:
+Townstead makes these IDs from the paths:
 
 ```text
 profession: <namespace>:<career>
@@ -89,7 +92,7 @@ path skill: <namespace>:<career>/<path>/<skill>
 root skill: <namespace>:<career>/<skill>
 ```
 
-Documents that serve a career without belonging to it live in their own folders:
+Files that support a career, but are not part of it, go in their own folders:
 
 ```text
 data/<namespace>/combo_skill/<name>.json
@@ -100,35 +103,35 @@ data/<namespace>/storage_role/<name>.json
 data/<namespace>/chronicle_work_history/<name>.json
 ```
 
-A Combo Skill joins several careers. A Career provider lets an optional mod extend a career. Jobs, workstations, and storage roles describe world operations, machines, and shelves, not career identity.
+A Combo Skill connects several careers. A Career provider adds content from an optional mod to a career. Jobs, workstations, and storage roles describe work in the world, machines, and shelves. They do not define a career.
 
 ## Runtime Flow
 
-1. Townstead loads Profession definitions, shared progression, individual Paths, work composition, Career provider contributions, root and Path merchant offers, and Skills together.
-2. The loader resolves aliases, paths, titles, requirements, job-site providers, work tasks, trades, and cross-references.
-3. The validator reports missing skills, invalid tiers, contradictory relations, and prerequisite cycles.
+1. Townstead loads these files together: Profession definitions, shared progression, Paths, work, Career provider contributions, root and Path merchant offers, and Skills.
+2. Townstead resolves aliases, paths, titles, requirements, job-site providers, work tasks, trades, and cross-references.
+3. Townstead reports missing skills, invalid tiers, relations that conflict, and prerequisite cycles.
 4. A player or villager completes a work task.
-5. Townstead applies career-specific XP modifiers, adds XP at the full rate up to the daily cap and at a reduced rate after it, and records a Chronicle event.
-6. A checkpoint or rank-up adds to the character's shared Insight. A rank-up can also unlock Combo Skills.
-7. Townstead checks self-discovery requirements for gated careers.
-8. The Career record renders the server-authoritative result.
+5. Townstead applies the XP modifiers of the career. It adds XP at the full rate up to the daily cap, and at a lower rate after the cap. It also records a Chronicle event.
+6. At a checkpoint or rank-up, the character gets Insight. A rank-up can also unlock Combo Skills.
+7. Townstead checks the self-discovery requirements of gated careers.
+8. The Career record shows the result from the server.
 
-The career profile persists a primary vocation, earlier careers, XP, learned choices, active skill groups, acquired careers, discovered careers, tracked goals, ability loadout, and Archives stamps. Missing or changed data files do not turn that history into another career.
+Townstead saves these values in the career profile: the primary vocation, earlier careers, XP, learned choices, active skill groups, acquired careers, discovered careers, tracked goals, the ability loadout, and Archives stamps. If a data file is missing or changes, Townstead does not move that history to a different career.
 
 ## Authoring Order
 
-Build a career in this order:
+Make a career in this order:
 
 1. Extend an existing profession with a minimal `profession.json`.
 2. Add `progression.json` with rank thresholds and a positive `daily_cap`.
-3. Add `work.json` with one `poi` provider so the work has a place in the world.
-4. Add one `tasks` entry and verify that completed work grants the correct Career XP.
-5. Add files in `trade/` if the Profession provides merchant offers.
-6. Add one directory per Path in `path/` and list its Skills by level in `path.json`.
-7. Add each Path's Skill files below that Path's `skill/` directory.
-8. Add gated careers and Combo Skills after the individual careers work on their own.
-9. Move each optional mod's workplaces and stations into a Career provider when more than one mod serves the same career.
+3. Add `work.json` with one `poi` provider, so the work has a place in the world.
+4. Add one `tasks` entry. Make sure that completed work gives the correct Career XP.
+5. Add files in `trade/` if the Profession has merchant offers.
+6. Add one directory for each Path in `path/`, and list its Skills by level in `path.json`.
+7. Add the Skill files of each Path in the `skill/` directory of that Path.
+8. Add gated careers and Combo Skills after each career works alone.
+9. When more than one mod adds to the same career, move the workplaces and stations of each optional mod into a Career provider.
 
-This order keeps a broken workstation, an unreachable career, and an invalid skill graph from looking like the same problem.
+In this order, a broken workstation, a career that nobody can reach, and an invalid skill graph each show up at a different step.
 
-Continue with [Profession Files](/careers/profession-files/). Use [Workstations](/careers/workstations/) when you need to teach the engine about a new machine, and [Career Providers](/careers/career-providers/) when an optional mod should extend a career it does not own.
+Continue with [Profession Files](/careers/profession-files/). To add a new machine, see [Workstations](/careers/workstations/). To let an optional mod extend a career from a different pack, see [Career Providers](/careers/career-providers/).
