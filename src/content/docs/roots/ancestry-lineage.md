@@ -38,6 +38,7 @@ Schema: `townstead:ancestry/v1`
 | `genes` | array | no | Broad ancestry genes. |
 | `spawn_bias` | object | no | Natural founder weighting. See [Spawn Bias](/roots/spawn-bias/). |
 | `personalities` | object | no | Broad personality allow/deny policy. See [Personality Policy](/roots/personality-policy/). |
+| `hair` | boolean or object | no | Broad hair toggle and colour policy. See [Hair Policy](/roots/hair-policy/). |
 
 ### Ancestry Example
 
@@ -76,11 +77,13 @@ Schema: `townstead:lineage/v1`
 | `schema` | string | yes | `townstead:lineage/v1`. |
 | `display_name` | component | no | Shown as the lineage name. |
 | `ancestry` | id | no | The ancestry this lineage specializes. |
+| `ancestry_genes` | boolean | no | `false` files the lineage under its ancestry by name and category only: its founders don't inherit the ancestry's genes. Use it to sort your lineages under another pack's ancestry, inside a gated `overrides` entry, without taking on that pack's ears, build, or powers. Defaults to `true`. |
 | `demonym` | object | no | Overrides ancestry demonym when present. |
 | `backstory` | component | no | Overrides ancestry backstory when present. |
 | `genes` | array | no | Lineage-specific genes layered after ancestry genes. |
 | `spawn_bias` | object | no | Lineage-specific founder weighting. See [Spawn Bias](/roots/spawn-bias/). |
 | `personalities` | object | no | Lineage personality allow/deny policy. See [Personality Policy](/roots/personality-policy/). |
+| `hair` | boolean or object | no | Lineage hair toggle and colour policy, overriding the ancestry's. See [Hair Policy](/roots/hair-policy/). |
 
 ### Lineage Example
 

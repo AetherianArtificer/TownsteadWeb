@@ -16,6 +16,9 @@ Most Roots files are JSON files under `data/<namespace>/...`. Every file starts 
 | `backstory` | component | ancestry, lineage, root, heritage | Display text for catalogues and editors. |
 | `spawn_bias` | object | ancestry, lineage, root | Weighting used when villagers are naturally assigned roots. |
 | `personalities` | object | species, ancestry, lineage | Personality allow/deny policy. |
+| `mods` / `requires` | gate | all | Load the file only when mods or other data packs are present. See [Pack Compatibility](/reference/compatibility/#gates). |
+| `overrides` | array | all | Partial documents merged in when their gate is met. See [Pack Compatibility](/reference/compatibility/#overrides). |
+| `qualifier` | component | species, ancestry, lineage, root, heritage | Prefix used only when this name clashes with another pack's. See [Name Collisions](/reference/compatibility/#name-collisions). |
 
 Text fields use Minecraft text components. Plain strings are accepted for simple literal text, and translation objects can point at data-pack language entries.
 

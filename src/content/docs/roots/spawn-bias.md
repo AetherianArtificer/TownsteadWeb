@@ -70,3 +70,7 @@ Server owners can also remove roots from the spawn roll entirely, without editin
 ```
 
 This is the sort of weighting a Moon Elf lineage might use. The lineage still belongs to the Elf ancestry; mixed ancestry labels belong in [Heritage](/roots/heritage/).
+
+## Culture
+
+`spawn_bias` weights where a root appears. To weight which culture its founders are raised in, use `cultural_spawn_bias`. See [Founder Bias](/cultures/founder-bias/).

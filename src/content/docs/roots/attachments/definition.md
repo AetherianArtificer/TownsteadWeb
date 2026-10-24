@@ -7,7 +7,7 @@ The definition file is the heart of an attachment: it names the assets, picks th
 
 Path: `data/<namespace>/attachment/<id>.json`
 
-Schema: `townstead:attachment/v1`
+Schema: `townstead:attachment/v2`. Offsets and rotations read exactly as Blockbench shows them. See [Schema Versions](#schema-versions) for older `v1` files.
 
 ## Load Failures And Fallbacks
 
@@ -35,8 +35,8 @@ Treat validation errors as authoring failures even where rendering can continue;
 | `texture` | ref | yes | A `.png` under `attachment/textures/`. Same reference form. |
 | `target` | object | no | `{ "tag": "..." }` anchors to every matching point; `{ "point": "..." }` anchors to one named point. See [Attachment Points](/roots/attachments/points/). |
 | `bone` | string | no | Direct model-bone anchor when there is no `target`. Defaults to `body`. |
-| `offset` | [x, y, z] | no | Placement offset in model pixels, applied after the anchor. |
-| `rotation` | [x, y, z] | no | Base orientation in degrees, applied ZYX. |
+| `offset` | [x, y, z] | no | Placement offset in pixels, applied after the anchor. Y is up, as in Blockbench. |
+| `rotation` | [x, y, z] | no | Base orientation in degrees, as Blockbench's rotation panel shows it. |
 | `scale` | number | no | Uniform render scale. Defaults to `1.0`. |
 | `tint`, `tint_blend`, `tint_strength` | mixed | no | Colouring. See [Surfaces & Colour](/roots/attachments/surfaces/). |
 | `tint_mask` | ref | no | A grayscale texture gating the tint per pixel, so part of one attachment tints and the rest stays neutral. See [Surfaces & Colour](/roots/attachments/surfaces/). |
@@ -128,18 +128,26 @@ Valid slots are `helmet`, `chestplate`, `leggings`, and `boots`. For a softer re
 
 Phrase gates so unknown bearers land on the right default: `pheno:gender` reads MCA gender from villagers and players alike but never matches entities without one, so `not feminine` keeps the beard on unknown bearers while hiding it on feminine villagers and players. The mirror gate (`"is": "feminine"` with no `not`) grants an attachment to women only, like braids. No `when`, or one that fails to parse (the doctor flags it), renders unconditionally.
 
+## Schema Versions
+
+`townstead:attachment/v2` takes every placement you type exactly as Blockbench shows it: `offset` in pixels with Y up, and `rotation` and pose bone rotations as the degrees in Blockbench's rotation panel. Copy the numbers across and the attachment sits and turns the way it does in Blockbench.
+
+Geometry and animation files are the same in both versions: a `.bbmodel`, or a `.geo.json` and `.animation.json` exported from Blockbench, renders as Blockbench shows it.
+
+`townstead:attachment/v1` files still load unchanged. They use Minecraft's model space for typed placements: Y down for `offset`, X and Z reversed for `rotation`, and X and Y reversed for pose bone rotations. To move a file to v2, change the schema, negate `offset` Y (stage offsets too), negate X and Z of `rotation` and of each pose's whole `rotation`, and negate X and Y of each pose bone `rotation`. `/townstead attachment dump` prints a file's values in its own version's convention.
+
 ## Full Example
 
 A tail definition using most of the optional blocks:
 
 ```json
 {
-  "schema": "townstead:attachment/v1",
+  "schema": "townstead:attachment/v2",
   "geometry": "my_pack:fox_tail",
   "texture": "my_pack:fox_tail",
   "target": { "tag": "tail_root" },
   "offset": [0, 0, 1],
-  "rotation": [-120, 0, 0],
+  "rotation": [120, 0, 0],
   "scale": 0.85,
   "tint": "gene",
   "tint_blend": "color",
@@ -149,7 +157,7 @@ A tail definition using most of the optional blocks:
     "adult": { "geometry": "my_pack:fox_tail_three" }
   },
   "poses": {
-    "sleeping": { "bones": { "tail_1": { "rotation": [0, 40, 0] } }, "transition": 20 }
+    "sleeping": { "bones": { "tail_1": { "rotation": [0, -40, 0] } }, "transition": 20 }
   },
   "physics": {
     "chains": [ { "bones": ["tail_1", "tail_2", "tail_3"], "stiffness": 0.35, "damping": 0.82 } ]

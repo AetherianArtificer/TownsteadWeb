@@ -110,17 +110,56 @@ At each diploid locus, Townstead chooses one expressed allele from the two carri
 
 | Situation | Result |
 | --- | --- |
-| One allele is empty | The real allele wins. |
+| One allele is empty | Townstead expresses the real allele if it passes its [penetrance](#penetrance) roll. Otherwise nothing is expressed. |
 | Both alleles are empty | Nothing is expressed at that locus. |
-| One allele's gene is dominant and the other is recessive | The dominant allele wins. |
-| Same gene, different variants | The variant with the higher `weight` wins. |
-| Different genes at same locus with equal dominance | The gene with the higher `weight` wins. |
+| Different genes, and only one passes its penetrance roll | Townstead expresses the gene that passes. |
+| One allele's gene is dominant and the other is recessive | Townstead expresses the dominant allele. |
+| Same gene, different variants | Townstead expresses the variant with the higher `weight`. |
+| Different genes at same locus with equal dominance | Townstead expresses the gene with the higher `weight`. |
 
 `dominance` defaults to dominant. Set `"dominance": "recessive"` when a gene should only win against empty or weaker recessive competition.
 
 ### Weights
 
-`weight` defaults to `1`. Use it when one gene or variant should be more likely to win than another. If everything is still tied, Townstead uses a stable internal ordering so the result is consistent.
+`weight` defaults to `1`. Use it when one gene or variant should be expressed more often than another. If everything is still tied, the individual's expression seed settles it. The result is stable for that villager but can differ between siblings, so two Fire x Ice children needn't share every trait.
+
+### Penetrance
+
+`penetrance` (`0` to `1`) is the chance that a gene shows when its bearer carries a single copy. Two copies of the same gene always show. A gene without the field always shows from one copy.
+
+```json
+{
+  "schema": "townstead:gene/v2",
+  "type": "townstead_roots:attachment",
+  "locus": "townstead_roots:snout",
+  "penetrance": 0.3,
+  "attachment": "my_pack:cat_muzzle"
+}
+```
+
+The roll is settled once per individual by its expression seed, so a villager never flickers between looks. Siblings can differ.
+
+Penetrance also decides a contest between two different genes at the same locus. If one copy fails its roll and the other passes, Townstead expresses the copy that passes. For example, if the cat coat fails its roll, the child shows the human parent's skin. If both fail, ordinary dominance and weight decide, so a cat x dog child still grows one of its parents' muzzles.
+
+A copy that doesn't show is still carried and can pass to children. The heritage screen lists it greyed out.
+
+Villagers from saves made before expression seeds existed show every copy, so they keep their current look.
+
+## Designing Hybrids
+
+A child of two different peoples carries one copy of each parent's traits. Penetrance, `pheno:gene`, and `pheno:heritage` decide which of those copies show:
+
+| Goal | Tool |
+| --- | --- |
+| Signature parts (ears, tail, horns) always come through | No `penetrance`. |
+| Eyes, wings, markings, and colouring come through sometimes | `penetrance` between `0.3` and `0.9`. |
+| A trait only appears on top of another, such as a muzzle over a coat | A gene `condition` of type `pheno:gene` naming the coat genes or their locus. |
+| A trait needs both copies, such as a clutch of two eggs | `"penetrance": 0`. |
+| A trait needs a share of the bloodline | A gene `condition` of type [`pheno:heritage`](/pheno/conditions/), on gene types that honour `condition`. |
+
+It helps to order the traits: ears and tail first, then eyes and hand fur, then coat and nose, and the muzzle last. Give earlier traits higher penetrance, and make later traits require the one before. A half-breed then reads as a believable step between its parents, never a muzzle on bare human skin.
+
+Give species colouring a `weight` above the human default skin. Then Townstead expresses the colouring each time it passes its roll.
 
 ## Founders
 
@@ -189,7 +228,9 @@ Seed heritage is derived from the root:
 | Root with ancestry and lineage | `100%` that ancestry. |
 | Legacy or malformed root without ancestry/lineage | Empty heritage map. |
 
-Heritage profiles from `data/<namespace>/heritage/` can name fraction ranges. If no profile matches, near-pure heritage keeps the dominant root or ancestry name, while mixed heritage gets a generated label based on its two largest ancestry fractions.
+Heritage profiles from `data/<namespace>/heritage/` can name fraction ranges. If no profile matches, near-pure heritage keeps the dominant root or ancestry name. Mixed heritage gets a generated label from its two largest ancestry fractions. Each ancestry is named by its main lineage when one carries most of it. See [Heritage](/roots/heritage/).
+
+Townstead expresses the genes that a heritage profile grants in addition to the inherited genes. A granted gene replaces the inherited gene at its locus. Townstead does not add it next to the inherited gene.
 
 ## Body and Life Data
 

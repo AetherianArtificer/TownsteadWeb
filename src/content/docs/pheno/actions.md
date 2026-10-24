@@ -11,13 +11,13 @@ Actions change the world, an entity, an item, a block, or the current Pheno cont
 | --- | --- |
 | Context wrappers | `pheno:actor_action`, `pheno:target_action`, `pheno:invert`, `pheno:block_action`, `pheno:equipped_item_action`, `pheno:at` |
 | Control flow | `pheno:and`, `pheno:chance`, `pheno:choice`, `pheno:delay`, `pheno:if_else`, `pheno:if_else_list`, `pheno:if_bientity`, `pheno:nothing`, `pheno:side` |
-| Entity effects | `pheno:apply_effect`, `pheno:clear_effect`, `pheno:heal`, `pheno:damage`, `pheno:ignite`, `pheno:extinguish`, `pheno:freeze`, `pheno:exhaust`, `pheno:feed`, `pheno:add_xp`, `pheno:gain_air`, `pheno:set_fall_distance`, `pheno:set_no_gravity` |
-| Movement and area | `pheno:add_velocity`, `pheno:jump`, `pheno:random_teleport`, `pheno:area_of_effect`, `pheno:mount`, `pheno:dismount`, `pheno:passenger_action`, `pheno:riding_action` |
-| Inventory and items | `pheno:give`, `pheno:drop_inventory`, `pheno:consume`, `pheno:cooldown`, `pheno:item_cooldown`, `pheno:holder_action`, `pheno:remove_enchantment`, `pheno:spawn_item` |
+| Entity effects | `pheno:apply_effect`, `pheno:clear_effect`, `pheno:heal`, `pheno:damage`, `pheno:ignite`, `pheno:extinguish`, `pheno:freeze`, `pheno:exhaust`, `pheno:feed`, `pheno:hydrate`, `pheno:energize`, `pheno:add_xp`, `pheno:gain_air`, `pheno:set_fall_distance`, `pheno:set_no_gravity` |
+| Movement and area | `pheno:add_velocity`, `pheno:jump`, `pheno:keypress`, `pheno:teleport`, `pheno:random_teleport`, `pheno:area_of_effect`, `pheno:mount`, `pheno:dismount`, `pheno:passenger_action`, `pheno:riding_action` |
+| Inventory and items | `pheno:give`, `pheno:drop_inventory`, `pheno:consume`, `pheno:cooldown`, `pheno:item_cooldown`, `pheno:holder_action`, `pheno:remove_enchantment`, `pheno:change_data`, `pheno:spawn_item`, `pheno:use_item_on` |
 | World effects | `pheno:play_sound`, `pheno:spawn_particles`, `pheno:spawn_entity`, `pheno:explode`, `pheno:emit_game_event`, `pheno:beam`, `pheno:cloud`, `pheno:execute_command` |
 | Resources and collections | `pheno:change_resource`, `pheno:resource_transfer`, `pheno:change_collection`, `pheno:for_each` |
-| Relationship and mobs | `pheno:tame`, `pheno:set_in_love`, `pheno:zombify_villager` |
-| Block action aliases | `pheno:set_block`, `pheno:add_block`, `pheno:destroy`, `pheno:bonemeal`, `pheno:modify_block_state`, `pheno:schedule_tick`, `pheno:offset`, `pheno:area_of_effect` |
+| Relationship, mobs, and reservations | `pheno:tame`, `pheno:set_in_love`, `pheno:zombify_villager`, `pheno:disarm`, `pheno:set_attack_target`, `pheno:reserve`, `pheno:release` |
+| Block actions | `pheno:set_block`, `pheno:add_block`, `pheno:destroy`, `pheno:bonemeal`, `pheno:use_block`, `pheno:modify_block_state`, `pheno:change_block_data`, `pheno:item_action`, `pheno:loot_table`, `pheno:return_item`, `pheno:play_sound`, `pheno:spawn_particles`, `pheno:level_event`, `pheno:if_else`, `pheno:nothing`, `pheno:teleport`, `pheno:schedule_tick`, `pheno:offset`, `pheno:area_of_effect` |
 | Projectiles and animation | `pheno:fire_projectile`, `pheno:swing_hand` |
 
 ## Using Context
@@ -58,25 +58,34 @@ Entity, item, and block actions each have their own `on` support. For the exact 
 | `pheno:apply_effect` | `effect`, `duration`, `amplifier` | Applies a status effect. Defaults: `duration: 200`, `amplifier: 0`. |
 | `pheno:clear_effect` | `effect` | Removes one status effect, or all active effects if `effect` is omitted. |
 | `pheno:heal` | `amount` | Heals by a Pheno value amount. Required; only positive evaluated values do anything. |
-| `pheno:damage` | `amount` | Deals generic damage by a Pheno value amount. Required; only positive evaluated values do anything. |
+| `pheno:damage` | `amount`, `source` | Deals damage by a Pheno value amount. Required; only positive evaluated values do anything. `source` defaults to `generic`; `other` attributes an ordinary mob attack to the action context's counterpart. |
 | `pheno:ignite` | `seconds` | Sets the actor on fire. `seconds` defaults to `3` and is clamped to at least `1`. |
+| `pheno:wake` | none | Wakes the actor if it sleeps. |
+| `pheno:set_spawn` | none | Player-only. Sets the player's spawn point to the player's position, as a bed does. If the actor is not a player, the action fails. |
 | `pheno:extinguish` | none | Clears the actor's fire. |
 | `pheno:freeze` | `amount` | Adds frozen ticks, capped just beyond the freeze threshold. `amount` defaults to `5` and is clamped to at least `1`. |
 | `pheno:exhaust` | `amount` | Player-only. Adds hunger exhaustion. `amount` defaults to `0.5` and is clamped to at least `0`. |
 | `pheno:feed` | `food`, `saturation` | Player-only. Restores hunger and saturation. Defaults: `food: 1`, `saturation: 1.0`. |
+| `pheno:hydrate` | `immediate`, `lasting` | Townstead-villager only. Restores immediate and lasting hydration by Pheno value amounts when villager thirst is enabled. Suppressed thirst is unchanged. |
+| `pheno:energize` | `amount` | Townstead-villager only. Restores energy by a Pheno value amount when villager fatigue is enabled. |
 | `pheno:add_xp` | `points`, `levels` | Player-only. Adds raw experience points, whole levels, or both. At least one value must be non-zero. |
 | `pheno:gain_air` | `air` | Changes air supply by ticks, clamped to max air. Negative values drain air; `0` is rejected. |
 | `pheno:set_fall_distance` | `fall_distance` | Sets pending fall distance. Defaults to `0`. |
 | `pheno:set_no_gravity` | `gravity` | Sets no-gravity to the inverse of `gravity`. Default `gravity: false` disables gravity. |
+| `pheno:ward` | `amount`, `fraction`, `duration`, `id`, `damage_condition`, `on_absorb`, `on_break` | Gives the focus a ward that spares up to `amount` health in total, taking `fraction` of each hit (default `1`), for `duration` ticks (default `100`). `damage_condition` limits it to matching damage. `on_absorb` runs on the warded entity each time it spares damage and `on_break` when the budget runs out, both with the attacker as `other` and the spared amount as `pheno:event_damage`. Wards never stack: each hit is softened only by the ward that spares the most. A new ward with the same `id` (default `ward`) replaces the old one. |
+| `pheno:clear_ward` | `id` | Removes the ward `id`, or every ward when omitted. |
 
 ## Movement And Relationships
 
 | Type | Fields | Description |
 | --- | --- | --- |
-| `pheno:add_velocity` | `x`, `y`, `z`, `relative` | Adds velocity. Coordinates default to `0`; with `relative: true`, the vector is rotated to the actor's facing and `z` is forward. |
+| `pheno:add_velocity` | `x`, `y`, `z`, `relative`, `away_from_other` | Adds velocity. Coordinates default to `0`; with `relative: true`, the vector is rotated to the actor's facing and `z` is forward. `away_from_other` adds a horizontal impulse away from the action context's other entity, which is useful inside an area action. This is a one-off impulse, not a speed setting; to change how fast a holder flies, use the `pheno:flight_speed` gene. |
+| `pheno:dash` | `distance`, `ticks`, `horizontal`, `on_hit`, `max_hits`, `stop_on_hit`, `hit_radius`, `on_end` | Dashes the actor `distance` blocks (default `4`, max `32`) along its look over `ticks` ticks (default `8`). `horizontal` (default `true`) keeps to the ground; `false` follows the full look for flyers and swimmers. Walls end it early. `on_hit` runs on each creature in the path, never allies, with the dasher as `other`; `max_hits` defaults to `1` and `stop_on_hit` to `true`. `on_end` runs on the dasher when it stops. A dash that cannot move fails, so its ability keeps its cooldown. |
+| `pheno:keypress` | `key` | Presses a key for the entity: runs its `press` triggers bound to `key`, as the player's own keypress does. A villager has no keyboard, so an `ai` trigger can use this to reach a power players drive with a key. |
 | `pheno:jump` | `strength` | Sets upward velocity using vanilla jump power plus Jump Boost. `strength` defaults to `1.0`; works in mid-air and resets fall distance. |
 | `pheno:random_teleport` | `distance` | Attempts a random safe teleport within `distance` blocks. Default `8`, clamped to at least `1`. |
-| `pheno:area_of_effect` | `radius`, `include_self`, `action` | Runs an entity action on every living entity within `radius` of the actor. `radius` defaults to `4` and is clamped to at least `0`; `include_self` defaults to `false`. Each target becomes the inner action's actor, with the original actor as `other`. |
+| `pheno:teleport` | `to`, `offset`, `space`, `preserve_offset_from`, `random`, `safe`, `reset_velocity` | Teleports the selected entity to a place, role, or entity selector. `space: local` makes the offset face-relative. `random` accepts a radius or a profile with `radius`, `min_distance`, `shape`, and `attempts`. |
+| `pheno:area_of_effect` | `radius`, `include_self`, `target`, `bientity_condition`, `limit`, `action` | Runs an entity action on every living entity within `radius` of the actor. `radius` defaults to `4` and is clamped to at least `0`; `include_self` defaults to `false`. `target` accepts `all`, `hostile`, or `non_hostile`. An optional `bientity_condition` can narrow that set further, for example to a forward cone. With `limit`, Townstead picks that many of the matching entities at random, and the action fails when none match. Each target becomes the inner action's actor, with the original actor as `other`. |
 | `pheno:mount` | none | Actor starts riding `other`. Server-side; no-op without `other`. |
 | `pheno:dismount` | none | Actor stops riding. |
 | `pheno:passenger_action` | `action` | Runs an entity action on each living passenger riding the actor. |
@@ -84,6 +93,10 @@ Entity, item, and block actions each have their own `on` support. For the exact 
 | `pheno:tame` | none | If the actor is a player and `other` is an untamed tamable animal, tames `other`. Server-side only. |
 | `pheno:set_in_love` | none | If `other` is an animal, puts it in love mode. A player actor is credited as the cause. |
 | `pheno:zombify_villager` | none | Converts a mob actor into a vanilla zombie villager. Server-side only. |
+| `pheno:disarm` | none | Makes a living mob drop its main-hand stack. Players are never force-disarmed. |
+| `pheno:set_attack_target` | `condition` | Makes a mob actor target `other` and records `other` as its last attacker. The optional entity condition tests the mob that would answer. |
+| `pheno:reserve` | `on`, `action` | Exclusively reserves a target selected by `on` for the current execution scope, then runs optional `action`. The action fails if no reservation scope exists or the target is unavailable. |
+| `pheno:release` | none | Releases every reservation owned by the current execution scope. The action fails outside a reservation-aware host. |
 
 ## Inventory And Item Actions
 
@@ -93,6 +106,10 @@ Entity, item, and block actions each have their own `on` support. For the exact 
 | `pheno:drop_inventory` | none | Player-only. Drops the actor's entire inventory. |
 | `pheno:spawn_item` | `item`, `amount` | Spawns an item stack at the actor's position. `amount` defaults to `1` and is clamped to at least `1`; server-side only. |
 | `pheno:item_cooldown` | `item`, `cooldown` | Player-only. Puts a named item on cooldown. `cooldown` defaults to `20` ticks. |
+| `pheno:deliver` | `fallback` | Delivers the item in focus to the actor, from `other`. Use it for items that are deliveries, such as letters, parcels, and quest items. The mod or system that adds that kind of item reads the item and handles the delivery. When no system takes the item, the action fails and `fallback` runs. Townstead puts the item in focus for a [gift reaction](/packs/gift-reactions/). |
+| `pheno:remember` | `key` | Saves `other` on the actor under `key`. Other systems read the saved entity later. For example, a [cure reaction](/packs/cure-reactions/) reads `townstead:cured_by` to find the player who started the cure. If there is no `other`, the action fails. |
+| `pheno:found_faction` | `kind`, `on_placement` | Founds an order of `kind` at the villager's village. The villager leads the order. A player on the other side gets the order's founding gifts. With `on_placement` set to `true`, the order is not founded yet: the player gets the founding gifts, and the order is founded in the village where the player places one of them. Only kinds that hold no land can be founded this way. |
+| `pheno:use_item_on` | `item`, `secondary_use` | The actor uses an item on `other` as a player does, for example shears on a sheep or a bucket on a cow. The target's own interaction runs, so modded mobs and tools work. `item` is an item ID or `#tag` that Townstead takes from the actor's inventory; without `item`, the actor uses an empty hand. `secondary_use: true` simulates the secondary-use key. The item left in hand and the items that the interaction drops go back to the actor. The action fails when nothing happens. |
 
 Item actions run inside an item context, usually through `pheno:equipped_item_action`. A JSON array of item actions runs each action in order, and an item action object can include `on` to select stacks from the holder.
 
@@ -103,6 +120,10 @@ Item actions run inside an item context, usually through `pheno:equipped_item_ac
 | `pheno:damage` | `amount` | Adds durability damage. Negative values repair; breaking damage shrinks the stack by one. |
 | `pheno:holder_action` | `action` | Runs an entity action on the stack holder. No-op without a holder. |
 | `pheno:remove_enchantment` | `enchantment` | Removes one enchantment from the stack. |
+| `pheno:chance` | `chance`, `action`, `else_action` | Item domain. Runs the wrapped item action with probability `chance`, else `else_action`. |
+| `pheno:and` | `actions` | Item domain. Runs each item action in order on the same stack. |
+| `pheno:enchant` | `enchantment`, `level`, `force` | Adds an enchantment at `level` (default `1`), keeping a higher level already present. Items that cannot take it are skipped unless `force` is `true`. |
+| `pheno:change_data` | `key`, `operation`, `value`, `min`, `max` | Changes one scalar custom-data key. `operation` is `set`, `add`, or `remove`. `set` accepts a string, number, or Boolean; `add` requires a number and can be clamped with `min` and `max`. |
 | `pheno:change_collection` | `collection`, `operation`, `time_limit` | Item-domain collection action. Adds, removes, or clears the contextual stack's item in a collection on the holder. |
 
 ## World Effects
@@ -110,15 +131,41 @@ Item actions run inside an item context, usually through `pheno:equipped_item_ac
 | Type | Fields | Description |
 | --- | --- | --- |
 | `pheno:play_sound` | `sound`, `sounds`, `volume`, `pitch`, `category` | Plays a sound at the actor. Supports a single sound spec or weighted `sounds`; `category` defaults to `neutral`. |
-| `pheno:spawn_particles` | `particle`, `count`, `spread`, `speed` | Emits simple particles at the actor. Defaults: `count: 8`, `spread: 0.4`, `speed: 0`; server-side only. |
-| `pheno:spawn_entity` | `entity` | Spawns an entity at the actor's position. Server-side only. |
+| `pheno:spawn_particles` | `particle`, `count`, `spread`, `speed`, `shape`, `radius`, `height`, `length`, `anchor`, `delay` | Emits particles at the actor: a registered simple particle or a [data particle](/reference/data-particles/). Defaults: `count: 8`, `spread: 0.4`, `speed: 0`. With a `shape` the particles are laid out as a ring, dome, helix, cone, and so on; see [Shaped Bursts](/reference/data-particles/#shaped-bursts). Server-side only. |
+| `pheno:screen_effect` | `effect`, `color`, `intensity`, `duration`, `radius` | Plays a flash, vignette, tint, camera shake, or FOV kick for a player focus. See [Screen Cues](/reference/data-particles/#screen-cues). |
+| `pheno:spawn_entity` | `entity`, `count`, `radius`, `nbt`, `on_spawn`, `owner`, `allied`, `follow`, `duration`, `burns_in_sun` | Spawns `count` entities (default `1`, max `16`) at the actor, scattered within `radius` blocks onto open ground. `nbt` is SNBT or a JSON object merged into each. `on_spawn` runs on each new creature with the actor as `other`. See [Summons](#summons). Server-side only. |
 | `pheno:explode` | `power`, `fire`, `destroy` | Explodes at the actor, credited to the actor. Defaults: `power: 2.0`, `fire: false`, `destroy: true`. |
 | `pheno:emit_game_event` | `event` | Emits a vanilla game event from the actor. Server-side only. |
 | `pheno:beam` | ray fields, `particle`, `spacing` | Draws simple particles along a ray from the actor's eyes to the ray impact point. `spacing` defaults to `0.5` and is clamped to at least `0.05`. |
-| `pheno:cloud` | `do`, `where`, `radius`, `duration`, `particle`, `grow_per_tick`, `shrink_on_use`, `wait_time`, `reapply_delay`, `height` | Spawns a lingering field at the actor that repeatedly runs `do` on entities inside it. `where` is an optional bi-entity condition. Defaults: `radius: 3`, `duration: 600`, `wait_time: 10`, `reapply_delay: 20`, growth/shrink/height `0`. |
+| `pheno:cloud` | `do`, `where`, `radius`, `duration`, `particle`, `grow_per_tick`, `shrink_on_use`, `wait_time`, `reapply_delay`, `height`, `climate_offset_c` | Spawns a lingering field at the actor that repeatedly runs `do` on entities inside it. `where` is an optional bi-entity condition. Defaults: `radius: 3`, `duration: 600`, `wait_time: 10`, `reapply_delay: 20`, growth/shrink/height `0`. `climate_offset_c` makes the field a local climate: the air inside is that many °C warmer or colder for villagers, players, crops and every temperature mod. A climate field needs no `do`. |
 | `pheno:execute_command` | `command` | Runs a command as the actor from a silent permission-level-2 source. |
 | `pheno:fire_projectile` | `entity`, `speed`, `inaccuracy` | Launches a projectile along the actor's look vector. Defaults: `entity: minecraft:arrow`, `speed: 1.5`, `inaccuracy: 1.0`; server-side only. |
 | `pheno:swing_hand` | `hand` | Plays a hand-swing animation. `hand` is `main` or `off`; default `main`. |
+
+## Summons
+
+`pheno:spawn_entity` with `"owner": true` makes the spawned creatures summons of the power's bearer. Townstead saves the owner with each summon, so the summon keeps its owner after the world reloads.
+
+| Field | Default | Effect |
+| --- | --- | --- |
+| `allied` | `true` | The summon drops its own targeting. It defends its owner, attacks what its owner attacks, and hunts nearby monsters. It never targets its owner, its owner's other summons, its owner's pets, or teammates. |
+| `follow` | `true` | The summon keeps near its owner and is brought along when left more than 24 blocks behind. |
+| `duration` | `0` | Ticks until the summon vanishes in a puff of smoke. `0` keeps it. |
+| `burns_in_sun` | `false` | Whether undead summons burn in daylight as usual. |
+
+```json
+{
+  "type": "pheno:spawn_entity",
+  "entity": "minecraft:zombie",
+  "count": 2,
+  "radius": 2.5,
+  "owner": true,
+  "duration": 1200,
+  "nbt": { "Attributes": [{ "Name": "generic.max_health", "Base": 30 }], "Health": 30 }
+}
+```
+
+Use the `pheno:summoned` condition and the `pheno:summoner` and `pheno:allied` bi-entity conditions to tell summons apart.
 
 ## Resources And Collections
 
@@ -135,11 +182,22 @@ Block actions run in a block context, usually through `pheno:block_action` or `p
 
 | Block Action Type | Fields | Description |
 | --- | --- | --- |
-| `pheno:set_block` | `block` | Replaces the target block with the given block's default state. |
+| `pheno:set_block` | `block`, `properties`, `copy_properties`, `copy_from` | Replaces the target block. `properties` sets properties on the new state; `copy_properties` preserves named properties from the old state or from the `[x, y, z]` offset in `copy_from`. `block` may be literal or block-derived. |
 | `pheno:add_block` | `block` | Places the block only if the current block can be replaced. |
 | `pheno:destroy` | `drop_item` | Destroys the target block. `drop_item` defaults to `true`; the cause entity is credited if present. |
 | `pheno:bonemeal` | none | Applies bonemeal behaviour if the target block supports it. |
-| `pheno:modify_block_state` | `property`, `value`, `operation` | Sets a block-state property, or cycles it with `operation: cycle`. No-op if the property or value is invalid. |
+| `pheno:use_block` | `item`, `secondary_use` | Runs the complete server-side player block-interaction path with a named item role. `item` defaults to `empty`; `secondary_use: true` simulates the secondary-use key. The changed held stack and other returned inventory stacks remain in the surrounding transaction. |
+| `pheno:modify_block_state` | `property`, `value`, `operation`, `amount` | Sets a block-state property, cycles it with `operation: cycle`, or adds `amount` to an integer property with `operation: add`. No-op if the result is invalid. |
+| `pheno:change_block_data` | `key`, `operation`, `value`, `min`, `max` | Changes one scalar persistent-data key on the target's block entity. `value` may be a Pheno value. The action is inapplicable if no block entity exists. |
+| `pheno:item_action` | `item`, `action` | Runs an item action on a named item role. Block-interaction Jobs provide their selected stack as `item`; the field defaults to that name. |
+| `pheno:loot_table` | `table` | Rolls a loot table and returns the stacks to the surrounding transaction. The table may be literal or block-derived. It does not spawn drops into the world. |
+| `pheno:return_item` | `item`, `count` | Returns a registered item stack to the surrounding transaction. The item may be literal or block-derived; `count` defaults to `1`. |
+| `pheno:play_sound` | sound fields | Block-domain sound action. Uses the same `SoundSpec` fields as the entity action and plays at the block centre. |
+| `pheno:spawn_particles` | `particle`, `count`, `spread`, `speed`, `offset_x`, `offset_y`, `offset_z` | Block-domain simple-particle burst. Offsets are measured from the block centre. |
+| `pheno:level_event` | `event`, `data` | Emits a vanilla level event at the block. Set `data` to `block` to supply the current block-state ID, or to an integer string. |
+| `pheno:if_else` | `if`, `then`, `else` | Block-domain branch. `if` is a block condition; `then` and optional `else` are block actions. |
+| `pheno:nothing` | none | Explicit block-domain no-op. |
+| `pheno:teleport` | `safe`, `reset_velocity` | Teleports the block action's cause to the selected block position. It fails when there is no cause entity or no safe destination. |
 | `pheno:schedule_tick` | `delay` | Schedules a block tick for the target block. `delay` defaults to `1`; no-op on air. |
 | `pheno:offset` | `x`, `y`, `z`, `block_action` | Runs a nested block action at an offset position. Offsets default to `0`. |
 | `pheno:area_of_effect` | `radius`, `shape`, `block_condition`, `block_action` | Runs a nested block action across a cube or sphere. `radius` defaults to `1` and is capped at `16`; `shape` defaults to `cube`; `block_condition` is optional. |
@@ -147,3 +205,25 @@ Block actions run in a block context, usually through `pheno:block_action` or `p
 | `pheno:explode` | `power`, `fire`, `destroy` | Block-domain explosion at the block centre. Defaults: `power: 2.0`, `fire: false`, `destroy: true`. |
 | `pheno:spawn_entity` | `entity` | Block-domain entity spawn centered on the block. |
 | `pheno:change_collection` | `collection`, `operation`, `time_limit` | Block-domain collection action. Adds, removes, or clears the contextual block position in a collection on the cause entity. |
+
+## Data-Authored Block Procedures
+
+A block-interaction Job may compose the block actions above into an ordered procedure. Keep the content vocabulary in JSON: Java should know how to change block data or roll loot, not what a carcass, press, hive, or altar is.
+
+The `block` field of `pheno:set_block`, the `table` field of `pheno:loot_table`, and the `item` field of `pheno:return_item` accept either a literal resource ID or this block-derived form:
+
+```json
+{
+  "from": "block",
+  "map": {
+    "example:old_press": "example:repaired_press"
+  },
+  "pattern": "example:broken_(.+)",
+  "replace": "example:repaired_$1",
+  "fallback": "example:plain_press"
+}
+```
+
+Exact `map` entries win. If none matches, `pattern` is matched against the complete current block ID and `replace` supplies the new resource ID. `fallback` is optional. An unresolved transform makes actions such as `set_block`, `loot_table`, and `return_item` inapplicable during preflight.
+
+Persistent block data and block-derived resource names are integration surfaces. Copy the keys and naming rules from the mod version the pack supports; do not guess them. Use a config condition when the mod exposes a behaviour switch that changes the player's procedure. The Butchery Jobs included with Townstead are a worked example: the bleed timer, golem saw counter, breakdown tables, wet cloth data, and stage transitions are all visible in the Job files rather than hidden in compatibility actions.

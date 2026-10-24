@@ -27,6 +27,8 @@ Your player can have a root. Depending on the pack, that root may be mostly cosm
 
 If a root gives you abilities or restrictions, they come from the root's inherited features. Some are always active. Others may depend on weather, location, time, equipment, or what you are doing.
 
+A root can also give you a resource, such as mana or stamina, that abilities draw on. It appears as a meter on your screen. The pack decides what the meter looks like and where it goes by default; you can move it, scale it, hide it, or reset it from the Resource HUD screen in Townstead's client settings. See the [configuration reference](/reference/configuration/#resource-hud).
+
 ## Villagers
 
 Villagers can be born or spawned with roots. Their roots can affect their appearance, needs, life stages, traits, and family lines.
@@ -43,4 +45,4 @@ Server owners can block specific roots, species, ancestries, or lineages in the 
 
 ## For Pack Authors
 
-This page is the player-facing guide. If you are making roots, genes, species, lineages, custom appearances, or inheritance rules, use the [Roots reference](/roots/) instead.
+This page is the player-facing guide. If you are making roots, genes, species, lineages, custom appearances, or inheritance rules, use the [Roots reference](/roots/) instead. Meters and their frame art are covered under [Resource HUD](/roots/resource-hud/).

@@ -49,6 +49,7 @@ Active entries apply in authored order; when several touch the same bone, the la
 | `sneaking` | Crouching. |
 | `swimming` | Swimming. |
 | `gliding` | Fall-flying (elytra or the `elytra_flight` ability). |
+| `parachuting` | Coming down under a `slow_fall` ability in the `parachute` style. |
 | `moving` | Walking or running. |
 | `hurt` | In hurt flash. |
 | `attacking` | Swinging or aggressive. |

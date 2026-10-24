@@ -40,11 +40,11 @@ The definition:
 
 ```json
 {
-  "schema": "townstead:attachment/v1",
+  "schema": "townstead:attachment/v2",
   "geometry": "my_pack:fox_tail",
   "texture": "my_pack:fox_tail",
   "target": { "tag": "tail_root" },
-  "rotation": [-30, 0, 0],
+  "rotation": [30, 0, 0],
   "scale": 0.9
 }
 ```
