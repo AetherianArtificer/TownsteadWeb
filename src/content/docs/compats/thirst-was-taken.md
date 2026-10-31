@@ -1,8 +1,12 @@
 ---
 title: Thirst Was Taken
-description: Thirst integration for villager needs.
+description: "Thirst for villagers, from the Thirst Was Taken thirst bar."
 ---
 
-Thirst Was Taken adds a thirst bar for players. Townstead extends it to villagers as a thirst backend.
+**Author:** ghenghen_\
+**Download:** [CurseForge](https://www.curseforge.com/minecraft/mc-mods/thirst-was-taken) · [Modrinth](https://modrinth.com/mod/thirst-was-taken)\
+**Install on:** The server and every client
 
-The integration is identical to [Thirst Was Reclaimed](/compats/thirst-was-reclaimed/), the maintained continuation of this mod. The two share the `thirst` mod id and cannot be installed together; Townstead detects which one is present automatically. See that page for what villagers do and how backend selection works when Legendary Survival Overhaul is also installed.
+Thirst Was Taken gives thirst to players. Townstead gives the same thirst to villagers.
+
+[Thirst Was Reclaimed](/compats/thirst-was-reclaimed/) continues this mod. Both mods use the mod ID `thirst`, so you can install only one of them. Townstead does the same things with both. See [Thirst Was Reclaimed](/compats/thirst-was-reclaimed/) for what Townstead adds.

@@ -1,23 +1,32 @@
 ---
 title: Thirst Was Reclaimed
-description: Thirst integration for villager needs.
+description: "Thirst for villagers, from the Thirst Was Reclaimed thirst bar."
 ---
 
-[Thirst Was Reclaimed](https://github.com/mlus-asuka/Thirst-Was-Reclaimed) is a maintained continuation of Thirst Was Taken. Townstead supports it as a villager thirst backend on both 1.20.1 (Forge) and 1.21.1 (NeoForge).
+**Author:** mlus\
+**Download:** [CurseForge](https://www.curseforge.com/minecraft/mc-mods/thirst-was-reclaimed) · [Modrinth](https://modrinth.com/mod/thirst-was-reclaimed)\
+**Install on:** The server and every client
 
-It provides the same integration as [Thirst Was Taken](/compats/thirst-was-taken/): the two mods share the `thirst` mod id and cannot be installed together, and Townstead detects which one is present automatically.
+Thirst Was Reclaimed continues Thirst Was Taken. Both mods use the mod ID `thirst`, so you can install only one of them. Townstead finds which one is installed.
 
-## What villagers do
+## What It Adds
 
-When Thirst Was Reclaimed is installed, villagers gain a thirst need alongside hunger:
+Thirst Was Reclaimed gives thirst to players. Townstead gives the same thirst to villagers. See [Thirst](/guides/needs/thirst/).
 
-- Thirst depletes over time, faster in hot or dry biomes and in the Nether, following the mod's own depletion settings.
-- Villagers drink thirst-restoring items from their inventory, and can source drinks from ground items, containers, and crops (see the [configuration reference](/reference/configuration/#thirst)).
-- Water purity matters. Drinking dirty water can sicken or poison a villager with the same chances players face.
-- Cook villagers can purify impure water bottles on campfires, stoves, and skillets using the mod's own purification recipes.
-- Adults bring drinks to thirsty young villagers when `enableHydratingYoung` is on.
-- The villager inspector shows a thirst bar using the mod's own droplet icons.
+- Villagers get thirsty, and drink from their inventory, from storage, and from dropped items.
+- Hot and dry places make villagers thirstier, by the rules of Thirst Was Reclaimed.
+- Dirty water can make a villager sick, by the same rules as for players.
+- The villager screen shows a thirst bar with the droplet icons of Thirst Was Reclaimed.
+- Townstead drinks, such as the coffees and teas of supported mods, also fill the thirst bar of players.
 
-## Choosing a backend
+### Purifying Water
 
-If Legendary Survival Overhaul is installed at the same time, the `preferredBackend` setting in `[needs.thirst]` decides which mod drives villager thirst. The default `auto` prefers Legendary Survival Overhaul. Set it to `thirst` to prefer Thirst Was Reclaimed instead. See the [configuration reference](/reference/configuration/#thirst).
+With [Rustic Delight](/compats/rustic-delight/) and Farmer's Delight installed, Baristas purify dirty water bottles at a skillet, stove, or campfire.
+
+## With Other Mods
+
+When more than one thirst mod is installed, `preferredBackend` decides which one gives villagers thirst. With `auto`, Townstead uses Legendary Survival Overhaul first, then Thirst Was Reclaimed or Thirst Was Taken, then Tough As Nails. Set it to `thirst` to use Thirst Was Reclaimed. See the [configuration](/reference/configuration/#thirst).
+
+## Settings
+
+The thirst settings are in `[needs.thirst]` in the [server configuration](/reference/configuration/#thirst). Use them to turn off villager thirst, or one of the places where villagers look for a drink.

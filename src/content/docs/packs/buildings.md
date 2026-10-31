@@ -211,6 +211,26 @@ For a building type with `requires`, Townstead measures the building from the ce
 
 For a building type without `requires`, Townstead uses the `mergeRange` value from the MCA building type instead.
 
+### Building checks
+
+The `requires` list can also check a building that MCA already recognised:
+
+```json
+"requires": [
+  { "decoration": "examplepack:throne", "count": 1 },
+  { "size": { "min": 60, "max": 400 } },
+  { "height": { "min": 12 } }
+]
+```
+
+| Entry | Passes when |
+| --- | --- |
+| `decoration` | At least `count` (default `1`) [decorations](/packs/decorations/) of that ID have their anchor in the building. |
+| `size` | MCA's floor area of the building is between `min` and `max`. |
+| `height` | The height of the building is between `min` and `max`. |
+
+When a building fails a check, Townstead does not give it this type, and tells the player what is missing, for example that a Keep needs a Throne.
+
 ## Compatibility
 
 Older packs may still use Townstead fields directly inside MCA `building_types`, companion files under `data/<namespace>/spirit/`, or spawn policies under `data/<namespace>/building_spawn/`. Townstead still reads those formats for compatibility, but `extended_buildings` is the preferred place for new building data and wins when both define the same value.

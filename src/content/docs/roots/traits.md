@@ -65,5 +65,17 @@ Trait occurrence genes roll at spawn. They are not stored as normal diploid alle
 | `trait` | id | yes | Trait id to grant or bias. |
 | `delta` | number | no | Spawn chance adjustment. Defaults to `0`. |
 | `force` | boolean | no | If true, the trait chance is treated as `1`. |
+| `block` | boolean | no | If true, the root never has the trait. Townstead removes it after the spawn roll, at birth, when the root changes, and when the villager enters the world. For players, it is removed when they take the root. |
 
 For mixed founders, trait occurrence chances are fraction-weighted across the selected roots.
+
+Block example, for a people that is already small:
+
+```json
+{
+  "schema": "townstead:gene/v2",
+  "type": "townstead_roots:trait_occurrence",
+  "trait": "dwarfism",
+  "block": true
+}
+```

@@ -64,4 +64,4 @@ Villagers do not play instruments. A jukebox within earshot gets them tapping th
 
 ## For Pack Authors
 
-Conversations between villagers are data: topics, subjects, lines, voices and translations. See [How Conversations Work](/conversations/). Dialogue palettes, expression cues and native animation clips are data too. Start with [Reactions data](/packs/reactions/).
+Conversations between villagers are data: topics, subjects, lines, voices and translations. See [How Conversations Work](/conversations/). Dialogue palettes, expression cues and native animation clips are data too. Start with [Reactions data](/reactions/).

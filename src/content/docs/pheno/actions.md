@@ -11,14 +11,15 @@ Actions change the world, an entity, an item, a block, or the current Pheno cont
 | --- | --- |
 | Context wrappers | `pheno:actor_action`, `pheno:target_action`, `pheno:invert`, `pheno:block_action`, `pheno:equipped_item_action`, `pheno:at` |
 | Control flow | `pheno:and`, `pheno:chance`, `pheno:choice`, `pheno:delay`, `pheno:if_else`, `pheno:if_else_list`, `pheno:if_bientity`, `pheno:nothing`, `pheno:side` |
-| Entity effects | `pheno:apply_effect`, `pheno:clear_effect`, `pheno:heal`, `pheno:damage`, `pheno:ignite`, `pheno:extinguish`, `pheno:freeze`, `pheno:exhaust`, `pheno:feed`, `pheno:hydrate`, `pheno:energize`, `pheno:add_xp`, `pheno:gain_air`, `pheno:set_fall_distance`, `pheno:set_no_gravity` |
+| Entity effects | `pheno:apply_effect`, `pheno:clear_effect`, `pheno:heal`, `pheno:damage`, `pheno:ignite`, `pheno:extinguish`, `pheno:freeze`, `pheno:exhaust`, `pheno:feed`, `pheno:hydrate`, `pheno:energize`, `pheno:warm`, `pheno:cool`, `pheno:add_xp`, `pheno:gain_air`, `pheno:set_fall_distance`, `pheno:set_no_gravity` |
 | Movement and area | `pheno:add_velocity`, `pheno:jump`, `pheno:keypress`, `pheno:teleport`, `pheno:random_teleport`, `pheno:area_of_effect`, `pheno:mount`, `pheno:dismount`, `pheno:passenger_action`, `pheno:riding_action` |
 | Inventory and items | `pheno:give`, `pheno:drop_inventory`, `pheno:consume`, `pheno:cooldown`, `pheno:item_cooldown`, `pheno:holder_action`, `pheno:remove_enchantment`, `pheno:change_data`, `pheno:spawn_item`, `pheno:use_item_on` |
 | World effects | `pheno:play_sound`, `pheno:spawn_particles`, `pheno:spawn_entity`, `pheno:explode`, `pheno:emit_game_event`, `pheno:beam`, `pheno:cloud`, `pheno:execute_command` |
 | Resources and collections | `pheno:change_resource`, `pheno:resource_transfer`, `pheno:change_collection`, `pheno:for_each` |
 | Relationship, mobs, and reservations | `pheno:tame`, `pheno:set_in_love`, `pheno:zombify_villager`, `pheno:disarm`, `pheno:set_attack_target`, `pheno:reserve`, `pheno:release` |
 | Block actions | `pheno:set_block`, `pheno:add_block`, `pheno:destroy`, `pheno:bonemeal`, `pheno:use_block`, `pheno:modify_block_state`, `pheno:change_block_data`, `pheno:item_action`, `pheno:loot_table`, `pheno:return_item`, `pheno:play_sound`, `pheno:spawn_particles`, `pheno:level_event`, `pheno:if_else`, `pheno:nothing`, `pheno:teleport`, `pheno:schedule_tick`, `pheno:offset`, `pheno:area_of_effect` |
-| Projectiles and animation | `pheno:fire_projectile`, `pheno:swing_hand` |
+| Projectiles and animation | `pheno:fire_projectile`, `pheno:swing_hand`, `pheno:performance` |
+| Expression and speech | `pheno:expression`, `pheno:speak` |
 
 ## Using Context
 
@@ -68,6 +69,7 @@ Entity, item, and block actions each have their own `on` support. For the exact 
 | `pheno:feed` | `food`, `saturation` | Player-only. Restores hunger and saturation. Defaults: `food: 1`, `saturation: 1.0`. |
 | `pheno:hydrate` | `immediate`, `lasting` | Townstead-villager only. Restores immediate and lasting hydration by Pheno value amounts when villager thirst is enabled. Suppressed thirst is unchanged. |
 | `pheno:energize` | `amount` | Townstead-villager only. Restores energy by a Pheno value amount when villager fatigue is enabled. |
+| `pheno:warm`, `pheno:cool` | `amount`, `duration` | Raises or lowers body temperature by `amount` °C. With `duration` in ticks, the change lasts that long. A villager's temperature need takes it directly. A player's change goes to the temperature mod. |
 | `pheno:add_xp` | `points`, `levels` | Player-only. Adds raw experience points, whole levels, or both. At least one value must be non-zero. |
 | `pheno:gain_air` | `air` | Changes air supply by ticks, clamped to max air. Negative values drain air; `0` is rejected. |
 | `pheno:set_fall_distance` | `fall_distance` | Sets pending fall distance. Defaults to `0`. |
@@ -141,6 +143,9 @@ Item actions run inside an item context, usually through `pheno:equipped_item_ac
 | `pheno:execute_command` | `command` | Runs a command as the actor from a silent permission-level-2 source. |
 | `pheno:fire_projectile` | `entity`, `speed`, `inaccuracy` | Launches a projectile along the actor's look vector. Defaults: `entity: minecraft:arrow`, `speed: 1.5`, `inaccuracy: 1.0`; server-side only. |
 | `pheno:swing_hand` | `hand` | Plays a hand-swing animation. `hand` is `main` or `off`; default `main`. |
+| `pheno:performance` | `performance`, `channel`, `duration_ticks`, `priority`, `fallback` | Plays a performance, such as `townstead:reaction_wave`, on the actor. `channel` defaults to `social`, `duration_ticks` to `40`, and `priority` to `0`. `fallback` is `vanilla_gesture` (default), `stand`, or `none`. See [Performances](/reactions/performances/#performances). |
+| `pheno:expression` | `cue` | Shows an expression cue over the actor's head, such as `townstead_expressions:question`. The action fails while the cue is on cooldown. See [Expressions](/reactions/performances/#expressions). |
+| `pheno:speak` | `pool`, `variants` | An MCA villager says a line in chat to players nearby. `pool` is a translation key. With `variants`, Townstead adds `/1` to `/<variants>` to the key at random. The villager does not speak while in a conversation. |
 
 ## Summons
 

@@ -34,4 +34,4 @@ A villager who sees someone take damage reacts, and both remember it. Later, the
 
 `/townstead reaction list` shows every loaded reaction and `/townstead reaction play <id>` plays one on the villager you are looking at. A reaction can still decline because of its cooldown, chance, or missing candidates.
 
-Reactions are data packs. Townstead ships two dozen and any pack can add more. See [Reactions data](/packs/reactions/).
+Reactions are data packs. Townstead ships two dozen and any pack can add more. See [Reactions data](/reactions/).

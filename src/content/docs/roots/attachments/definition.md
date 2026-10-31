@@ -102,7 +102,7 @@ Author the model around its natural mount point, then place it with `offset`, `r
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `scale` | number | Multiplies with the definition scale and any genetic size roll. |
+| `scale` | number | Multiplies with the definition scale and any genetic size roll. It also scales the definition offset, so the attachment shrinks toward its anchor. |
 | `offset` | [x, y, z] | Extra offset in model pixels, added to the definition offset. |
 | `geometry` | ref | A whole different model for this stage. Stage geometry ships over the same blob sync. |
 
