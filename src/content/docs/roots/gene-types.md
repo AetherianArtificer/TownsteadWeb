@@ -153,7 +153,7 @@ Reproduction example:
 | Type | Main Fields | Effect |
 | --- | --- | --- |
 | `townstead_roots:infection_immune` | none | Marks the bearer immune to Townstead infection logic. |
-| `townstead_roots:trait_occurrence` | `trait`, `delta`, `force` | Grants or biases a trait roll at spawn. |
+| `townstead_roots:trait_occurrence` | `trait`, `delta`, `force`, `block` | Grants, biases or blocks a trait. |
 
 Trait example:
 

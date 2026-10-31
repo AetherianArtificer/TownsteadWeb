@@ -52,7 +52,7 @@ When the player leaves a conversation in the middle, the next talk picks up wher
 | Tag | Where | Effect |
 | --- | --- | --- |
 | `# who: <role>` | On a line | Another villager says the line. See [Scenes & Cast](/stories/scenes/#the-cast). |
-| `# emote: <name>` | On a line | The speaker plays a reaction, such as `# emote: wave`. A bare name looks for `townstead:reaction_<name>`, then `townstead:<name>`. See [Reactions](/packs/reactions/). |
+| `# emote: <name>` | On a line | The speaker plays a reaction, such as `# emote: wave`. A bare name looks for `townstead:reaction_<name>`, then `townstead:<name>`. See [Reactions](/reactions/). |
 | `# advance` | On a choice | Marks the choice that moves the story or quest on. The dialogue screen shows it differently. |
 | `# quest:`, `# about:`, `# goal:`, `# reward:`, `# skip if:`, `# label:` | On a knot | Make the knot a quest. See [Quests, Goals & Rewards](/stories/quests/#quest-tags). |
 | `# overheard: once` | On a knot | The knot plays in chat when the player walks past. See [Overheard Scenes](/stories/scenes/#overheard-scenes). |

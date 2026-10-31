@@ -96,7 +96,7 @@ A TerraFirmaCraft world that uses TerraFirmaCraft's biome-based model, for examp
 
 ## Custom Calendars
 
-A custom calendar profile only labels days with month names, weekdays and eras. It does not decide the season. See [Calendars](/packs/calendars/).
+A custom calendar profile only labels days with month names, weekdays and eras. It does not decide the season. See [Calendars](/calendars/).
 
 When a season mod is active and the calendar profile is not the season mod's own, Townstead stretches the profile to fit the season mod's year:
 

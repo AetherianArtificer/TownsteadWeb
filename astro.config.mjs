@@ -8,6 +8,14 @@ export default defineConfig({
 	redirects: {
 		'/packs/cultures-beliefs': '/cultures/',
 		'/packs/personas': '/stories/',
+		'/packs/reactions': '/reactions/',
+		'/packs/hydration-source': '/packs/amenities/',
+		'/packs/energy-source': '/packs/consumables/',
+		'/packs/hangouts': '/hangouts/',
+		'/packs/professions': '/careers/',
+		'/packs/calendars': '/calendars/',
+		'/packs/stamps': '/calendars/stamps/',
+		'/compats/legandary-survival-overhaul': '/compats/legendary-survival-overhaul/',
 	},
 	integrations: [
 		starlight({
@@ -58,10 +66,6 @@ export default defineConfig({
 						{ label: 'Calendars & Stamps', slug: 'guides/calendars-and-stamps' },
 						{ label: 'Climate', slug: 'guides/climate' },
 					],
-				},
-				{
-					label: 'Compats',
-					items: [{ autogenerate: { directory: 'compats' } }],
 				},
 				{
 					label: 'Reference',
@@ -241,6 +245,28 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'Reactions',
+					items: [
+						{ label: 'How Reactions Work', slug: 'reactions' },
+						{ label: 'Reaction Files', slug: 'reactions/reaction-files' },
+						{ label: 'Triggers', slug: 'reactions/triggers' },
+						{ label: 'Context Tags', slug: 'reactions/context-tags' },
+						{ label: 'Performances & Expressions', slug: 'reactions/performances' },
+						{ label: 'Emotecraft Animations', slug: 'reactions/emotecraft' },
+						{ label: 'Testing & Commands', slug: 'reactions/testing' },
+					],
+				},
+				{
+					label: 'Hangouts',
+					items: [
+						{ label: 'How Hangouts Work', slug: 'hangouts' },
+						{ label: 'Venues', slug: 'hangouts/venues' },
+						{ label: 'Spots', slug: 'hangouts/spots' },
+						{ label: 'Activities', slug: 'hangouts/activities' },
+						{ label: 'Hangout Policy', slug: 'hangouts/policy' },
+					],
+				},
+				{
 					label: 'Cultures',
 					items: [
 						{ label: 'How Cultures Work', slug: 'cultures' },
@@ -258,6 +284,17 @@ export default defineConfig({
 						{ label: 'Mixed Cultures & Drift', slug: 'cultures/mixed-cultures' },
 						{ label: 'Building a Culture Pack', slug: 'cultures/culture-packs' },
 						{ label: 'Testing & Commands', slug: 'cultures/testing' },
+					],
+				},
+				{
+					label: 'Calendars',
+					items: [
+						{ label: 'How Calendars Work', slug: 'calendars' },
+						{ label: 'Profile Files', slug: 'calendars/profiles' },
+						{ label: 'Dates & Eras', slug: 'calendars/dates-and-eras' },
+						{ label: 'Leap Years', slug: 'calendars/leap-years' },
+						{ label: 'Stamps', slug: 'calendars/stamps' },
+						{ label: 'Testing & Commands', slug: 'calendars/testing' },
 					],
 				},
 				{
@@ -305,6 +342,110 @@ export default defineConfig({
 				{
 					label: 'Data & Resource Packs',
 					items: [{ autogenerate: { directory: 'packs' } }],
+				},
+				{
+					label: 'Compats',
+					items: [
+						{ label: 'Overview', slug: 'compats' },
+						{
+							label: 'MCA Reborn & Addons',
+							collapsed: true,
+							items: [
+								{ label: 'MCA Reborn', slug: 'compats/mca-reborn' },
+								{ label: 'MCA Descendants', slug: 'compats/mca-descendants' },
+								{ label: 'MCA Capitals', slug: 'compats/mca-capitals' },
+								{ label: 'MCA: Reputation', slug: 'compats/mca-reputation' },
+								{ label: 'MCA: Crime', slug: 'compats/mca-crime' },
+							],
+						},
+						{
+							label: 'Food & Cooking',
+							collapsed: true,
+							items: [
+								{ label: "Farmer's Delight", slug: 'compats/farmers-delight' },
+								{ label: "Chef's Delight", slug: 'compats/chefs-delight' },
+								{ label: 'Rustic Delight', slug: 'compats/rustic-delight' },
+								{ label: 'Pizza Delight', slug: 'compats/pizza-delight' },
+								{ label: 'Butchery', slug: 'compats/butchery' },
+								{ label: 'Caupona', slug: 'compats/caupona' },
+								{ label: 'Kaleidoscope Cookery', slug: 'compats/kaleidoscope-cookery' },
+								{ label: "Let's Do: Bakery", slug: 'compats/lets-do-bakery' },
+								{ label: "Let's Do: Candlelight", slug: 'compats/lets-do-candlelight' },
+								{ label: "Let's Do: Farm & Charm", slug: 'compats/lets-do-farm-and-charm' },
+								{ label: 'Starcatcher', slug: 'compats/starcatcher' },
+							],
+						},
+						{
+							label: 'Drinks',
+							collapsed: true,
+							items: [
+								{ label: "Brewin' And Chewin'", slug: 'compats/brewin-and-chewin' },
+								{ label: "Cocktails Delight", slug: 'compats/cocktails-delight' },
+								{ label: "Let's Do: Brewery", slug: 'compats/lets-do-brewery' },
+								{ label: "Let's Do: Vinery", slug: 'compats/lets-do-vinery' },
+								{ label: "Let's Do: HerbalBrews", slug: 'compats/lets-do-herbalbrews' },
+								{ label: "Let's Do: Beachparty", slug: 'compats/lets-do-beachparty' },
+								{ label: "Kaleidoscope Tavern", slug: 'compats/kaleidoscope-tavern' },
+							],
+						},
+						{
+							label: 'Survival',
+							collapsed: true,
+							items: [
+								{ label: "Tough As Nails", slug: 'compats/tough-as-nails' },
+								{ label: "Legendary Survival Overhaul", slug: 'compats/legendary-survival-overhaul' },
+								{ label: "Cold Sweat", slug: 'compats/cold-sweat' },
+								{ label: "Thirst Was Taken", slug: 'compats/thirst-was-taken' },
+								{ label: "Thirst Was Reclaimed", slug: 'compats/thirst-was-reclaimed' },
+							],
+						},
+						{
+							label: 'Seasons',
+							collapsed: true,
+							items: [
+								{ label: "Serene Seasons", slug: 'compats/serene-seasons' },
+								{ label: "Ecliptic Seasons", slug: 'compats/ecliptic-seasons' },
+								{ label: "TerraFirmaCraft", slug: 'compats/terrafirmacraft' },
+							],
+						},
+						{
+							label: 'Clothing & Wearables',
+							collapsed: true,
+							items: [
+								{ label: "Curios API", slug: 'compats/curios-api' },
+								{ label: "Accents", slug: 'compats/accents' },
+								{ label: "Weaver's Paradise", slug: 'compats/weavers-paradise' },
+								{ label: "Whole Cloth", slug: 'compats/whole-cloth' },
+								{ label: "Hats Renewed", slug: 'compats/hats-renewed' },
+							],
+						},
+						{
+							label: 'Vampires & Werewolves',
+							collapsed: true,
+							items: [
+								{ label: 'Vampirism', slug: 'compats/vampirism' },
+								{ label: 'Werewolves', slug: 'compats/werewolves' },
+								{ label: 'Vampiric Ageing', slug: 'compats/vampiric-ageing' },
+							],
+						},
+						{
+							label: 'Interface',
+							collapsed: true,
+							items: [
+								{ label: "Traveler's Titles", slug: 'compats/travelers-titles' },
+								{ label: 'Jade', slug: 'compats/jade' },
+								{ label: 'Just Enough Professions', slug: 'compats/just-enough-professions' },
+							],
+						},
+						{
+							label: 'Animation & Models',
+							collapsed: true,
+							items: [
+								{ label: 'Emotecraft', slug: 'compats/emotecraft' },
+								{ label: 'Entity Model Features', slug: 'compats/entity-model-features' },
+							],
+						},
+					],
 				},
 			],
 		}),

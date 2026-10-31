@@ -83,4 +83,4 @@ Visits are not saved. After a server restart, villagers go home and come back at
 
 ## For Pack Authors
 
-Venues, seats, beats, and policies are all data. See [Hangouts data](/packs/hangouts/).
+Venues, seats, beats, and policies are all data. See [How Hangouts Work](/hangouts/).
